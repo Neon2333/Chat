@@ -29,6 +29,7 @@ namespace SocketDemo
 
         public struct ConnectClientInfo
         {
+            public string userName;
             public DateTime connectTime;
             public Socket clientConnectSocket;
             public IPAddress clientIP;
@@ -148,6 +149,12 @@ namespace SocketDemo
 
         public void ReceiveMsg(ConnectClientInfo clientConnectSocket1, ConnectClientInfo clientConnectSocket2)
         {
+            /*
+             1.通过List，展示目前连上服务器的user列表；
+             2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
+             3.将ClientInfo写成类。用户信息存储到DB中。
+             
+             */
             Task.Run(() =>
             {
                 try
@@ -168,7 +175,14 @@ namespace SocketDemo
                             this.recvEvent(this, new Message(recvMsg));
                         }
 
-                        this.SendClientMsg(clientConnectSocket2.clientConnectSocket, "Server has received message...");
+                        if(clientConnectSocket2 != null)
+                        {
+                            this.SendClientMsg(clientConnectSocket2, "Server has received message...");
+                        }
+                        else
+                        {
+                            //离线消息
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -183,13 +197,13 @@ namespace SocketDemo
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(Socket clientConnectSocket, string msg)
+        public bool SendClientMsg(ConnectClientInfo clientConnectSocketInfo, string msg)
         {
             try
             {
                 int bytes = 0;
                 this.sendBuffer = Encoding.ASCII.GetBytes(msg);
-                bytes = clientConnectSocket.Send(sendBuffer);
+                bytes = clientConnectSocketInfo.clientConnectSocket.Send(sendBuffer);
                 //sendEvent(bytes);
                 return true;
             }
@@ -199,11 +213,11 @@ namespace SocketDemo
             }
         }
 
-        public bool haltRecvMsg()
+        public bool haltRecvMsg(ConnectClientInfo clientConnectSocketInfo)
         {
             try
             {
-                this.tokenSource.Cancel();
+                clientConnectSocketInfo.tokenSource.Cancel();
                 return true;
             }
             catch (Exception ex)
@@ -212,12 +226,12 @@ namespace SocketDemo
             }
         }
 
-        public bool DisConnect()
+        public bool DisConnect(ConnectClientInfo clientConnectSocketInfo)
         {
             try
             {
-                haltRecvMsg();  //先终止接收消息线程，再断开连接
-                this.clientConnectSocket.Shutdown(SocketShutdown.Both);
+                haltRecvMsg(clientConnectSocketInfo);  //先终止接收消息线程，再断开连接
+                clientConnectSocketInfo.clientConnectSocket.Shutdown(SocketShutdown.Both);
                 return true;
             }
             catch (Exception ex)
@@ -230,19 +244,19 @@ namespace SocketDemo
         /// <summary>
         /// 断开连接，释放socket
         /// </summary>
-        public bool Dispose()
+        public bool Dispose(ConnectClientInfo clientConnectSocketInfo)
         {
 
             try
             {
-                this.tokenSource.Cancel();  //先终止线程，再断开连接
-                clientConnectSocket.Shutdown(SocketShutdown.Both);
+                clientConnectSocketInfo.tokenSource.Cancel();  //先终止线程，再断开连接
+                clientConnectSocketInfo.clientConnectSocket.Shutdown(SocketShutdown.Both);
             }
             catch { return false; }
 
             try
             {
-                clientConnectSocket.Close();
+                clientConnectSocketInfo.clientConnectSocket.Close();
             }
             catch { return false; }
 
