@@ -16,7 +16,7 @@ namespace SocketDemo
 {
     public class ServerSocket
     {
-        
+
         public EventHandler<Message> recvEvent = null;    //接收消息事件
         public Action<int> sendEvent = null;   //发送消息事件
 
@@ -27,12 +27,20 @@ namespace SocketDemo
         private byte[] sendBuffer;  //发送缓冲区
         private static Socket serverSocket; //监听客户端的socket
 
-        private List<Socket> clientConnectSockets = new List<Socket>();     //储存客户端连接
-        private Socket clientConnectSocket; //连接客户端后用于收发消息的socket
+        public struct ConnectClientInfo
+        {
+            public DateTime connectTime;
+            public Socket clientConnectSocket;
+            public IPAddress clientIP;
+            public int clientPort;
+            public CancellationTokenSource tokenSource; //控制线程终止
+            public CancellationToken token;
+        }
+        private List<ConnectClientInfo> clientConnectSockets = new List<ConnectClientInfo>();     //储存客户端连接
+        //private Socket clientConnectSocket; //连接客户端后用于收发消息的socket
 
         private Semaphore sme;  //控制服务器连接线程数
-        public CancellationTokenSource tokenSource; //控制线程终止
-        public CancellationToken token;
+
 
         public ServerSocket(IPAddress bindIP, int bindPort, int listenRequests, int recvBuffSize, int sendBuffSize)
         {
@@ -48,7 +56,7 @@ namespace SocketDemo
             }
             serverSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   //IPEndPoint是IP:port
             sme = new Semaphore(this.listenRequests, this.listenRequests);
-            
+
         }
 
         /// <summary>
@@ -61,12 +69,12 @@ namespace SocketDemo
             try
             {
                 serverSocket.Listen(listenRequests);
-                status = $"启动监听{serverSocket.LocalEndPoint.ToString()}成功..";
+                status = $"启动监听 {serverSocket.LocalEndPoint.ToString()} 成功..";
                 return true;
             }
             catch (Exception ex)
             {
-                status = $"启动监听{serverSocket.LocalEndPoint.ToString()}失败..";
+                status = $"启动监听 {serverSocket.LocalEndPoint.ToString()} 失败..";
                 return false;
             }
         }
@@ -83,8 +91,15 @@ namespace SocketDemo
                 {
                     sme.WaitOne();
 
-                    clientConnectSocket = serverSocket.Accept();    //Accept()建立连接
-                    clientConnectSockets.Add(clientConnectSocket);
+                    ConnectClientInfo ccf;
+                    Socket clientConnectSocket = serverSocket.Accept();    //Accept()建立连接
+                    ccf.clientConnectSocket = clientConnectSocket;
+                    ccf.connectTime = DateTime.Now;
+                    ccf.clientIP = (clientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
+                    ccf.clientPort = (clientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
+                    ccf.tokenSource = new CancellationTokenSource();
+                    ccf.token = ccf.tokenSource.Token;
+                    clientConnectSockets.Add(ccf);
                 });
                 return true;
             }
@@ -128,41 +143,38 @@ namespace SocketDemo
         //            tb_status.Invoke(new Action(() => tb_status.Text = ex.ToString()));
         //        }
         //    }, token);
-            
+
         //}
 
-        public void ReceiveMsg()
+        public void ReceiveMsg(ConnectClientInfo clientConnectSocket1, ConnectClientInfo clientConnectSocket2)
         {
-            tokenSource = new CancellationTokenSource();
-            token = tokenSource.Token;
-
             Task.Run(() =>
             {
                 try
                 {
                     string recvMsg = String.Empty;
                     int bytes = 0;
-                    while ((bytes = clientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
+                    while ((bytes = clientConnectSocket1.clientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
                     {
-                        if (tokenSource.IsCancellationRequested)
+                        if (clientConnectSocket1.tokenSource.IsCancellationRequested)
                         {
                             break;
                         }
 
                         recvMsg = Encoding.ASCII.GetString(receiveBuff, 0, bytes);
-                        
-                        if(this.recvEvent != null)
+
+                        if (this.recvEvent != null)
                         {
                             this.recvEvent(this, new Message(recvMsg));
                         }
-                        
-                        this.SendClientMsg("Server has received message...");
+
+                        this.SendClientMsg(clientConnectSocket2.clientConnectSocket, "Server has received message...");
                     }
                 }
                 catch (Exception ex)
                 {
                 }
-            }, token);
+            }, clientConnectSocket1.token);
 
         }
 
@@ -171,7 +183,7 @@ namespace SocketDemo
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(string msg)
+        public bool SendClientMsg(Socket clientConnectSocket, string msg)
         {
             try
             {
@@ -187,14 +199,28 @@ namespace SocketDemo
             }
         }
 
+        public bool haltRecvMsg()
+        {
+            try
+            {
+                this.tokenSource.Cancel();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool DisConnect()
         {
             try
             {
-                this.tokenSource.Cancel();  //先终止线程，再断开连接
+                haltRecvMsg();  //先终止接收消息线程，再断开连接
                 this.clientConnectSocket.Shutdown(SocketShutdown.Both);
                 return true;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -220,11 +246,11 @@ namespace SocketDemo
             }
             catch { return false; }
 
-            try
-            {
-                serverSocket.Shutdown(SocketShutdown.Both);
-            }
-            catch { return false; }
+            //try
+            //{
+            //    serverSocket.Shutdown(SocketShutdown.Both);
+            //}
+            //catch { return false; }
 
             try
             {
