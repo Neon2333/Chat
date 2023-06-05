@@ -16,31 +16,18 @@ namespace SocketDemo
 {
     public class ServerSocket
     {
-
-        public EventHandler<Message> recvEvent = null;    //接收消息事件
-        public Action<int> sendEvent = null;   //发送消息事件
+        private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //客户端监听socket
 
         private IPAddress bindIP;   //绑定服务器的某个网卡的IP(IPAddress类)，规范写法要写成IPAddress.Any
         private int bindPort;       //服务器的监听端口
-        private int listenRequests; //监听允许连接数
-        private byte[] receiveBuff; //接收缓冲区
-        private byte[] sendBuffer;  //发送缓冲区
-        private static Socket serverSocket; //监听客户端的socket
+        private int listenRequests; //监听允许客户端连接数
+        private byte[] receiveBuff; //服务器接收缓冲区
+        private byte[] sendBuffer;  //服务器发送缓冲区
 
-        public struct ConnectClientInfo
-        {
-            public string userName;
-            public DateTime connectTime;
-            public Socket clientConnectSocket;
-            public IPAddress clientIP;
-            public int clientPort;
-            public CancellationTokenSource tokenSource; //控制线程终止
-            public CancellationToken token;
-        }
-        private List<ConnectClientInfo> clientConnectSockets = new List<ConnectClientInfo>();     //储存客户端连接
-        //private Socket clientConnectSocket; //连接客户端后用于收发消息的socket
+        private List<UserInfo> connectedClients = new List<UserInfo>();     //储存连接上的客户端
+        public List<UserInfo> ConnectedClients { get => connectedClients; set => connectedClients = value; }
 
-        private Semaphore sme;  //控制服务器连接线程数
+        private Semaphore sme;  //控制服务器与客户端连接线程数
 
 
         public ServerSocket(IPAddress bindIP, int bindPort, int listenRequests, int recvBuffSize, int sendBuffSize)
@@ -55,7 +42,7 @@ namespace SocketDemo
             {
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             }
-            serverSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   //IPEndPoint是IP:port
+            serverSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   
             sme = new Semaphore(this.listenRequests, this.listenRequests);
 
         }
@@ -69,7 +56,7 @@ namespace SocketDemo
         {
             try
             {
-                serverSocket.Listen(listenRequests);
+                serverSocket.Listen(listenRequests);    
                 status = $"启动监听 {serverSocket.LocalEndPoint.ToString()} 成功..";
                 return true;
             }
@@ -81,26 +68,24 @@ namespace SocketDemo
         }
 
         /// <summary>
-        /// 连接客户端
+        /// 客户端和服务器建立连接
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> ConnectClient()
+        public async Task<bool> ConnectClient(UserInfo user)
         {
             try
             {
                 await Task<bool>.Run(() =>
                 {
-                    sme.WaitOne();
+                    sme.WaitOne();  //计数器-1
 
-                    ConnectClientInfo ccf;
-                    Socket clientConnectSocket = serverSocket.Accept();    //Accept()建立连接
-                    ccf.clientConnectSocket = clientConnectSocket;
-                    ccf.connectTime = DateTime.Now;
-                    ccf.clientIP = (clientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
-                    ccf.clientPort = (clientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
-                    ccf.tokenSource = new CancellationTokenSource();
-                    ccf.token = ccf.tokenSource.Token;
-                    clientConnectSockets.Add(ccf);
+                    user.ClientConnectSocket = serverSocket.Accept();    //Accept()建立连接
+                    user.ConnectTime = DateTime.Now;
+                    user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
+                    user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
+                    user.CancelRecvMsgSource = new CancellationTokenSource();
+                    user.CancelRecvMsgToken = user.CancelRecvMsgSource.Token;
+                    ConnectedClients.Add(user);
                 });
                 return true;
             }
@@ -147,7 +132,12 @@ namespace SocketDemo
 
         //}
 
-        public void ReceiveMsg(ConnectClientInfo clientConnectSocket1, ConnectClientInfo clientConnectSocket2)
+        /// <summary>
+        /// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
+        /// </summary>
+        /// <param name="userSendMsg">发送方</param>
+        /// <param name="userRecvMsg">接收方</param>
+        public void ReceiveMsg(UserInfo userSendMsg, UserInfo userRecvMsg)
         {
             /*
              1.通过List，展示目前连上服务器的user列表；
@@ -161,35 +151,63 @@ namespace SocketDemo
                 {
                     string recvMsg = String.Empty;
                     int bytes = 0;
-                    while ((bytes = clientConnectSocket1.clientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
+                    while ((bytes = userSendMsg.ClientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
                     {
-                        if (clientConnectSocket1.tokenSource.IsCancellationRequested)
+                        if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
                         {
                             break;
                         }
 
                         recvMsg = Encoding.ASCII.GetString(receiveBuff, 0, bytes);
+                        string chatMsg = String.Empty;
+                        DateTime sendMsgTime = this.MsgGetTime(recvMsg, out chatMsg);
 
-                        if (this.recvEvent != null)
+                        if (userSendMsg.recvEvent != null)
                         {
-                            this.recvEvent(this, new Message(recvMsg));
+                            userSendMsg.recvEvent(this, new Message(sendMsgTime, chatMsg));
                         }
 
-                        if(clientConnectSocket2 != null)
+
+                        if(userRecvMsg.ClientConnectSocket != null)
                         {
-                            this.SendClientMsg(clientConnectSocket2, "Server has received message...");
+                            //在线：发送
+                            this.SendClientMsg(userRecvMsg, "Server has received message...");
                         }
-                        else
-                        {
-                            //离线消息
-                        }
+
+                        # region msg写入db
+                            //signIN时创建记录sendMsg的表、recvMsg的表
+                        #endregion
+
                     }
                 }
                 catch (Exception ex)
                 {
                 }
-            }, clientConnectSocket1.token);
+            }, userSendMsg.CancelRecvMsgToken);
 
+        }
+
+        /// <summary>
+        /// 从client发送的msg中分割出发送时间。
+        /// </summary>
+        /// <param name="msg">client发送的消息。格式【YYYY-MM-DD_HH:MM:SS_str】</param>
+        /// <returns></returns>
+        private DateTime MsgGetTime(string msg, out string chatMsg)
+        {
+            /*
+             var date1 = new DateTime(2013, 6, 1, 12, 32, 30);
+             DateTime.TryParse(dateString, out parsedDate)
+             */
+            try
+            {
+                chatMsg = "hello";
+                return DateTime.Now;
+            }
+            catch(Exception ex)
+            {
+                chatMsg = ex.ToString();
+                return DateTime.Now;
+            }
         }
 
         /// <summary>
@@ -197,13 +215,13 @@ namespace SocketDemo
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(ConnectClientInfo clientConnectSocketInfo, string msg)
+        public bool SendClientMsg(UserInfo userRecvMsg, string msg)
         {
             try
             {
                 int bytes = 0;
                 this.sendBuffer = Encoding.ASCII.GetBytes(msg);
-                bytes = clientConnectSocketInfo.clientConnectSocket.Send(sendBuffer);
+                bytes = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
                 //sendEvent(bytes);
                 return true;
             }
@@ -213,11 +231,11 @@ namespace SocketDemo
             }
         }
 
-        public bool haltRecvMsg(ConnectClientInfo clientConnectSocketInfo)
+        public bool haltRecvMsg(UserInfo user)
         {
             try
             {
-                clientConnectSocketInfo.tokenSource.Cancel();
+                user.CancelRecvMsgSource.Cancel();
                 return true;
             }
             catch (Exception ex)
@@ -226,12 +244,12 @@ namespace SocketDemo
             }
         }
 
-        public bool DisConnect(ConnectClientInfo clientConnectSocketInfo)
+        public bool DisConnect(UserInfo user)
         {
             try
             {
-                haltRecvMsg(clientConnectSocketInfo);  //先终止接收消息线程，再断开连接
-                clientConnectSocketInfo.clientConnectSocket.Shutdown(SocketShutdown.Both);
+                haltRecvMsg(user);  //先终止接收消息线程，再断开连接
+                user.ClientConnectSocket.Shutdown(SocketShutdown.Both);
                 return true;
             }
             catch (Exception ex)
@@ -244,19 +262,19 @@ namespace SocketDemo
         /// <summary>
         /// 断开连接，释放socket
         /// </summary>
-        public bool Dispose(ConnectClientInfo clientConnectSocketInfo)
+        public bool Dispose(UserInfo user)
         {
 
             try
             {
-                clientConnectSocketInfo.tokenSource.Cancel();  //先终止线程，再断开连接
-                clientConnectSocketInfo.clientConnectSocket.Shutdown(SocketShutdown.Both);
+                user.CancelRecvMsgSource.Cancel();  //先终止线程，再断开连接
+                user.ClientConnectSocket.Shutdown(SocketShutdown.Both);
             }
             catch { return false; }
 
             try
             {
-                clientConnectSocketInfo.clientConnectSocket.Close();
+                user.ClientConnectSocket.Close();
             }
             catch { return false; }
 

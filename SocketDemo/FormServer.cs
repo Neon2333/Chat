@@ -21,7 +21,16 @@ namespace SocketDemo
         public FormServer()
         {
             InitializeComponent();
+        }
+
+        private void init()
+        {
             this.textBox_port.Text = "8888";
+
+            foreach (var client in ss.ConnectedClients)
+            {
+                this.textBox_clients.Text += (client.UserName + "\n");
+            }
         }
 
         private void button_startListen_Click(object sender, EventArgs e)
@@ -52,14 +61,16 @@ namespace SocketDemo
         private void showRecvMsg(object sender, Message msg)
         {
             //this.textBox_receive.Text = msg.Msg;
-            this.textBox_receive.Invoke(new Action(() => this.textBox_receive.Text = msg.Msg));
+            this.textBox_receive.Invoke(new Action(() => this.textBox_receive.Text = msg.ChatMsg));
         }
 
         private void button_receive_Click(object sender, EventArgs e)   
         {
             //ss.ReceiveMsg(this.textBox_receive, this.textBox_status);     //textbox传入函数，通过委托跨线程访问
 
-            ss.recvEvent += showRecvMsg;          //客户端将委托绑定事件，通过类Message封装接收的消息，EventHandler从publisher传入observer
+            //ss.recvEvent += showRecvMsg;          //客户端将委托绑定事件，通过类Message封装接收的消息，EventHandler从publisher传入observer
+            
+
         }
 
         private void button_dispose_Click(object sender, EventArgs e)
