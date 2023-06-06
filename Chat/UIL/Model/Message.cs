@@ -16,10 +16,15 @@ namespace Chat
 
         private int userIDSend;     //发送消息的user ID
         public int UserIDSend { get => userIDSend; set => userIDSend = value; }
+
+        private string userNameSend;
+        public string UserNameSend { get => userNameSend; set => userNameSend = value; }
         
         private int userIDRecv;     //接收消息的user ID
         public int UserIDRecv { get => userIDRecv; set => userIDRecv = value; }
 
+        private string userNameRecv;
+        public string UserNameRecv { get => userNameRecv; set => userNameRecv = value; }
 
         public Message(int userIDSend, int userIDRecv, DateTime sendTime, string msg) {
             this.userIDSend = userIDSend;

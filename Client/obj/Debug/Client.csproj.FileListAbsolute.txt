@@ -9,3 +9,12 @@ C:\Users\Administrator\Desktop\SocketDemo\Client\obj\Debug\Client.csproj.Generat
 C:\Users\Administrator\Desktop\SocketDemo\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\Desktop\SocketDemo\Client\obj\Debug\Client.exe
 C:\Users\Administrator\Desktop\SocketDemo\Client\obj\Debug\Client.pdb
+E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\Client.exe.config
+E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\Client.exe
+E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\Client.pdb
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.FormClient.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.Properties.Resources.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.GenerateResource.cache
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.exe
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.pdb

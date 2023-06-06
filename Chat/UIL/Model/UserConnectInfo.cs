@@ -9,12 +9,16 @@ using System.Threading;
 
 namespace Chat
 {
-    public class UserConnectInfo
+    public class UserConnectInfo: EventArgs
     {
         #region 用户连接信息
+        public EventHandler<UserConnectInfo> connectedEvent = null;  //连上服务器事件
 
         private int userID;      //用户ID
         public int UserID { get => userID; set => userID = value; }
+
+        private string userName; //用户名
+        public string UserName { get => userName; set => userName = value; }
 
         private Socket clientConnectSocket; //连接socket
         public Socket ClientConnectSocket { get => clientConnectSocket; set => clientConnectSocket = value; }
@@ -31,27 +35,26 @@ namespace Chat
         private DateTime disconnectTime;    //断开连接时间
         public DateTime DisconnectTime { get => disconnectTime; set => disconnectTime = value; }
         
-        private CancellationTokenSource cancelRecvMsgSource;    
-        public CancellationTokenSource CancelRecvMsgSource { get => cancelRecvMsgSource; set => cancelRecvMsgSource = value; }
-        
-        private CancellationToken cancelRecvMsgToken;   //recvmsg取消
-        public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
-        
         private int recvBufferSize = 10240; //服务器作为接收方
         public int RecvBufferSize { get => recvBufferSize; set => recvBufferSize = value; }
         
         private int sendBufferSize = 10240; //服务器作为发送方
         public int SendBufferSize { get => sendBufferSize; set => sendBufferSize = value; }
 
-
         #endregion
 
         #region 用户收发消息
-        public EventHandler<Message> recvEvent = null;  //接收消息事件
-        public Action<int> sendEvent = null;            //发送消息事件
-        private CancellationTokenSource tokenSource;    //控制receiveMsg线程终止
-        private CancellationToken token;
+        private UserConnectInfo relatedClient;
+        public UserConnectInfo RelatedClient { get => relatedClient; set => relatedClient = value; }
 
+        public EventHandler<Message> recvEvent = null;  //接收消息事件
+        public EventHandler<Message> sendEvent = null;  //发送消息事件
+
+        private CancellationTokenSource cancelRecvMsgSource;
+        public CancellationTokenSource CancelRecvMsgSource { get => cancelRecvMsgSource; set => cancelRecvMsgSource = value; }
+
+        private CancellationToken cancelRecvMsgToken;   //recvmsg取消
+        public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
         #endregion
     }
 }

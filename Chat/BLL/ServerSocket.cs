@@ -72,17 +72,25 @@ namespace Chat
         {
             try
             {
+                //这里的问题是若收不到client的连接，会阻塞在这里。应该使用Listen，有client来连的时候自动调用
                 await Task<bool>.Run(() =>
                 {
                     sme.WaitOne();  //计数器-1
 
+                    //注册的
                     user.ClientConnectSocket = serverSocket.Accept();    //Accept()建立连接
                     user.ConnectTime = DateTime.Now;
                     user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
+                    user.ConnectTime = DateTime.Now;
                     user.CancelRecvMsgSource = new CancellationTokenSource();
                     user.CancelRecvMsgToken = user.CancelRecvMsgSource.Token;
                     ConnectedClients.Add(user);
+
+                    if (user.connectedEvent != null)
+                    {
+                        user.connectedEvent(this, user);
+                    }
                 });
                 return true;
             }
@@ -128,6 +136,8 @@ namespace Chat
         //    }, token);
 
         //}
+
+
 
         /// <summary>
         /// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
@@ -222,8 +232,6 @@ namespace Chat
             }
         }
 
-        
-
         /// <summary>
         /// 给客户端发消息
         /// </summary>
@@ -266,6 +274,7 @@ namespace Chat
             {
                 haltRecvMsg(user);  //先终止接收消息线程，再断开连接
                 user.ClientConnectSocket.Shutdown(SocketShutdown.Both);
+                user.DisconnectTime = DateTime.Now;
                 return true;
             }
             catch (Exception ex)
@@ -285,6 +294,7 @@ namespace Chat
             {
                 user.CancelRecvMsgSource.Cancel();  //先终止线程，再断开连接
                 user.ClientConnectSocket.Shutdown(SocketShutdown.Both);
+                user.DisconnectTime = DateTime.Now;
             }
             catch { return false; }
 

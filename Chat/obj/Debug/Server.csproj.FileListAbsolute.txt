@@ -20,3 +20,15 @@ C:\Users\Administrator\Desktop\SocketDemo\SocketDemo\obj\Debug\Server.csproj.Gen
 C:\Users\Administrator\Desktop\SocketDemo\SocketDemo\obj\Debug\Server.csproj.CoreCompileInputs.cache
 C:\Users\Administrator\Desktop\SocketDemo\SocketDemo\obj\Debug\SocketDemo.exe
 C:\Users\Administrator\Desktop\SocketDemo\SocketDemo\obj\Debug\SocketDemo.pdb
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Chat.FormServer.resources
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\SocketDemo.Properties.Resources.resources
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.GenerateResource.cache
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.CoreCompileInputs.cache
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\SocketDemo.exe
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\SocketDemo.pdb
+E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\SocketDemo.exe.config
+E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\SocketDemo.exe
+E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\SocketDemo.pdb
+E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\MySql.Data.dll
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.CopyComplete
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.AssemblyReference.cache
