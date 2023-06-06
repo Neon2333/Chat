@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
+using System.Security.Cryptography;
 
 namespace SocketDemo
 {
@@ -21,22 +22,18 @@ namespace SocketDemo
         private IPAddress bindIP;   //绑定服务器的某个网卡的IP(IPAddress类)，规范写法要写成IPAddress.Any
         private int bindPort;       //服务器的监听端口
         private int listenRequests; //监听允许客户端连接数
-        private byte[] receiveBuff; //服务器接收缓冲区
-        private byte[] sendBuffer;  //服务器发送缓冲区
 
-        private List<UserInfo> connectedClients = new List<UserInfo>();     //储存连接上的客户端
-        public List<UserInfo> ConnectedClients { get => connectedClients; set => connectedClients = value; }
+        private List<UserConnectInfo> connectedClients = new List<UserConnectInfo>();     //储存连接上的客户端
+        public List<UserConnectInfo> ConnectedClients { get => connectedClients; set => connectedClients = value; }
 
         private Semaphore sme;  //控制服务器与客户端连接线程数
 
 
-        public ServerSocket(IPAddress bindIP, int bindPort, int listenRequests, int recvBuffSize, int sendBuffSize)
+        public ServerSocket(IPAddress bindIP, int bindPort, int listenRequests)
         {
             this.bindIP = bindIP;
             this.bindPort = bindPort;
             this.listenRequests = listenRequests;
-            this.receiveBuff = new byte[recvBuffSize];
-            this.sendBuffer = new byte[sendBuffSize];
 
             if (serverSocket == null)
             {
@@ -71,7 +68,7 @@ namespace SocketDemo
         /// 客户端和服务器建立连接
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> ConnectClient(UserInfo user)
+        public async Task<bool> ConnectClient(UserConnectInfo user)
         {
             try
             {
@@ -81,7 +78,7 @@ namespace SocketDemo
 
                     user.ClientConnectSocket = serverSocket.Accept();    //Accept()建立连接
                     user.ConnectTime = DateTime.Now;
-                    user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
+                    user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
                     user.CancelRecvMsgSource = new CancellationTokenSource();
                     user.CancelRecvMsgToken = user.CancelRecvMsgSource.Token;
@@ -137,41 +134,40 @@ namespace SocketDemo
         /// </summary>
         /// <param name="userSendMsg">发送方</param>
         /// <param name="userRecvMsg">接收方</param>
-        public void ReceiveMsg(UserInfo userSendMsg, UserInfo userRecvMsg)
+        public void ReceiveMsg(UserConnectInfo userSendMsg, UserConnectInfo userRecvMsg)
         {
             /*
-             1.通过List，展示目前连上服务器的user列表；
              2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
-             3.将ClientInfo写成类。用户信息存储到DB中。
-             
              */
+
             Task.Run(() =>
             {
                 try
                 {
-                    string recvMsg = String.Empty;
+                    string chatMsg = String.Empty;
+                    DateTime sendMsgTime = DateTime.Now;
+                    byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
+
                     int bytes = 0;
-                    while ((bytes = userSendMsg.ClientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
+                    while ((bytes = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
                     {
                         if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
                         {
                             break;
                         }
 
-                        recvMsg = Encoding.ASCII.GetString(receiveBuff, 0, bytes);
-                        string chatMsg = String.Empty;
-                        DateTime sendMsgTime = this.MsgGetTime(recvMsg, out chatMsg);
+                        Message msg = MessageDeserilize(recvBuffer);
 
                         if (userSendMsg.recvEvent != null)
                         {
-                            userSendMsg.recvEvent(this, new Message(sendMsgTime, chatMsg));
+                            userSendMsg.recvEvent(this, new Message(userSendMsg.UserID, userRecvMsg.UserID, sendMsgTime, chatMsg));
                         }
 
 
                         if(userRecvMsg.ClientConnectSocket != null)
                         {
                             //在线：发送
-                            this.SendClientMsg(userRecvMsg, "Server has received message...");
+                            this.SendClientMsg(userRecvMsg, msg);
                         }
 
                         # region msg写入db
@@ -188,11 +184,29 @@ namespace SocketDemo
         }
 
         /// <summary>
-        /// 从client发送的msg中分割出发送时间。
+        /// 将Message序列化
         /// </summary>
-        /// <param name="msg">client发送的消息。格式【YYYY-MM-DD_HH:MM:SS_str】</param>
+        /// <param name="msg"></param>
         /// <returns></returns>
-        private DateTime MsgGetTime(string msg, out string chatMsg)
+        public byte[] MessageSerialize(Message msg)
+        {
+            try
+            {
+                return DAL.SerializeHelper.SerializeHelper.SerializeToBinary(msg);
+            }
+            catch(Exception ex)
+            {
+                return null; 
+            }
+        }
+
+
+        /// <summary>
+        /// 将Message反序列化
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public Message MessageDeserilize(byte[] msgByte)
         {
             /*
              var date1 = new DateTime(2013, 6, 1, 12, 32, 30);
@@ -200,27 +214,29 @@ namespace SocketDemo
              */
             try
             {
-                chatMsg = "hello";
-                return DateTime.Now;
+                return DAL.SerializeHelper.SerializeHelper.DeserializeWithBinary<Message>(msgByte);
             }
             catch(Exception ex)
             {
-                chatMsg = ex.ToString();
-                return DateTime.Now;
+                return null;
             }
         }
+
+        
 
         /// <summary>
         /// 给客户端发消息
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(UserInfo userRecvMsg, string msg)
+        public bool SendClientMsg(UserConnectInfo userRecvMsg, Message msg)
         {
+            byte[] sendBuffer = new byte[userRecvMsg.SendBufferSize];
+
             try
             {
                 int bytes = 0;
-                this.sendBuffer = Encoding.ASCII.GetBytes(msg);
+                sendBuffer = MessageSerialize(msg);
                 bytes = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
                 //sendEvent(bytes);
                 return true;
@@ -231,7 +247,7 @@ namespace SocketDemo
             }
         }
 
-        public bool haltRecvMsg(UserInfo user)
+        public bool haltRecvMsg(UserConnectInfo user)
         {
             try
             {
@@ -244,7 +260,7 @@ namespace SocketDemo
             }
         }
 
-        public bool DisConnect(UserInfo user)
+        public bool DisConnect(UserConnectInfo user)
         {
             try
             {
@@ -262,7 +278,7 @@ namespace SocketDemo
         /// <summary>
         /// 断开连接，释放socket
         /// </summary>
-        public bool Dispose(UserInfo user)
+        public bool Dispose(UserConnectInfo user)
         {
 
             try

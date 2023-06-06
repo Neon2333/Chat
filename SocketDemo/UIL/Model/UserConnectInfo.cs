@@ -9,18 +9,13 @@ using System.Threading;
 
 namespace SocketDemo
 {
-    public class UserInfo
+    public class UserConnectInfo
     {
         #region 用户连接信息
+
         private int userID;      //用户ID
         public int UserID { get => userID; set => userID = value; }
 
-        private string userName; //用户名
-        public string UserName { get => userName; set => userName = value; }
-
-        private string userPwd;      //用户密码
-        public string UserPwd { get => userPwd; set => userPwd = value; }
-        
         private Socket clientConnectSocket; //连接socket
         public Socket ClientConnectSocket { get => clientConnectSocket; set => clientConnectSocket = value; }
         
@@ -42,9 +37,11 @@ namespace SocketDemo
         private CancellationToken cancelRecvMsgToken;   //recvmsg取消
         public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
         
-        private string recvMsg;     //接收的message
-        public string RecvMsg { get => recvMsg; set => recvMsg = value; }
-
+        private int recvBufferSize = 10240; //服务器作为接收方
+        public int RecvBufferSize { get => recvBufferSize; set => recvBufferSize = value; }
+        
+        private int sendBufferSize = 10240; //服务器作为发送方
+        public int SendBufferSize { get => sendBufferSize; set => sendBufferSize = value; }
 
 
         #endregion
