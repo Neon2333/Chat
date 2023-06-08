@@ -1,0 +1,5 @@
+﻿2023/6/7
+1.现有Message改为UserMessage类，继承自Message类
+2.现有ServerSocket改为只负责socket通信的部分
+3.ServerSocket类原RecvMsg方法改为RecvSendMsg方法，令增一个RecvMsg方法不含SendMsg
+4.

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Chat.DAL.SerializeHelper
+namespace Server.DAL.SerializeHelper
 {
     internal class SerializeHelper
     {
@@ -22,6 +22,19 @@ namespace Chat.DAL.SerializeHelper
         }
 
         /// <summary>
+        /// 使用UTF-8编码将从偏移量处指定长度的字节数组转成字符串
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static string ConvertToString(byte[] data, int offset, int count)
+        {
+            return Encoding.UTF8.GetString(data, offset, count);
+        }
+
+
+        /// <summary>
         /// 使用指定字符编码将byte数组转成字符串
         /// </summary>
         /// <param name="data"></param>
@@ -30,6 +43,12 @@ namespace Chat.DAL.SerializeHelper
         public static string ConvertToString(byte[] data, Encoding encoding)
         {
             return encoding.GetString(data, 0, data.Length);
+        }
+
+
+        public static string ConvertToString(byte[] data, int offset, int count, Encoding encoding)
+        {
+            return encoding.GetString(data, offset, count);
         }
 
         /// <summary>

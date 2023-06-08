@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B1C8319D-645A-434A-B85B-5BFD79E097C2}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SocketDemo</RootNamespace>
-    <AssemblyName>SocketDemo</AssemblyName>
+    <RootNamespace>Server</RootNamespace>
+    <AssemblyName>Server</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -52,18 +52,19 @@
     <Compile Include="BLL\RelateTwoClient.cs" />
     <Compile Include="BLL\UserSignIn.cs" />
     <Compile Include="BLL\UserSignUp.cs" />
-    <Compile Include="DAL\MessageService.cs" />
+    <Compile Include="DAL\UserMessageService.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
     <Compile Include="DAL\SerializeHelper\SerializeHelper.cs" />
     <Compile Include="DAL\UserConnectInfoService.cs" />
     <Compile Include="DAL\UserSignUpService.cs" />
+    <Compile Include="UIL\Model\MMessage.cs" />
     <Compile Include="UIL\View\FormServer.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UIL\View\FormServer.Designer.cs">
       <DependentUpon>FormServer.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIL\Model\Message.cs" />
+    <Compile Include="UIL\Model\UserMessage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BLL\ServerSocket.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="DAL\MySQLHelper\.gitkeep" />
     <None Include="Properties\Settings.settings">
@@ -97,6 +99,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="DAL\NewFolder1\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DevLog.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

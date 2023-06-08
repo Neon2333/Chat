@@ -32,3 +32,16 @@ E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\SocketDemo.pdb
 E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\MySql.Data.dll
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.CopyComplete
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.AssemblyReference.cache
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.AssemblyReference.cache
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.SuggestedBindingRedirects.cache
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.GenerateResource.cache
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.CoreCompileInputs.cache
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.Properties.Resources.resources
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.UIL.View.FormServer.resources
+C:\WorkSpace\Chat\Chat\bin\Debug\Server.exe.config
+C:\WorkSpace\Chat\Chat\bin\Debug\Server.exe
+C:\WorkSpace\Chat\Chat\bin\Debug\Server.pdb
+C:\WorkSpace\Chat\Chat\bin\Debug\MySql.Data.dll
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.CopyComplete
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.exe
+C:\WorkSpace\Chat\Chat\obj\Debug\Server.pdb

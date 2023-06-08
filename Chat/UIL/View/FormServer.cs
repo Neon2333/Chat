@@ -10,8 +10,11 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Server.BLL;
+using Server.UIL.Model;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace Chat
+namespace Server.UIL.View
 {
     public partial class FormServer : Form
     {
@@ -32,7 +35,7 @@ namespace Chat
 
         private void showConnectedClients(object sender, UserConnectInfo client)
         {
-            this.textBox_clients.BeginInvoke(new Action(() => this.textBox_clients.Text += (client.UserName + "\n")));
+            this.textBox_clients.BeginInvoke(new Action(() => this.textBox_clients.Text += ($"{client.ConnectTime}:{client.UserName}" + "\n")));
 
         }
 
@@ -40,25 +43,29 @@ namespace Chat
         {
             ss = new ServerSocket(IPAddress.Any, int.Parse(this.textBox_port.Text), 10);
             string initMsg = String.Empty;
-            if(ss.initListen(out initMsg))
+            if(ss.Listen())
             {
-                this.textBox_status.Text = initMsg;
+                this.textBox_status.Text = $"启动监听端口 {this.textBox_port.Text} 成功..";
             }
-            
+            else
+            {
+                this.textBox_status.Text = $"启动监听端口 {this.textBox_port.Text} 失败..";
+            }
+
         }
 
         private async void button_connectClient_Click(object sender, EventArgs e)
         {
-
             try
             {
                 UserConnectInfo user = new UserConnectInfo();
                 user.UserName = "wk";
                 user.connectedEvent += showConnectedClients;
-                if (await ss.ConnectClient(user))
+                if (await ss.AcceptClientConnect(user))
                 {
                     textBox_status.Text = "connected..";
-                }
+                    this.textBox_status.ForeColor = System.Drawing.Color.Green;
+                }   
 
                 //if (ss.ConnectedClients.Count > 0)
                 //{
@@ -71,6 +78,7 @@ namespace Chat
             catch (Exception ex)
             {
                 textBox_status.Text = "not connected..";
+                this.textBox_status.ForeColor = System.Drawing.Color.DarkRed;
             }
         }
 
@@ -83,7 +91,7 @@ namespace Chat
                     foreach (var client in ss.ConnectedClients)
                     {
                         //服务器ID设为-1
-                        Message msg = new Message(-1, client.UserID, DateTime.Now, this.textBox_send.Text);
+                        UserMessage msg = new UserMessage(-1, "server", client.UserID, client.UserName, DateTime.Now, this.textBox_send.Text);
                         ss.SendClientMsg(client, msg);
                     }   
 
@@ -98,21 +106,23 @@ namespace Chat
         }
 
         //将publiser传入的msg进行显示
-        private void showRecvMsg(object sender, Message msg)
+        private void showRecvMsg(object sender, UserMessage msg)
         {
             //this.textBox_receive.Text = msg.Msg;
-            this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{msg.SendTime} {msg.UserNameSend}: {msg.ChatMsg}" + "\n")));
+            this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{msg.SendTime} ,{msg.UserNameSend}: {msg.ChatMsg}" + "\r\n")));
         }
 
         private void button_receive_Click(object sender, EventArgs e)   
         {
             //ss.ReceiveMsg(this.textBox_receive, this.textBox_status);     //textbox传入函数，通过委托跨线程访问
 
+            
             //客户端将委托绑定事件，通过类Message封装接收的消息，EventHandler从publisher传入observer
             if (ss.ConnectedClients.Count > 0)
             {
                 foreach (var client in ss.ConnectedClients)
                 {
+                    ss.ReceiveSendMsg(client, client);
                     client.recvEvent += showRecvMsg;
                 }
 
@@ -120,7 +130,7 @@ namespace Chat
             
         }
 
-        private void button_dispose_Click(object sender, EventArgs e)
+        private void button_stopRecv_Click(object sender, EventArgs e)
         {
             try
             {
@@ -128,7 +138,27 @@ namespace Chat
                 {
                     foreach (var client in ss.ConnectedClients)
                     {
-                        ss.Dispose(client);
+                        ss.haltRecvMsg(client);
+                    }
+                }
+
+                textBox_status.Text = "recv stop..";
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void button_disconncet_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ss.ConnectedClients.Count > 0)
+                {
+                    foreach (var client in ss.ConnectedClients)
+                    {
+                        ss.DisConnect(client);
                     }
 
                 }
@@ -139,30 +169,7 @@ namespace Chat
 
             }
         }
-
         
-
-        private void button_stopRecv_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (ss.ConnectedClients.Count > 0)
-                {
-                    foreach (var client in ss.ConnectedClients)
-                    {
-                        ss.DisConnect(client);
-                    }
-                }
-                
-                textBox_status.Text = "recv stop..";
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
-
 
     }
 }

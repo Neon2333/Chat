@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using Server.UIL.Model;
 
-namespace Chat
+namespace Server.UIL.Model
 {
     public class UserConnectInfo: EventArgs
     {
@@ -47,8 +48,8 @@ namespace Chat
         private UserConnectInfo relatedClient;
         public UserConnectInfo RelatedClient { get => relatedClient; set => relatedClient = value; }
 
-        public EventHandler<Message> recvEvent = null;  //接收消息事件
-        public EventHandler<Message> sendEvent = null;  //发送消息事件
+        public EventHandler<UserMessage> recvEvent = null;  //接收消息事件
+        public EventHandler<UserMessage> sendEvent = null;  //发送消息事件
 
         private CancellationTokenSource cancelRecvMsgSource;
         public CancellationTokenSource CancelRecvMsgSource { get => cancelRecvMsgSource; set => cancelRecvMsgSource = value; }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.BLL
+namespace Server.BLL
 {
     internal class UserSignUp
     {

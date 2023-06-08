@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.UIL.Model
+namespace Server.UIL.Model
 {
     internal class UserSignUpInfo
     {

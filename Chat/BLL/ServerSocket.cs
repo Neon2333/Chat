@@ -12,12 +12,13 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Security.Cryptography;
+using Server.UIL.Model;
 
-namespace Chat
+namespace Server.BLL
 {
     public class ServerSocket
     {
-        private static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //客户端监听socket
+        private static Socket svrSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //客户端监听socket
 
         private IPAddress bindIP;   //绑定服务器的某个网卡的IP(IPAddress类)，规范写法要写成IPAddress.Any
         private int bindPort;       //服务器的监听端口
@@ -35,11 +36,11 @@ namespace Chat
             this.bindPort = bindPort;
             this.listenRequests = listenRequests;
 
-            if (serverSocket == null)
+            if (svrSocket == null)
             {
-                serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                svrSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             }
-            serverSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   
+            svrSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   
             sme = new Semaphore(this.listenRequests, this.listenRequests);
 
         }
@@ -49,17 +50,15 @@ namespace Chat
         /// </summary>
         /// <param name="status">状态信息</param>
         /// <returns></returns>
-        public bool initListen(out string status)
+        public bool Listen()
         {
             try
             {
-                serverSocket.Listen(listenRequests);    
-                status = $"启动监听 {serverSocket.LocalEndPoint.ToString()} 成功..";
+                svrSocket.Listen(listenRequests);    
                 return true;
             }
             catch (Exception ex)
             {
-                status = $"启动监听 {serverSocket.LocalEndPoint.ToString()} 失败..";
                 return false;
             }
         }
@@ -68,7 +67,7 @@ namespace Chat
         /// 客户端和服务器建立连接
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> ConnectClient(UserConnectInfo user)
+        public async Task<bool> AcceptClientConnect(UserConnectInfo user)
         {
             try
             {
@@ -78,7 +77,7 @@ namespace Chat
                     sme.WaitOne();  //计数器-1
 
                     //注册的
-                    user.ClientConnectSocket = serverSocket.Accept();    //Accept()建立连接
+                    user.ClientConnectSocket = svrSocket.Accept();    //Accept()建立连接
                     user.ConnectTime = DateTime.Now;
                     user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
@@ -101,50 +100,74 @@ namespace Chat
             }
         }
 
-        //public void ReceiveMsg(TextBox tb_recv, TextBox tb_status)
-        //{
-        //    tokenSource = new CancellationTokenSource();
-        //    token = tokenSource.Token;
+        public void ReceiveMsg(UserConnectInfo userSendMsg)
+        {
 
-        //    Task.Run(() =>
-        //    {
-        //        try
-        //        {
-        //            string recvMsg = String.Empty;
-        //            int bytes = 0;
-        //            while ((bytes = clientConnectSocket.Receive(receiveBuff, receiveBuff.Length, 0)) > 0)
-        //            {
-        //                if (tokenSource.IsCancellationRequested)
-        //                {
-        //                    //tb_status.Invoke(new Action(() => tb_status.Text = "recv thread cancel.."));
-        //                    break;
-        //                }
+            Task.Run(() =>
+            {
+                try
+                {
+                    string chatMsg = String.Empty;
+                    DateTime sendMsgTime = DateTime.Now;
+                    byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
 
-        //                recvMsg = Encoding.ASCII.GetString(receiveBuff, 0, bytes);
+                    int bytesLen = 0;
+                    while ((bytesLen = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
+                    {
+                        if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
+                        {
+                            break;
+                        }
 
-        //                if (tb_recv.InvokeRequired)
-        //                {
-        //                    //tb_recv.Invoke(new Action(() => tb_recv.Text += recvMsg));
-        //                }
-        //                this.SendClientMsg("Server has received message...");
-        //            }
-        //        }
-        //        catch(Exception ex)
-        //        {
-        //            tb_status.Invoke(new Action(() => tb_status.Text = ex.ToString()));
-        //        }
-        //    }, token);
+                        UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
 
-        //}
+                        if (userSendMsg.recvEvent != null)
+                        {
+                            userSendMsg.recvEvent(this, msg);
+                        }
 
+                        #region msg写入db
+                        //signIN时创建记录sendMsg的表、recvMsg的表
+                        #endregion
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }, userSendMsg.CancelRecvMsgToken);
+        }
 
+        /// <summary>
+        /// 给客户端发消息
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool SendClientMsg(UserConnectInfo userRecvMsg, UserMessage msg)
+        {
+            byte[] sendBuffer = new byte[userRecvMsg.SendBufferSize];
+
+            try
+            {
+                int bytesLen = 0;
+                //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
+                sendBuffer = DAL.SerializeHelper.SerializeHelper.ConvertToByte(msg.ChatMsg, Encoding.Default);
+
+                bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
+                //sendEvent(bytes);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
         /// </summary>
         /// <param name="userSendMsg">发送方</param>
         /// <param name="userRecvMsg">接收方</param>
-        public void ReceiveMsg(UserConnectInfo userSendMsg, UserConnectInfo userRecvMsg)
+        public void ReceiveSendMsg(UserConnectInfo userSendMsg, UserConnectInfo userRecvMsg)
         {
             /*
              2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
@@ -158,19 +181,22 @@ namespace Chat
                     DateTime sendMsgTime = DateTime.Now;
                     byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
 
-                    int bytes = 0;
-                    while ((bytes = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
+                    int bytesLen = 0;
+                    while ((bytesLen = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
                     {
                         if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
                         {
                             break;
                         }
 
-                        Message msg = MessageDeserilize(recvBuffer);
+
+                        //UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
+                        UserMessage msg = new UserMessage(userSendMsg.UserID, userSendMsg.UserName, userSendMsg.UserID, userSendMsg.UserName,
+                            DateTime.Now, DAL.SerializeHelper.SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
 
                         if (userSendMsg.recvEvent != null)
                         {
-                            userSendMsg.recvEvent(this, new Message(userSendMsg.UserID, userRecvMsg.UserID, sendMsgTime, chatMsg));
+                            userSendMsg.recvEvent(this, msg);
                         }
 
 
@@ -193,67 +219,7 @@ namespace Chat
 
         }
 
-        /// <summary>
-        /// 将Message序列化
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        public byte[] MessageSerialize(Message msg)
-        {
-            try
-            {
-                return DAL.SerializeHelper.SerializeHelper.SerializeToBinary(msg);
-            }
-            catch(Exception ex)
-            {
-                return null; 
-            }
-        }
-
-
-        /// <summary>
-        /// 将Message反序列化
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        public Message MessageDeserilize(byte[] msgByte)
-        {
-            /*
-             var date1 = new DateTime(2013, 6, 1, 12, 32, 30);
-             DateTime.TryParse(dateString, out parsedDate)
-             */
-            try
-            {
-                return DAL.SerializeHelper.SerializeHelper.DeserializeWithBinary<Message>(msgByte);
-            }
-            catch(Exception ex)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// 给客户端发消息
-        /// </summary>
-        /// <param name="msg"></param>
-        /// <returns></returns>
-        public bool SendClientMsg(UserConnectInfo userRecvMsg, Message msg)
-        {
-            byte[] sendBuffer = new byte[userRecvMsg.SendBufferSize];
-
-            try
-            {
-                int bytes = 0;
-                sendBuffer = MessageSerialize(msg);
-                bytes = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
-                //sendEvent(bytes);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
+        
 
         public bool haltRecvMsg(UserConnectInfo user)
         {
@@ -289,7 +255,6 @@ namespace Chat
         /// </summary>
         public bool Dispose(UserConnectInfo user)
         {
-
             try
             {
                 user.CancelRecvMsgSource.Cancel();  //先终止线程，再断开连接
@@ -312,7 +277,7 @@ namespace Chat
 
             try
             {
-                serverSocket.Close();
+                svrSocket.Close();
                 sme.Release();
                 return true;
             }

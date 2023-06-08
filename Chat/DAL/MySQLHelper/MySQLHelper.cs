@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 
-namespace CheckWeighterDataAnalysis.MySQL
+namespace Server.DAL.MySQLHelper
 {
     class MySQLHelper
     {

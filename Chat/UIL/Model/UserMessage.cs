@@ -1,18 +1,19 @@
-﻿using System;
+﻿using Server.UIL.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat
+namespace Server.UIL.Model
 {
-    public class Message : EventArgs
+    public class UserMessage:MMessage
     {
-        private string chatMsg;     //消息内容
-        public string ChatMsg { get => chatMsg; set => chatMsg = value; }
+        //private string chatMsg;     //消息内容
+        //public string ChatMsg { get => chatMsg; set => chatMsg = value; }
         
-        private DateTime sendTime;  //发送时间
-        public DateTime SendTime { get => sendTime; set => sendTime = value; }
+        //private DateTime sendTime;  //发送时间
+        //public DateTime SendTime { get => sendTime; set => sendTime = value; }
 
         private int userIDSend;     //发送消息的user ID
         public int UserIDSend { get => userIDSend; set => userIDSend = value; }
@@ -26,11 +27,12 @@ namespace Chat
         private string userNameRecv;
         public string UserNameRecv { get => userNameRecv; set => userNameRecv = value; }
 
-        public Message(int userIDSend, int userIDRecv, DateTime sendTime, string msg) {
+        public UserMessage(int userIDSend, string userNameSend, int userIDRecv, string userNameRecv, DateTime sendTime, string msg):base(msg, sendTime)
+        {
             this.userIDSend = userIDSend;
+            this.userNameSend = userNameSend;
             this.userIDRecv = userIDRecv;
-            this.sendTime = sendTime; 
-            this.chatMsg = msg;
+            this.UserNameRecv = userNameRecv;
         }
 
     }
