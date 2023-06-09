@@ -163,10 +163,10 @@ namespace Server.UIL.View
 
                 }
                 this.textBox_status.Text = "disconnected..";
+
             }
             catch (Exception ex)
             {
-
             }
         }
         

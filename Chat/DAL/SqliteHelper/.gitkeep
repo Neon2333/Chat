@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.UIL.Model
+namespace Server.DAL.SqliteHelper
 {
-    internal class UserSignUpInfo: UserInfo
+    class _
     {
-
     }
 }

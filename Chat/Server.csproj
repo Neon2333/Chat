@@ -52,12 +52,17 @@
     <Compile Include="BLL\RelateTwoClient.cs" />
     <Compile Include="BLL\UserSignIn.cs" />
     <Compile Include="BLL\UserSignUp.cs" />
+    <Compile Include="DAL\IUserConnectInfoService.cs" />
+    <Compile Include="DAL\IUserMessageService.cs" />
+    <Compile Include="DAL\UserSignUpInfoServiceMySQL.cs" />
+    <Compile Include="DAL\MySQLHelper\MySQLHelper2.cs" />
     <Compile Include="DAL\UserMessageService.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
     <Compile Include="DAL\SerializeHelper\SerializeHelper.cs" />
-    <Compile Include="DAL\UserConnectInfoService.cs" />
-    <Compile Include="DAL\UserSignUpService.cs" />
+    <Compile Include="DAL\IUserSignUpInfoService.cs" />
+    <Compile Include="DAL\UserSignUpInfoServiceSerialize.cs" />
     <Compile Include="UIL\Model\MMessage.cs" />
+    <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\View\FormServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +89,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="DAL\MySQLHelper\.gitkeep" />
+    <None Include="DAL\SqliteHelper\.gitkeep" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -99,9 +105,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DAL\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="DevLog.txt" />
   </ItemGroup>

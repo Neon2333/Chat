@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.UIL.Model
 {
-    public class MMessage:EventArgs
+    public abstract class MMessage:EventArgs
     {
         private string chatMsg;     //消息内容
         public string ChatMsg { get => chatMsg; set => chatMsg = value; }

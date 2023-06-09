@@ -10,16 +10,10 @@ using Server.UIL.Model;
 
 namespace Server.UIL.Model
 {
-    public class UserConnectInfo: EventArgs
+    public class UserConnectInfo:UserInfo
     {
         #region 用户连接信息
         public EventHandler<UserConnectInfo> connectedEvent = null;  //连上服务器事件
-
-        private int userID;      //用户ID
-        public int UserID { get => userID; set => userID = value; }
-
-        private string userName; //用户名
-        public string UserName { get => userName; set => userName = value; }
 
         private Socket clientConnectSocket; //连接socket
         public Socket ClientConnectSocket { get => clientConnectSocket; set => clientConnectSocket = value; }
@@ -57,5 +51,8 @@ namespace Server.UIL.Model
         private CancellationToken cancelRecvMsgToken;   //recvmsg取消
         public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
         #endregion
+
+        
+
     }
 }
