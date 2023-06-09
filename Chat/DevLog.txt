@@ -2,4 +2,16 @@
 1.现有Message改为UserMessage类，继承自Message类
 2.现有ServerSocket改为只负责socket通信的部分
 3.ServerSocket类原RecvMsg方法改为RecvSendMsg方法，令增一个RecvMsg方法不含SendMsg
-4.
+
+2023/6/8
+1.DAL层，增加IUserConnectInfoService/IUserMessageService/IUserSignUpInfoService/
+UserSignUpInfoServiceMySQL。具体DB的Service继承接口，试图在后续以简单工厂DataAccess+Reflection
++配置文件的方式实现不同DB的访问。
+
+2023/6/9
+经过考虑，决定将UserConnectINfo类中的relatedClient字段删除。在线用户不和其他用户关联。而只在MMessage中
+增加UserIDSend,UserIDRecv，从每条消息的角度都记录发送者和接收者。为了安全性，在MMessage中只存储用户ID，
+不把整个UserInfo作为字段。
+用户发送消息可发送给某个人，也可先多选，然后多发。这样MMessage.UserIDRecv要改成List。
+
+
