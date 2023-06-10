@@ -45,3 +45,5 @@ C:\WorkSpace\Chat\Chat\bin\Debug\MySql.Data.dll
 C:\WorkSpace\Chat\Chat\obj\Debug\Server.csproj.CopyComplete
 C:\WorkSpace\Chat\Chat\obj\Debug\Server.exe
 C:\WorkSpace\Chat\Chat\obj\Debug\Server.pdb
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.UIL.View.FormServer.resources
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.Properties.Resources.resources

@@ -33,7 +33,7 @@ namespace Server.UIL.View
             this.textBox_port.Text = "8888";
         }
 
-        private void showConnectedClients(object sender, UserConnectInfo client)
+        private void showConnectedClients(object sender, UserInfoSignIn client)
         {
             this.textBox_clients.BeginInvoke(new Action(() => this.textBox_clients.Text += ($"{client.ConnectTime}:{client.UserName}" + "\n")));
 
@@ -58,7 +58,7 @@ namespace Server.UIL.View
         {
             try
             {
-                UserConnectInfo user = new UserConnectInfo();
+                UserInfoSignIn user = new UserInfoSignIn();
                 user.UserName = "wk";
                 user.connectedEvent += showConnectedClients;
                 if (await ss.AcceptClientConnect(user))

@@ -29,3 +29,4 @@ C:\WorkSpace\Chat\Client\obj\Debug\Client.csproj.GenerateResource.cache
 C:\WorkSpace\Chat\Client\obj\Debug\Client.csproj.CoreCompileInputs.cache
 C:\WorkSpace\Chat\Client\obj\Debug\Client.exe
 C:\WorkSpace\Chat\Client\obj\Debug\Client.pdb
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.AssemblyReference.cache

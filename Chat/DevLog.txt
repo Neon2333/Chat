@@ -14,4 +14,8 @@ UserSignUpInfoServiceMySQL。具体DB的Service继承接口，试图在后续以
 不把整个UserInfo作为字段。
 用户发送消息可发送给某个人，也可先多选，然后多发。这样MMessage.UserIDRecv要改成List。
 
+2023/6/10
+1.整理思路。将UserXXXXXXInfo的类名修改为UserInfoXXXXXX。Service类也同样修改。
+2.写了UserIIUserInfoSignInServiceMySQL类的InsUserConnectInfo、InsUserConnectInfos接口。
+
 

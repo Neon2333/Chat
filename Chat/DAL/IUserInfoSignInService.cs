@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Server.DAL
 {
-    public interface IUserSignUpInfoService
+    public interface IUserConnectInfoService
     {
         //C
-        int InsUserConnectInfo(UserConnectInfo ucinfo);
+        int InsUserConnectInfo(UserInfoSignIn ucinfo);
 
-        int InsUserConnectInfos(List<UserConnectInfo> ucinfos);
+        int InsUserConnectInfos(List<UserInfoSignIn> ucinfos);
 
         //D
         int DeleUserConnectInfo(int ucinfoID);

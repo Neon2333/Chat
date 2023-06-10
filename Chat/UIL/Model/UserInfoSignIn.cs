@@ -10,10 +10,10 @@ using Server.UIL.Model;
 
 namespace Server.UIL.Model
 {
-    public class UserConnectInfo:UserInfo
+    public class UserInfoSignIn:UserInfo
     {
         #region 用户连接信息
-        public EventHandler<UserConnectInfo> connectedEvent = null;  //连上服务器事件
+        public EventHandler<UserInfoSignIn> connectedEvent = null;  //连上服务器事件
 
         private Socket clientConnectSocket; //连接socket
         public Socket ClientConnectSocket { get => clientConnectSocket; set => clientConnectSocket = value; }
@@ -39,9 +39,6 @@ namespace Server.UIL.Model
         #endregion
 
         #region 用户收发消息
-        private UserConnectInfo relatedClient;
-        public UserConnectInfo RelatedClient { get => relatedClient; set => relatedClient = value; }
-
         public EventHandler<UserMessage> recvEvent = null;  //接收消息事件
         public EventHandler<UserMessage> sendEvent = null;  //发送消息事件
 

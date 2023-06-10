@@ -24,8 +24,8 @@ namespace Server.BLL
         private int bindPort;       //服务器的监听端口
         private int listenRequests; //监听允许客户端连接数
 
-        private List<UserConnectInfo> connectedClients = new List<UserConnectInfo>();     //储存连接上的客户端
-        public List<UserConnectInfo> ConnectedClients { get => connectedClients; set => connectedClients = value; }
+        private List<UserInfoSignIn> connectedClients = new List<UserInfoSignIn>();     //储存连接上的客户端
+        public List<UserInfoSignIn> ConnectedClients { get => connectedClients; set => connectedClients = value; }
 
         private Semaphore sme;  //控制服务器与客户端连接线程数
 
@@ -67,7 +67,7 @@ namespace Server.BLL
         /// 客户端和服务器建立连接
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> AcceptClientConnect(UserConnectInfo user)
+        public async Task<bool> AcceptClientConnect(UserInfoSignIn user)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Server.BLL
             }
         }
 
-        public void ReceiveMsg(UserConnectInfo userSendMsg)
+        public void ReceiveMsg(UserInfoSignIn userSendMsg)
         {
 
             Task.Run(() =>
@@ -142,7 +142,7 @@ namespace Server.BLL
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(UserConnectInfo userRecvMsg, UserMessage msg)
+        public bool SendClientMsg(UserInfoSignIn userRecvMsg, UserMessage msg)
         {
             byte[] sendBuffer = new byte[userRecvMsg.SendBufferSize];
 
@@ -167,7 +167,7 @@ namespace Server.BLL
         /// </summary>
         /// <param name="userSendMsg">发送方</param>
         /// <param name="userRecvMsg">接收方</param>
-        public void ReceiveSendMsg(UserConnectInfo userSendMsg, UserConnectInfo userRecvMsg)
+        public void ReceiveSendMsg(UserInfoSignIn userSendMsg, UserInfoSignIn userRecvMsg)
         {
             /*
              2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
@@ -221,7 +221,7 @@ namespace Server.BLL
 
         
 
-        public bool haltRecvMsg(UserConnectInfo user)
+        public bool haltRecvMsg(UserInfoSignIn user)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace Server.BLL
             }
         }
 
-        public bool DisConnect(UserConnectInfo user)
+        public bool DisConnect(UserInfoSignIn user)
         {
             try
             {
@@ -253,7 +253,7 @@ namespace Server.BLL
         /// <summary>
         /// 断开连接，释放socket
         /// </summary>
-        public bool Dispose(UserConnectInfo user)
+        public bool Dispose(UserInfoSignIn user)
         {
             try
             {

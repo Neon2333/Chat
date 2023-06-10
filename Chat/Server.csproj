@@ -37,6 +37,7 @@
       <HintPath>..\dll\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,15 +53,15 @@
     <Compile Include="BLL\RelateTwoClient.cs" />
     <Compile Include="BLL\UserSignIn.cs" />
     <Compile Include="BLL\UserSignUp.cs" />
-    <Compile Include="DAL\IUserConnectInfoService.cs" />
+    <Compile Include="DAL\dbConStr.cs" />
+    <Compile Include="DAL\IUserInfoSignUpService.cs" />
     <Compile Include="DAL\IUserMessageService.cs" />
-    <Compile Include="DAL\UserSignUpInfoServiceMySQL.cs" />
-    <Compile Include="DAL\MySQLHelper\MySQLHelper2.cs" />
-    <Compile Include="DAL\UserMessageService.cs" />
+    <Compile Include="DAL\UserIIUserInfoSignInServiceMySQL.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
+    <Compile Include="DAL\UserMessageService.cs" />
     <Compile Include="DAL\SerializeHelper\SerializeHelper.cs" />
-    <Compile Include="DAL\IUserSignUpInfoService.cs" />
-    <Compile Include="DAL\UserSignUpInfoServiceSerialize.cs" />
+    <Compile Include="DAL\IUserInfoSignInService.cs" />
+    <Compile Include="DAL\UserIIUserSignInServiceSerialize.cs" />
     <Compile Include="UIL\Model\MMessage.cs" />
     <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\View\FormServer.cs">
@@ -73,8 +74,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BLL\ServerSocket.cs" />
-    <Compile Include="UIL\Model\UserConnectInfo.cs" />
-    <Compile Include="UIL\Model\UserSignUpInfo.cs" />
+    <Compile Include="UIL\Model\UserInfoSignIn.cs" />
+    <Compile Include="UIL\Model\UserInfoSignUp.cs" />
     <EmbeddedResource Include="UIL\View\FormServer.resx">
       <DependentUpon>FormServer.cs</DependentUpon>
     </EmbeddedResource>

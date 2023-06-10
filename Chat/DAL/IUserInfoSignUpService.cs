@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.DAL
 {
-    internal interface IUserConnectInfoService
+    internal interface IUserInfoSignUpService
     {
     }
 }
