@@ -14,7 +14,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using Server.UIL.Model;
 
-namespace Server.BLL
+namespace Server.Communication
 {
     public class ServerSocket
     {
@@ -100,6 +100,11 @@ namespace Server.BLL
             }
         }
 
+
+        /// <summary>
+        /// 收消息。拆包。
+        /// </summary>
+        /// <param name="userSendMsg"></param>
         public void ReceiveMsg(UserInfoSignIn userSendMsg)
         {
 
@@ -118,6 +123,8 @@ namespace Server.BLL
                         {
                             break;
                         }
+
+
 
                         UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
 
@@ -138,19 +145,21 @@ namespace Server.BLL
         }
 
         /// <summary>
-        /// 给客户端发消息
+        /// 给单个客户端发消息。封包
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendClientMsg(UserInfoSignIn userRecvMsg, UserMessage msg)
+        public bool SendMsgClient(UserInfoSignIn userRecvMsg, UserMessage msg)
         {
-            byte[] sendBuffer = new byte[userRecvMsg.SendBufferSize];
+            byte[] sendBuffer;
 
             try
             {
                 int bytesLen = 0;
                 //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
-                sendBuffer = DAL.SerializeHelper.SerializeHelper.ConvertToByte(msg.ChatMsg, Encoding.Default);
+                
+                byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeHelper.SerializeToBinary(msg));
+                sendBuffer = new byte[sendBufferTemp.Length > userRecvMsg.SendBufferSize? sendBufferTemp.Length: userRecvMsg.SendBufferSize];
 
                 bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
                 //sendEvent(bytes);
@@ -161,6 +170,19 @@ namespace Server.BLL
                 return false;
             }
         }
+
+        /// <summary>
+        /// 给多个客户端发消息.
+        /// </summary>
+        /// <param name="userRecvMsg"></param>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        public bool SendMsgClients(List<UserInfoSignIn> userRecvMsg, UserMessage msg)
+        {
+
+            return true;
+        }
+
 
         /// <summary>
         /// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
@@ -192,7 +214,7 @@ namespace Server.BLL
 
                         //UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
                         UserMessage msg = new UserMessage(userSendMsg.UserID, userSendMsg.UserName, userSendMsg.UserID, userSendMsg.UserName,
-                            DateTime.Now, DAL.SerializeHelper.SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
+                            DateTime.Now, SerializeHelper.SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
 
                         if (userSendMsg.recvEvent != null)
                         {
@@ -203,7 +225,7 @@ namespace Server.BLL
                         if(userRecvMsg.ClientConnectSocket != null)
                         {
                             //在线：发送
-                            this.SendClientMsg(userRecvMsg, msg);
+                            this.SendMsgClient(userRecvMsg, msg);
                         }
 
                         # region msg写入db

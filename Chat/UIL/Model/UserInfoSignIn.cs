@@ -30,10 +30,10 @@ namespace Server.UIL.Model
         private DateTime disconnectTime;    //断开连接时间
         public DateTime DisconnectTime { get => disconnectTime; set => disconnectTime = value; }
         
-        private int recvBufferSize = 10240; //服务器作为接收方
+        private int recvBufferSize = 1024; //服务器作为接收方
         public int RecvBufferSize { get => recvBufferSize; set => recvBufferSize = value; }
         
-        private int sendBufferSize = 10240; //服务器作为发送方
+        private int sendBufferSize = 1024; //服务器作为发送方
         public int SendBufferSize { get => sendBufferSize; set => sendBufferSize = value; }
 
         #endregion

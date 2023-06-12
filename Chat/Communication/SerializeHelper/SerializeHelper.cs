@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Server.DAL.SerializeHelper
+namespace Server.Communication.SerializeHelper
 {
     internal class SerializeHelper
     {

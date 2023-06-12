@@ -10,9 +10,8 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Server.BLL;
+using Server.Communication;
 using Server.UIL.Model;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Server.UIL.View
 {

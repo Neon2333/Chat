@@ -18,4 +18,7 @@ UserSignUpInfoServiceMySQL。具体DB的Service继承接口，试图在后续以
 1.整理思路。将UserXXXXXXInfo的类名修改为UserInfoXXXXXX。Service类也同样修改。
 2.写了UserIIUserInfoSignInServiceMySQL类的InsUserConnectInfo、InsUserConnectInfos接口。
 
+2023/6/12
+1.TCP沾包：https://blog.csdn.net/m0_37947204/article/details/80490512
+
 
