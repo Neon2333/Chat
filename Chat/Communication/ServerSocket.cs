@@ -107,36 +107,43 @@ namespace Server.Communication
         /// <param name="userSendMsg"></param>
         public void ReceiveMsg(UserInfoSignIn userSendMsg)
         {
-
             Task.Run(() =>
             {
                 try
                 {
+                    /*将receive的data放到buffer中
+                     receive的data>0继续接收 
+                     data<54继续接收
+                     data>=54,解析header，看数据长度
+                    若data-54<header.length则继续接收
+
+                     
+                     */
                     string chatMsg = String.Empty;
                     DateTime sendMsgTime = DateTime.Now;
+
                     byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
+                    int totalBytesRecv = 0;
 
-                    int bytesLen = 0;
-                    while ((bytesLen = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
+                    byte[] recvBufferTemp = new byte[userSendMsg.RecvBufferSize];
+                    int bytesRecv = 0;
+
+                    while ((bytesRecv = userSendMsg.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
                     {
-                        if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
-                        {
-                            break;
-                        }
+                        Array.Copy(recvBuffer, totalBytesRecv, recvBufferTemp, 0, bytesRecv);
+                        totalBytesRecv += bytesRecv;
+                    }
 
+                    UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
 
+                    if (userSendMsg.recvEvent != null)
+                    {
+                        userSendMsg.recvEvent(this, msg);
+                    }
 
-                        UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
-
-                        if (userSendMsg.recvEvent != null)
-                        {
-                            userSendMsg.recvEvent(this, msg);
-                        }
-
-                        #region msg写入db
+                    #region msg写入db
                         //signIN时创建记录sendMsg的表、recvMsg的表
                         #endregion
-                    }
                 }
                 catch (Exception ex)
                 {
