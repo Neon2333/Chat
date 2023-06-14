@@ -8,41 +8,37 @@ using System.Threading.Tasks;
 
 namespace Server.DAL
 {
-    public interface IUserConnectInfoService
+    public interface IUserInfoSignInService
     {
         //C
-        int InsUserConnectInfo(UserInfoSignIn ucinfo);
+        int InsUserInfoSignIn(UserInfoSignIn uisi);
 
-        int InsUserConnectInfos(List<UserInfoSignIn> ucinfos);
+        int InsUserInfosSignIn(List<UserInfoSignIn> uisis);
 
         //D
-        int DeleUserConnectInfo(int ucinfoID);
+        int DeleUserInfoSignIn(int uisiID);
 
-        int DeleUserConnectInfo(string ucinfoName);
+        int DeleUserInfosSignIn(List<int> uisiIDs);
 
-        int DeleUserConnectInfos(List<int> ucinfoIDs);
+        int DeleUserInfoSignIn(string uisiName);
 
-        int DeleUserConnectInfos(List<string> ucinfoNames);
+        int DeleUserInfosSignIn(List<string> uisiNames);
 
         //U
-        int UpdUserConnectInfoUsrName(int ucinfoID, string newUsrName);
+        int UpdUserInfoUsrNameSignIn(int uisiID, string newUsrName);
 
-        int UpdUserConnectInfosUsrName(List<int> ucinfoIDs, List<string> newUsrNames);
+        int UpdUserInfosUsrNameSignIn(List<int> uisiIDs, List<string> newUsrNames);
 
-        int UpdUserConnectInfoUsrPwd(int ucinfoID, string newUsrPwd);
+        int UpdUserInfoUsrPwdSignIn(int uisiID, string newUsrPwd);
 
-        int UpdUserConnectInfosUsrPwd(List<int> ucinfoIDs, List<string> newUsrPwds);
+        int UpdUserInfosUsrPwdSignIn(List<int> uisiIDs, List<string> newUsrPwds);
 
         //R
-        DataTable ReadUserConnectInfo(params string[] fields);
+        DataTable ReadUserInfoSignIn(params string[] fields);
 
-        DataTable ReadUserConnectInfo(int limit, params string[] fields);
+        DataTable ReadUserInfoSignIn(int limit, params string[] fields);
 
-        DataTable ReadUserConnectInfo(string ucinfoID, params string[] fields);
-
-        DataTable ReadUserConnectInfo(string ucinfoID, int limit, params string[] fields);
-
-        DataTable ReadUserConnectInfo(string strCmd);
+        object ReadUserInfoSignIn(string uisiID, params string[] fields);
 
 
 

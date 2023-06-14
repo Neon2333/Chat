@@ -58,12 +58,13 @@
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="DAL\IUserInfoSignUpService.cs" />
     <Compile Include="DAL\IUserMessageService.cs" />
-    <Compile Include="DAL\UserIIUserInfoSignInServiceMySQL.cs" />
+    <Compile Include="DAL\UserInfoSignInServiceMySQL.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
+    <Compile Include="DAL\UserInfoSignUpServiceMySQL.cs" />
     <Compile Include="DAL\UserMessageService.cs" />
     <Compile Include="Communication\SerializeHelper\SerializeHelper.cs" />
     <Compile Include="DAL\IUserInfoSignInService.cs" />
-    <Compile Include="DAL\UserIIUserSignInServiceSerialize.cs" />
+    <Compile Include="DAL\UserSignInServiceSerialize.cs" />
     <Compile Include="UIL\Model\MMessage.cs" />
     <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\View\FormServer.cs">

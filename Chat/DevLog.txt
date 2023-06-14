@@ -21,4 +21,7 @@ UserSignUpInfoServiceMySQL。具体DB的Service继承接口，试图在后续以
 2023/6/12
 1.TCP沾包：https://blog.csdn.net/m0_37947204/article/details/80490512
 
+6/13
+1.将Communication.ServerSocket类作为单纯的通信类。取消收发函数中的异步写法，改为在BLL中的业务类中异步调用收发函数。
+DB操作也改为在BLL的业务类中。
 

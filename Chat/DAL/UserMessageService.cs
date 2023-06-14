@@ -18,7 +18,7 @@ namespace Server.DAL
         {
             try
             {
-                return DAL.SerializeHelper.SerializeHelper.SerializeToBinary(msg);
+                return Communication.SerializeHelper.SerializeHelper.SerializeToBinary(msg);
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace Server.DAL
              */
             try
             {
-                return DAL.SerializeHelper.SerializeHelper.DeserializeWithBinary<UserMessage>(msgByte);
+                return Communication.SerializeHelper.SerializeHelper.DeserializeWithBinary<UserMessage>(msgByte);
             }
             catch (Exception ex)
             {

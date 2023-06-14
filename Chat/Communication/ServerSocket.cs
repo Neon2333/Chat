@@ -13,6 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Security.Cryptography;
 using Server.UIL.Model;
+using MySql.Data.MySqlClient.Authentication;
 
 namespace Server.Communication
 {
@@ -107,48 +108,71 @@ namespace Server.Communication
         /// <param name="userSendMsg"></param>
         public void ReceiveMsg(UserInfoSignIn userSendMsg)
         {
-            Task.Run(() =>
+            //Task.Run(() =>
+            //{
+            //    try
+            //    {
+            //        /*将receive的data放到buffer中
+            //         receive的data>0继续接收 
+            //         data<54继续接收
+            //         data>=54,解析header，看数据长度
+            //        若data-54<header.length则继续接收
+
+
+            //         */
+            //        byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
+            //        int totalBytesRecv = 0;
+
+            //        byte[] recvBufferTemp = new byte[userSendMsg.RecvBufferSize];
+            //        int bytesRecv = 0;
+
+            //        while ((bytesRecv = userSendMsg.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
+            //        {
+            //            Array.Copy(recvBuffer, totalBytesRecv, recvBufferTemp, 0, bytesRecv);
+            //            totalBytesRecv += bytesRecv;
+            //        }
+
+            //        UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
+
+            //        if (userSendMsg.recvEvent != null)
+            //        {
+            //            userSendMsg.recvEvent(this, msg);
+            //        }
+
+            //        #region msg写入db
+            //            //signIN时创建记录sendMsg的表、recvMsg的表
+            //            #endregion
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //    }
+            //}, userSendMsg.CancelRecvMsgToken);
+
+            try
             {
-                try
+                //全部接收到缓冲区，异步处理。
+
+                byte[] recvBufferTemp = new byte[userSendMsg.RecvBufferSize];
+                int bytesRecv = 0;
+
+                while ((bytesRecv = userSendMsg.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
                 {
-                    /*将receive的data放到buffer中
-                     receive的data>0继续接收 
-                     data<54继续接收
-                     data>=54,解析header，看数据长度
-                    若data-54<header.length则继续接收
+                    userSendMsg.RecvBuffer.AddRange(recvBufferTemp.ToList<byte>());
+                }
 
-                     
-                     */
-                    string chatMsg = String.Empty;
-                    DateTime sendMsgTime = DateTime.Now;
-
-                    byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
-                    int totalBytesRecv = 0;
-
-                    byte[] recvBufferTemp = new byte[userSendMsg.RecvBufferSize];
-                    int bytesRecv = 0;
-
-                    while ((bytesRecv = userSendMsg.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
-                    {
-                        Array.Copy(recvBuffer, totalBytesRecv, recvBufferTemp, 0, bytesRecv);
-                        totalBytesRecv += bytesRecv;
-                    }
-
-                    UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
-
+                byte[] package;
+                while (Unpackage.SetUnPackage(userSendMsg.RecvBuffer, out package))
+                {
+                    UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(package);
                     if (userSendMsg.recvEvent != null)
                     {
                         userSendMsg.recvEvent(this, msg);
                     }
-
-                    #region msg写入db
-                        //signIN时创建记录sendMsg的表、recvMsg的表
-                        #endregion
                 }
-                catch (Exception ex)
-                {
-                }
-            }, userSendMsg.CancelRecvMsgToken);
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
         /// <summary>

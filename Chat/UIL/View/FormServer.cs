@@ -91,7 +91,7 @@ namespace Server.UIL.View
                     {
                         //服务器ID设为-1
                         UserMessage msg = new UserMessage(-1, "server", client.UserID, client.UserName, DateTime.Now, this.textBox_send.Text);
-                        ss.SendClientMsg(client, msg);
+                        Task.Run(() => ss.SendMsgClient(client, msg));
                     }   
 
                 }
@@ -121,7 +121,8 @@ namespace Server.UIL.View
             {
                 foreach (var client in ss.ConnectedClients)
                 {
-                    ss.ReceiveSendMsg(client, client);
+                    Task.Run(()=>ss.ReceiveMsg(client));
+                    
                     client.recvEvent += showRecvMsg;
                 }
 

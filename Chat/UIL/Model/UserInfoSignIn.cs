@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using Server.UIL.Model;
+using System.Collections;
 
 namespace Server.UIL.Model
 {
@@ -29,7 +30,16 @@ namespace Server.UIL.Model
         
         private DateTime disconnectTime;    //断开连接时间
         public DateTime DisconnectTime { get => disconnectTime; set => disconnectTime = value; }
-        
+        #endregion
+
+        #region 缓冲区
+        //private byte[] recvBuffer = new byte[1024];
+        //public byte[] RecvBuffer { get => RecvBuffer; set => RecvBuffer = value; }
+
+        private List<byte> recvBuffer;  //动态接收缓冲区
+        public List<byte> RecvBuffer { get => recvBuffer; set => recvBuffer = value; }
+    
+
         private int recvBufferSize = 1024; //服务器作为接收方
         public int RecvBufferSize { get => recvBufferSize; set => recvBufferSize = value; }
         
@@ -38,7 +48,7 @@ namespace Server.UIL.Model
 
         #endregion
 
-        #region 用户收发消息
+        #region 用户收发消息线程中断控制
         public EventHandler<UserMessage> recvEvent = null;  //接收消息事件
         public EventHandler<UserMessage> sendEvent = null;  //发送消息事件
 
@@ -49,7 +59,7 @@ namespace Server.UIL.Model
         public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
         #endregion
 
-        
+
 
     }
 }

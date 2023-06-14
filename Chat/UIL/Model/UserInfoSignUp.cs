@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.UIL.Model
 {
-    internal class UserInfoSignUp: UserInfo
+    public class UserInfoSignUp: UserInfo
     {
 
     }
