@@ -16,8 +16,8 @@ namespace Server
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new UIL.View.FormServer());
-            Application.Run(new test.Form1());
+            Application.Run(new UIL.View.FormServer());
+            //Application.Run(new test.Form1());
 
         }
     }
