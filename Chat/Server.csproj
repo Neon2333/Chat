@@ -65,6 +65,12 @@
     <Compile Include="Communication\SerializeHelper\SerializeHelper.cs" />
     <Compile Include="DAL\IUserInfoSignInService.cs" />
     <Compile Include="DAL\UserSignInServiceSerialize.cs" />
+    <Compile Include="test\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="test\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
     <Compile Include="UIL\Model\MMessage.cs" />
     <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\View\FormServer.cs">
