@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.UIL.Model
 {
+    [Serializable]
     public abstract class UserInfo: EventArgs
     {
         private int userID;      //用户ID

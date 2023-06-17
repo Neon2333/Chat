@@ -50,7 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BLL\RelateTwoClient.cs" />
+    <Compile Include="BLL\clientGetUsersSignIn.cs" />
     <Compile Include="BLL\UserSignIn.cs" />
     <Compile Include="BLL\UserSignUp.cs" />
     <Compile Include="Communication\Package.cs" />
@@ -58,13 +58,13 @@
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="DAL\IUserInfoSignUpService.cs" />
     <Compile Include="DAL\IUserMessageService.cs" />
-    <Compile Include="DAL\UserInfoSignInServiceMySQL.cs" />
+    <Compile Include="DAL\MySQLService\UserInfoSignInServiceMySQL.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
-    <Compile Include="DAL\UserInfoSignUpServiceMySQL.cs" />
-    <Compile Include="DAL\UserMessageService.cs" />
+    <Compile Include="DAL\MySQLService\UserInfoSignUpServiceMySQL.cs" />
     <Compile Include="Communication\SerializeHelper\SerializeHelper.cs" />
     <Compile Include="DAL\IUserInfoSignInService.cs" />
-    <Compile Include="DAL\UserSignInServiceSerialize.cs" />
+    <Compile Include="DAL\MySQLService\UserMessageServiceMySQL.cs" />
+    <Compile Include="EventBus.cs" />
     <Compile Include="test\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,14 +110,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <None Include="UIL\Controller\.gitkeepo" />
-    <None Include="UIL\View\.gitkeep" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="DevLog.txt" />
+    <None Include="DevLog.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

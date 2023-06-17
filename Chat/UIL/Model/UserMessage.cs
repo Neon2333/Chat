@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Server.UIL.Model
 {
+    [Serializable]
     public class UserMessage:MMessage
     {
         //private string chatMsg;     //消息内容

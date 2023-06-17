@@ -19,7 +19,7 @@ namespace Server.Communication
 {
     public class ServerSocket
     {
-        private static Socket svrSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); //客户端监听socket
+        private static Socket svrListenSocket; //客户端监听socket
 
         private IPAddress bindIP;   //绑定服务器的某个网卡的IP(IPAddress类)，规范写法要写成IPAddress.Any
         private int bindPort;       //服务器的监听端口
@@ -37,11 +37,11 @@ namespace Server.Communication
             this.bindPort = bindPort;
             this.listenRequests = listenRequests;
 
-            if (svrSocket == null)
+            if (svrListenSocket == null)
             {
-                svrSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                svrListenSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                svrListenSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   
             }
-            svrSocket.Bind(new IPEndPoint(this.bindIP, bindPort));   
             sme = new Semaphore(this.listenRequests, this.listenRequests);
 
         }
@@ -55,7 +55,7 @@ namespace Server.Communication
         {
             try
             {
-                svrSocket.Listen(listenRequests);    
+                svrListenSocket.Listen(listenRequests);    
                 return true;
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace Server.Communication
                     sme.WaitOne();  //计数器-1
 
                     //注册的
-                    user.ClientConnectSocket = svrSocket.Accept();    //Accept()建立连接
+                    user.ClientConnectSocket = svrListenSocket.Accept();    //Accept()建立连接
                     user.ConnectTime = DateTime.Now;
                     user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
@@ -163,7 +163,7 @@ namespace Server.Communication
                 byte[] package;
                 while (Unpackage.SetUnPackage(userSendMsg.RecvBuffer, out package))
                 {
-                    UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(package);
+                    UserMessage msg = Communication.SerializeHelper.SerializeHelper.DeserializeWithBinary<UserMessage>(package);
                     if (userSendMsg.recvEvent != null)
                     {
                         userSendMsg.recvEvent(this, msg);
@@ -184,22 +184,15 @@ namespace Server.Communication
         {
             byte[] sendBuffer;
 
-            try
-            {
-                int bytesLen = 0;
-                //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
-                
-                byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeHelper.SerializeToBinary(msg));
-                sendBuffer = new byte[sendBufferTemp.Length > userRecvMsg.SendBufferSize? sendBufferTemp.Length: userRecvMsg.SendBufferSize];
+            int bytesLen = 0;
+            //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
 
-                bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBuffer);
-                //sendEvent(bytes);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeHelper.SerializeToBinary(msg));
+            sendBuffer = new byte[sendBufferTemp.Length > userRecvMsg.SendBufferSize ? sendBufferTemp.Length : userRecvMsg.SendBufferSize];
+
+            bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBufferTemp);
+            //sendEvent(bytes);
+            return true;
         }
 
         /// <summary>
@@ -330,7 +323,7 @@ namespace Server.Communication
 
             try
             {
-                svrSocket.Close();
+                svrListenSocket.Close();
                 sme.Release();
                 return true;
             }
