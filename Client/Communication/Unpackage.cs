@@ -18,7 +18,7 @@ namespace Client.Communication
             else 
             {
                 byte[] header = data.GetRange(0, 54).ToArray();
-                int dataBodyLen = SerializeHelper.SerializeHelper.DeserializeWithBinary<int>(header);
+                int dataBodyLen = SerializeHelper.DeserializeWithBinary<int>(header);
                 if ((data.Count - 54) < dataBodyLen)
                 {
                     package = null;
@@ -32,6 +32,9 @@ namespace Client.Communication
                     return true;
                 }
             }
+
+
+
         }
     }
 }

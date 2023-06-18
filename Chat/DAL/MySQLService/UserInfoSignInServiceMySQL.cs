@@ -210,6 +210,9 @@ namespace Server.DAL.MySQLService
         }
 
         //R
+
+        //DataSet有一个WriteXml方法可以直接将数据保存到xml文件：https://www.jb51.net/article/63396.htm
+
         public DataTable ReadUserInfoSignIn(params string[] fields)
         {
             if (fields.Length > 0)

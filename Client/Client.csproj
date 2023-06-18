@@ -59,8 +59,9 @@
   <ItemGroup>
     <Compile Include="Communication\ClientSocket.cs" />
     <Compile Include="Communication\Package.cs" />
-    <Compile Include="Communication\SerializeHelper\SerializeHelper.cs" />
+    <Compile Include="Communication\SerializeHelper.cs" />
     <Compile Include="Communication\Unpackage.cs" />
+    <Compile Include="Communication\XMLHelper.cs" />
     <Compile Include="UIL\Model\MMessage.cs" />
     <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\Model\UserInfoSignIn.cs" />

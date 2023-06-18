@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Client.Communication.SerializeHelper
+namespace Client.Communication
 {
     internal class SerializeHelper
     {
@@ -153,5 +153,7 @@ namespace Client.Communication.SerializeHelper
 
             return (T)obj;
         }
+
+
     }
 }

@@ -12,7 +12,7 @@ namespace Client.Communication
         public static byte[] SetPackage(byte[] data)
         {
             int len = data.Length;
-            byte[] header = SerializeHelper.SerializeHelper.SerializeToBinary(len);
+            byte[] header = SerializeHelper.SerializeToBinary(len);
             byte[] res = header.Concat(data).ToArray();
             return res;
         }
