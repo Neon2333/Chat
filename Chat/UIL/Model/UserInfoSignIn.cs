@@ -60,6 +60,6 @@ namespace Server.UIL.Model
         #endregion
 
 
-
+        public UserInfoSignIn() { }
     }
 }

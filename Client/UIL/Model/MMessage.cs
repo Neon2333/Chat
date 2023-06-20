@@ -18,6 +18,8 @@ namespace Client.UIL.Model
         private DateTime sendTime;  //发送时间
         public DateTime SendTime { get => sendTime; set => sendTime = value; }
 
+        public MMessage() { }
+
         public MMessage(string chatMsg, DateTime sendTime)
         {
             this.chatMsg = chatMsg;

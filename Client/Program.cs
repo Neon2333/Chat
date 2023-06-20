@@ -17,7 +17,14 @@ namespace Client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormClient());
+            //FrmLogin frmLogin = new FrmLogin();
+            //Application.Run(frmLogin);
+            //if (frmLogin.Login == true)
+            //{
+            //    Application.Run(new FrmClientList());
+            //}
+
+            Application.Run(new test.Form1());
         }
     }
 }

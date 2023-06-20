@@ -8,6 +8,6 @@ namespace Client.UIL.Model
 {
     public class UserInfoSignUp: UserInfo
     {
-
+        public UserInfoSignUp() { }
     }
 }

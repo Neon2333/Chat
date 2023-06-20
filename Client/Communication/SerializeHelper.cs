@@ -5,10 +5,14 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace Client.Communication
 {
+    //https://www.jianshu.com/p/4ca8b5c7ef8f
+
+
     internal class SerializeHelper
     {
         /// <summary>
@@ -106,6 +110,8 @@ namespace Client.Communication
             return data;
         }
 
+
+
         /// <summary>
         /// 将二进制数据反序列化
         /// </summary>
@@ -134,7 +140,6 @@ namespace Client.Communication
         {
             return (T)DeserializeWithBinary(data);
         }
-
         /// <summary>
         /// 将XML数据反序列化为指定类型对象
         /// </summary>
@@ -143,16 +148,26 @@ namespace Client.Communication
         /// <returns></returns>
         public static T DeserializeWithXml<T>(byte[] data)
         {
-            MemoryStream stream = new MemoryStream();
-            stream.Write(data, 0, data.Length);
-            stream.Position = 0;
             XmlSerializer xs = new XmlSerializer(typeof(T));
-            object obj = xs.Deserialize(stream);
+            using (MemoryStream stream = new MemoryStream())
+            {
+                stream.Write(data, 0, data.Length);
+                stream.Position = 0;
+                using (XmlTextReader reader = new XmlTextReader(stream))
+                {
+                    //Q：反序列化，类实例的string字段\r\n丢失\r
+                    // 注意一定要创建出一个 XmlTextReader出来，   
+                    // 因为MS默认的 reader.Normalization = true   
+                    // 设置成false就不会把回车去掉了   
+                    reader.Normalization = false;
+                    object obj = xs.Deserialize(reader);
 
-            stream.Close();
-
-            return (T)obj;
+                    return (T)obj;
+                }
+            }
         }
+
+
 
 
     }

@@ -69,7 +69,6 @@ E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\de\DevExpress.Sparkline.v20.1.Core.re
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\es\DevExpress.Sparkline.v20.1.Core.resources.dll
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\ja\DevExpress.Sparkline.v20.1.Core.resources.dll
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\ru\DevExpress.Sparkline.v20.1.Core.resources.dll
-E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.UIL.FormClient.resources
 E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.CopyComplete
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\DevExpress.XtraGrid.v20.1.dll
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\DevExpress.XtraLayout.v20.1.dll
@@ -115,3 +114,8 @@ E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\ja\DevExpress.Office.v20.1.Core.resou
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\ru\DevExpress.Office.v20.1.Core.resources.dll
 E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.exe.licenses
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\MySql.Data.dll
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.UIL.FrmClientList.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.UIL.FrmLogin.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.UIL.FrmConfig.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.UIL.FrmSignUp.resources
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.test.Form1.resources

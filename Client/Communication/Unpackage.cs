@@ -8,25 +8,25 @@ namespace Client.Communication
 {
     internal class Unpackage
     {
-        public static bool SetUnPackage(List<byte> data, out byte[] package)
+        public static bool SetUnPackage(List<byte> data, int headLen, out byte[] package)
         {
-            if (data.Count <= 54)
+            if (data.Count <= headLen)
             {
                 package = null;
                 return false;
             }
             else 
             {
-                byte[] header = data.GetRange(0, 54).ToArray();
-                int dataBodyLen = SerializeHelper.DeserializeWithBinary<int>(header);
-                if ((data.Count - 54) < dataBodyLen)
+                byte[] header = data.GetRange(0, headLen).ToArray();
+                int dataBodyLen = SerializeHelper.DeserializeWithXml<int>(header);
+                if ((data.Count - headLen) < dataBodyLen)
                 {
                     package = null;
                     return false;
                 }
                 else
                 {
-                    data.RemoveRange(0, 54);
+                    data.RemoveRange(0, headLen);
                     package = data.GetRange(0, dataBodyLen).ToArray();
                     data.RemoveRange(0, dataBodyLen);
                     return true;

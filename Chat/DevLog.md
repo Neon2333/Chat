@@ -40,3 +40,8 @@ GridView1.PopulateColumns();//这句很重要，没有这句 就不显示
 * Binding to XML Data:https://docs.devexpress.com/WindowsForms/2388/common-features/data-binding/binding-controls-to-xml-data
 https://docs.devexpress.com/WindowsForms/634/controls-and-libraries/data-grid/data-binding
 
+6/20
+1.如何解决用XmlSerializer序列化和反序列化一个类, 保存到UTF-8的XML中. 产生的换行符丢失的问题
+https://blog.csdn.net/w001162/article/details/1563497?spm=1035.2023.3001.6557&utm_medium=distribute.pc_relevant_bbs_down_v2.none-task-blog-2~default~ESQUERY~Rate-2-1563497-bbs-80179639.264^v3^pc_relevant_bbs_down_v2_opensearchbbsnew&depth_1-utm_source=distribute.pc_relevant_bbs_down_v2.none-task-blog-2~default~ESQUERY~Rate-2-1563497-bbs-80179639.264^v3^pc_relevant_bbs_down_v2_opensearchbbsnew
+2.textEdit为什么设置AutoHeight=false，还是不能多行显示？textbox设置Multiline=true就行。
+3.

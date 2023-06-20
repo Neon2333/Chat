@@ -59,6 +59,7 @@ namespace Client.UIL.Model
         #endregion
 
 
+        public UserInfoSignIn() { }
 
     }
 }

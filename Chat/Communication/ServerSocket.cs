@@ -163,7 +163,7 @@ namespace Server.Communication
                 byte[] package;
                 while (Unpackage.SetUnPackage(userSendMsg.RecvBuffer, out package))
                 {
-                    UserMessage msg = Communication.SerializeHelper.SerializeHelper.DeserializeWithBinary<UserMessage>(package);
+                    UserMessage msg = Communication.SerializeHelper.DeserializeWithBinary<UserMessage>(package);
                     if (userSendMsg.recvEvent != null)
                     {
                         userSendMsg.recvEvent(this, msg);
@@ -187,8 +187,13 @@ namespace Server.Communication
             int bytesLen = 0;
             //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
 
-            byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeHelper.SerializeToBinary(msg));
+            byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeToXml(msg));
             sendBuffer = new byte[sendBufferTemp.Length > userRecvMsg.SendBufferSize ? sendBufferTemp.Length : userRecvMsg.SendBufferSize];
+
+            byte[] sendsss = new byte[1024];
+            Unpackage.SetUnPackage(new List<byte>(sendBufferTemp), out sendsss);
+            UserMessage um = Communication.SerializeHelper.DeserializeWithXml<UserMessage>(sendsss);
+
 
             bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBufferTemp);
             //sendEvent(bytes);
@@ -238,7 +243,7 @@ namespace Server.Communication
 
                         //UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
                         UserMessage msg = new UserMessage(userSendMsg.UserID, userSendMsg.UserName, userSendMsg.UserID, userSendMsg.UserName,
-                            DateTime.Now, SerializeHelper.SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
+                            DateTime.Now, SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
 
                         if (userSendMsg.recvEvent != null)
                         {

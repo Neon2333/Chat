@@ -17,16 +17,16 @@ namespace Server.Communication
             }
             else 
             {
-                byte[] header = data.GetRange(0, 54).ToArray();
-                int dataBodyLen = SerializeHelper.SerializeHelper.DeserializeWithBinary<int>(header);
-                if ((data.Count - 54) < dataBodyLen)
+                byte[] header = data.GetRange(0, 37).ToArray();
+                int dataBodyLen = SerializeHelper.DeserializeWithXml<int>(header);
+                if ((data.Count - 37) < dataBodyLen)
                 {
                     package = null;
                     return false;
                 }
                 else
                 {
-                    data.RemoveRange(0, 54);
+                    data.RemoveRange(0, 37);
                     package = data.GetRange(0, dataBodyLen).ToArray();
                     data.RemoveRange(0, dataBodyLen);
                     return true;

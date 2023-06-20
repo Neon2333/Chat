@@ -8,6 +8,6 @@ namespace Server.UIL.Model
 {
     public class UserInfoSignUp: UserInfo
     {
-
+        public UserInfoSignUp() { }
     }
 }

@@ -28,6 +28,8 @@ namespace Server.UIL.Model
         private string userNameRecv;
         public string UserNameRecv { get => userNameRecv; set => userNameRecv = value; }
 
+        public UserMessage() { }
+
         public UserMessage(int userIDSend, string userNameSend, int userIDRecv, string userNameRecv, DateTime sendTime, string msg):base(msg, sendTime)
         {
             this.userIDSend = userIDSend;

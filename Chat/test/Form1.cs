@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Server.UIL.Model;
 
 namespace Server.test
 {
@@ -15,8 +16,16 @@ namespace Server.test
         public Form1()
         {
             InitializeComponent();
-            DAL.dbConStr dbConStr = new DAL.dbConStr();
-            string conn = dbConStr.GetDbConStr();
+
+            UserInfoSignUp userInfo = new UserInfoSignUp();
+            userInfo.UserID = 1;
+            userInfo.UserName = "wk";
+            userInfo.UserPwd = "231";
+            userInfo.SignUpTime = DateTime.Now;
+
+            byte[] bytes = Communication.SerializeHelper.SerializeToXml(userInfo);
+
+            
         }
     }
 }
