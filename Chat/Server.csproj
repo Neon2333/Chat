@@ -62,6 +62,7 @@
     <Compile Include="BLL\UserSignIn.cs" />
     <Compile Include="BLL\UserSignUp.cs" />
     <Compile Include="Communication\Package.cs" />
+    <Compile Include="Communication\SerializeHelper.cs" />
     <Compile Include="Communication\Unpackage.cs" />
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="DAL\IUserInfoSignUpService.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="DAL\MySQLService\UserInfoSignInServiceMySQL.cs" />
     <Compile Include="DAL\MySQLHelper\MySQLHelper.cs" />
     <Compile Include="DAL\MySQLService\UserInfoSignUpServiceMySQL.cs" />
-    <Compile Include="Communication\SerializeHelper.cs" />
     <Compile Include="DAL\IUserInfoSignInService.cs" />
     <Compile Include="DAL\MySQLService\UserMessageServiceMySQL.cs" />
     <Compile Include="EventBus.cs" />

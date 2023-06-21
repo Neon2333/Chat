@@ -17,12 +17,28 @@ namespace Client.test
         {
             InitializeComponent();
 
-            Communication.ClientSocket clientSocket = new Communication.ClientSocket();
+            //Communication.ClientSocket clientSocket = new Communication.ClientSocket();
 
-            clientSocket.ConnectSvr();
-            string msg = clientSocket.RecvMsg();
+            //clientSocket.ConnectSvr();
+            //string msg = clientSocket.RecvMsg();
 
-            textBox1.Text = msg;
+            //textBox1.Text = msg;
+
+
+            UserInfoSignUp uisu = new UserInfoSignUp();
+            uisu.UserID = 1;
+            uisu.UserName = "wk";
+            uisu.UserPwd = "123";
+            uisu.SignUpTime = DateTime.Now;
+
+            string xmlstr = Communication.SerializeHelper.SerializeObjToXmlStr(uisu);
+
+
+            textBox1.Text = xmlstr;
+            Communication.SerializeHelper.SerializeObjToXmlFile(uisu, @"C:\Users\Administrator\Desktop\uisu.xml");
+
+            UserInfoSignUp _uisu = Communication.SerializeHelper.DeserializeObjFromXmlfile<UserInfoSignUp>(@"C:\Users\Administrator\Desktop\uisu.xml");
+
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Client.Communication
             byte[] bytes = new byte[1024];
             int count = connectSvr.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
             Unpackage.SetUnPackage(new List<byte>(recvBytes), 37, out bytes);
-            UserMessage msg = SerializeHelper.DeserializeWithXml<UserMessage>(bytes);
+            UserMessage msg = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(bytes);
 
             return msg.ChatMsg;
         }

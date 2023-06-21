@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,9 @@ using System.Xml.Serialization;
 
 namespace Client.Communication
 {
-    //https://www.jianshu.com/p/4ca8b5c7ef8f
-
-
     internal class SerializeHelper
     {
+        #region byte[]和string互转
         /// <summary>
         /// 使用UTF8编码将byte数组转成字符串
         /// </summary>
@@ -75,15 +74,17 @@ namespace Client.Communication
         {
             return encoding.GetBytes(str);
         }
+        #endregion
 
+        #region 序列化
         /// <summary>
         /// 将对象序列化为二进制数据 
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static byte[] SerializeToBinary(object obj)
+        public static byte[] SerializeObjToBinary(object obj)
         {
-            MemoryStream stream = new MemoryStream();
+            MemoryStream stream = new MemoryStream();   //二进制流数据，所以用Stream
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(stream, obj);
 
@@ -98,7 +99,7 @@ namespace Client.Communication
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static byte[] SerializeToXml(object obj)
+        public static byte[] SerializeObjToXmlBytes(object obj)
         {
             MemoryStream stream = new MemoryStream();
             XmlSerializer xs = new XmlSerializer(obj.GetType());
@@ -110,14 +111,71 @@ namespace Client.Communication
             return data;
         }
 
+        /// <summary>
+        /// 将实体类转成符合xml格式的字符串。但暂时存在问题：XML编码不是utf-8而是utf-16。
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string SerializeObjToXmlStr(object obj)
+        {
+            ////这里若直接使用StringWriter生成的xml字符串标头是utf - 16不是utf - 8
+            ////通过内存流MemoryStream指定编码格式
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    using (StreamWriter sw = new StreamWriter(ms, encoding))
+            //    {
+            //        Type t = obj.GetType();
+            //        XmlSerializer serializer = new XmlSerializer(obj.GetType());
+            //        serializer.Serialize(sw, obj);
+            //        sw.Close();
+            //        return Encoding.UTF8.GetString(ms.GetBuffer());
+            //    }
+            //}
 
 
+            using (StringWriter sw = new StringWriter())
+            {
+                Type t = obj.GetType();
+                XmlSerializer serializer = new XmlSerializer(obj.GetType());
+                serializer.Serialize(sw, obj);
+                sw.Close();
+                return sw.ToString();
+            }
+        }
+
+
+        /// <summary>
+        /// 将实体类序列化为xml，并保存为xml文件到指定路径
+        /// </summary>
+        /// <param name="obj">实体类实例</param>
+        /// <param name="xmlPath">xml路径</param>
+        /// <returns></returns>
+        public static bool SerializeObjToXmlFile(object obj, string xmlPath)
+        {
+            try
+            {
+                string xmlStr = SerializeObjToXmlStr(obj);
+                XmlDocument xmldoc = new XmlDocument();
+                xmldoc.LoadXml(xmlStr); //读取符合xml格式的字符串xml到XMLDocument，str不符合xml格式时会报错
+                xmldoc.Save(xmlPath);   //文件存在会覆盖
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+
+        #region 反序列化
         /// <summary>
         /// 将二进制数据反序列化
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static object DeserializeWithBinary(byte[] data)
+        public static object DeserializeObjWithBinary(byte[] data)
         {
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);
@@ -136,17 +194,18 @@ namespace Client.Communication
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static T DeserializeWithBinary<T>(byte[] data)
+        public static T DeserializeObjWithBinary<T>(byte[] data)
         {
-            return (T)DeserializeWithBinary(data);
+            return (T)DeserializeObjWithBinary(data);
         }
+
         /// <summary>
         /// 将XML数据反序列化为指定类型对象
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static T DeserializeWithXml<T>(byte[] data)
+        public static T DeserializeObjWithXmlBytes<T>(byte[] data)
         {
             XmlSerializer xs = new XmlSerializer(typeof(T));
             using (MemoryStream stream = new MemoryStream())
@@ -167,8 +226,42 @@ namespace Client.Communication
             }
         }
 
+        /// <summary>
+        /// 将符合xml格式的字符串反序列化为实体类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="xmlStr">符合xml格式的字符串</param>
+        /// <returns></returns>
+        public static T DeserializeObjWithXmlStr<T>(string xmlStr) where T:class
+        {
+            try
+            {
+                using (StringReader sr = new StringReader(xmlStr))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(T));
+                    return serializer.Deserialize(sr) as T;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
 
+        /// <summary>
+        /// 读取xml文件内容，转成实体类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="xmlPath"></param>
+        /// <returns></returns>
+        public static T DeserializeObjFromXmlfile<T>(string xmlPath) where T : class
+        {
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.Load(xmlPath);
+            return DeserializeObjWithXmlStr<T>(xmlDocument.InnerXml);
+        }
+        #endregion
 
     }
 }

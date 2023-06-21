@@ -18,7 +18,7 @@ namespace Client.Communication
             else 
             {
                 byte[] header = data.GetRange(0, headLen).ToArray();
-                int dataBodyLen = SerializeHelper.DeserializeWithXml<int>(header);
+                int dataBodyLen = SerializeHelper.DeserializeObjWithXmlBytes<int>(header);
                 if ((data.Count - headLen) < dataBodyLen)
                 {
                     package = null;
