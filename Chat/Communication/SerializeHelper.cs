@@ -13,13 +13,56 @@ namespace Server.Communication
 {
     internal class SerializeHelper
     {
+        #region int和byte[]互转
+        /*
+         int转换成byte数组原理:
+         例如int 300,因为int占4字节，所以byte数组长度为4,先将300转换成二进制：
+         00000000 00000000 00000001 00101100，然后将每个字节转换成十进制由
+         低到高存入byte数组中，所以最后结果是44 1 0 0 ，byte[0]=44 byte[1]=1 
+         byte[2]=0 byte[3]=0
+         */
+
+        public static byte[] IntToBytes(int value)
+        {
+            byte[] src = new byte[4];
+            src[3] = (byte)((value >> 24) & 0xFF);
+            src[2] = (byte)((value >> 16) & 0xFF);
+            src[1] = (byte)((value >> 8) & 0xFF);
+            src[0] = (byte)(value & 0xFF);
+            return src;
+        }
+
+
+        public static int BytesToInt(byte[] src, int offset)
+        {
+            int value;
+            value = (int)((src[offset] & 0xFF)
+                    | ((src[offset + 1] & 0xFF) << 8)
+                    | ((src[offset + 2] & 0xFF) << 16)
+                    | ((src[offset + 3] & 0xFF) << 24));
+            return value;
+        }
+
+        //public byte[] IntToBitConverter(int num)
+        //{
+        //    byte[] bytes = BitConverter.GetBytes(num);
+        //    return bytes;
+        //}
+
+        //public int IntToBitConverter(byte[] bytes)
+        //{
+        //    int temp = BitConverter.ToInt32(bytes, 0);
+        //    return temp;
+        //}
+        #endregion
+
         #region byte[]和string互转
         /// <summary>
         /// 使用UTF8编码将byte数组转成字符串
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static string ConvertToString(byte[] data)
+        public static string BytesToString(byte[] data)
         {
             return Encoding.UTF8.GetString(data, 0, data.Length);
         }
@@ -31,7 +74,7 @@ namespace Server.Communication
         /// <param name="offset"></param>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static string ConvertToString(byte[] data, int offset, int count)
+        public static string BytesToString(byte[] data, int offset, int count)
         {
             return Encoding.UTF8.GetString(data, offset, count);
         }
@@ -43,13 +86,13 @@ namespace Server.Communication
         /// <param name="data"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string ConvertToString(byte[] data, Encoding encoding)
+        public static string BytesToString(byte[] data, Encoding encoding)
         {
             return encoding.GetString(data, 0, data.Length);
         }
 
 
-        public static string ConvertToString(byte[] data, int offset, int count, Encoding encoding)
+        public static string BytesToString(byte[] data, int offset, int count, Encoding encoding)
         {
             return encoding.GetString(data, offset, count);
         }
@@ -59,7 +102,7 @@ namespace Server.Communication
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static byte[] ConvertToByte(string str)
+        public static byte[] StringToBytes (string str)
         {
             return Encoding.UTF8.GetBytes(str);
         }
@@ -70,7 +113,7 @@ namespace Server.Communication
         /// <param name="str"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static byte[] ConvertToByte(string str, Encoding encoding)
+        public static byte[] StringToBytes(string str, Encoding encoding)
         {
             return encoding.GetBytes(str);
         }

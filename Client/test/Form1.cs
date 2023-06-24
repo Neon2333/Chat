@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client.Communication;
 using Client.UIL.Model;
 
 namespace Client.test
@@ -17,27 +18,35 @@ namespace Client.test
         {
             InitializeComponent();
 
-            //Communication.ClientSocket clientSocket = new Communication.ClientSocket();
+            Communication.ClientSocket clientSocket = new Communication.ClientSocket();
 
-            //clientSocket.ConnectSvr();
-            //string msg = clientSocket.RecvMsg();
+            clientSocket.ConnectSvr();
 
-            //textBox1.Text = msg;
+            UserInfoSignIn uifs = new UserInfoSignIn();
+            uifs.ClientConnectSocket = ClientSocket.ConnectSvrSocket;
+            Task.Run(() => clientSocket.RecvData(uifs));
+
+            uifs.recvEvent += showChatMsg;
+
+            void showChatMsg(object sender, byte[] data)
+            {
+                UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
+                textBox1.BeginInvoke(new Action(() => textBox1.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
+            }
+
+            //UserInfoSignUp uisu = new UserInfoSignUp();
+            //uisu.UserID = 1;
+            //uisu.UserName = "wk";
+            //uisu.UserPwd = "123";
+            //uisu.SignUpTime = DateTime.Now;
+
+            //string xmlstr = Communication.SerializeHelper.SerializeObjToXmlStr(uisu);
 
 
-            UserInfoSignUp uisu = new UserInfoSignUp();
-            uisu.UserID = 1;
-            uisu.UserName = "wk";
-            uisu.UserPwd = "123";
-            uisu.SignUpTime = DateTime.Now;
+            //textBox1.Text = xmlstr;
+            //Communication.SerializeHelper.SerializeObjToXmlFile(uisu, @"C:\Users\Administrator\Desktop\uisu.xml");
 
-            string xmlstr = Communication.SerializeHelper.SerializeObjToXmlStr(uisu);
-
-
-            textBox1.Text = xmlstr;
-            Communication.SerializeHelper.SerializeObjToXmlFile(uisu, @"C:\Users\Administrator\Desktop\uisu.xml");
-
-            UserInfoSignUp _uisu = Communication.SerializeHelper.DeserializeObjFromXmlfile<UserInfoSignUp>(@"C:\Users\Administrator\Desktop\uisu.xml");
+            //UserInfoSignUp _uisu = Communication.SerializeHelper.DeserializeObjFromXmlfile<UserInfoSignUp>(@"C:\Users\Administrator\Desktop\uisu.xml");
 
         }
     }

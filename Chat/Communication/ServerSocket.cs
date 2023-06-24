@@ -14,6 +14,7 @@ using System.Threading;
 using System.Security.Cryptography;
 using Server.UIL.Model;
 using MySql.Data.MySqlClient.Authentication;
+using System.Reflection;
 
 namespace Server.Communication
 {
@@ -83,8 +84,8 @@ namespace Server.Communication
                     user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
                     user.ConnectTime = DateTime.Now;
-                    user.CancelRecvMsgSource = new CancellationTokenSource();
-                    user.CancelRecvMsgToken = user.CancelRecvMsgSource.Token;
+                    user.CancelRecvSource = new CancellationTokenSource();
+                    user.CancelRecvToken = user.CancelRecvSource.Token;
                     ConnectedClients.Add(user);
 
                     if (user.connectedEvent != null)
@@ -103,10 +104,10 @@ namespace Server.Communication
 
 
         /// <summary>
-        /// 收消息。拆包。
+        /// 拆包，收数据
         /// </summary>
         /// <param name="userSendMsg"></param>
-        public void ReceiveMsg(UserInfoSignIn userSendMsg)
+        public void RecvData(UserInfoSignIn userSendData)
         {
             //Task.Run(() =>
             //{
@@ -150,23 +151,26 @@ namespace Server.Communication
 
             try
             {
-                //全部接收到缓冲区，异步处理。
+                //全部接收到缓冲区后，再异步处理
 
-                byte[] recvBufferTemp = new byte[userSendMsg.RecvBufferSize];
+                byte[] recvBufferTemp = new byte[1024];
                 int bytesRecv = 0;
 
-                while ((bytesRecv = userSendMsg.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
+                //接收缓冲区中数据全部放到RecvBuffer中
+                while ((bytesRecv = userSendData.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
                 {
-                    userSendMsg.RecvBuffer.AddRange(recvBufferTemp.ToList<byte>());
+                    userSendData.recvBuffer.AddRange(recvBufferTemp.ToList<byte>());
                 }
 
-                byte[] package;
-                while (Unpackage.SetUnPackage(userSendMsg.RecvBuffer, out package))
+                //拆包
+                NetPacket packet = new NetPacket();
+                List<byte> onePacket = new List<byte>();
+                while (packet.UnPackage(ref userSendData.recvBuffer, out onePacket))
                 {
-                    UserMessage msg = Communication.SerializeHelper.DeserializeWithBinary<UserMessage>(package);
-                    if (userSendMsg.recvEvent != null)
+                    //UserMessage msg = Communication.SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(onePacket.ToArray());
+                    if (userSendData.recvEvent != null)
                     {
-                        userSendMsg.recvEvent(this, msg);
+                        userSendData.recvEvent(this, onePacket.ToArray());
                     }
                 }
             }
@@ -176,99 +180,97 @@ namespace Server.Communication
         }
 
         /// <summary>
-        /// 给单个客户端发消息。封包
+        /// 封包，给单个客户端发数据
         /// </summary>
-        /// <param name="msg"></param>
+        /// <param name="data"></param>
         /// <returns></returns>
-        public bool SendMsgClient(UserInfoSignIn userRecvMsg, UserMessage msg)
+        //public bool SendMsgClient(UserInfoSignIn userRecvMsg, UserMessage msg)
+        public int SendDataClient(UserInfoSignIn userRecvData, byte[] data)
         {
-            byte[] sendBuffer;
+            NetPacket packet = new NetPacket();
+            byte[] sendness = packet.Package(new List<byte>(data), "UserInfoSignIn");
 
-            int bytesLen = 0;
-            //sendBuffer = DAL.UserMessageService.UserMessageSerialize(msg);
-
-            byte[] sendBufferTemp = Package.SetPackage(SerializeHelper.SerializeToXml(msg));
-            sendBuffer = new byte[sendBufferTemp.Length > userRecvMsg.SendBufferSize ? sendBufferTemp.Length : userRecvMsg.SendBufferSize];
-
-            byte[] sendsss = new byte[1024];
-            Unpackage.SetUnPackage(new List<byte>(sendBufferTemp), out sendsss);
-            UserMessage um = Communication.SerializeHelper.DeserializeWithXml<UserMessage>(sendsss);
-
-
-            bytesLen = userRecvMsg.ClientConnectSocket.Send(sendBufferTemp);
+            if (userRecvData.sendEvent != null)
+            {
+                userRecvData.sendEvent(this, sendness);
+            }
+            
+            return userRecvData.ClientConnectSocket.Send(sendness);
             //sendEvent(bytes);
-            return true;
+            
         }
 
         /// <summary>
-        /// 给多个客户端发消息.
+        /// 给多个客户端发数据
         /// </summary>
         /// <param name="userRecvMsg"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendMsgClients(List<UserInfoSignIn> userRecvMsg, UserMessage msg)
+        public bool SendMsgClients(List<UserInfoSignIn> userRecvMsg, byte[] data)
         {
 
             return true;
         }
 
 
-        /// <summary>
-        /// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
-        /// </summary>
-        /// <param name="userSendMsg">发送方</param>
-        /// <param name="userRecvMsg">接收方</param>
-        public void ReceiveSendMsg(UserInfoSignIn userSendMsg, UserInfoSignIn userRecvMsg)
-        {
-            /*
-             2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
-             */
+        ///// <summary>
+        ///// 服务器接收userSendMsg发送的消息，并将消息发送给userRecvMsg
+        ///// </summary>
+        ///// <param name="userSendMsg">发送方</param>
+        ///// <param name="userRecvMsg">接收方</param>
+        //public void ReceiveSendData(UserInfoSignIn userSendMsg, UserInfoSignIn userRecvMsg)
+        //{
+        //    /*
+        //     2.目前，先完成配队user不在线时无法发消息。在线时发消息。以后增加消息buffer缓存离线消息。
+        //     */
 
-            Task.Run(() =>
-            {
-                try
-                {
-                    string chatMsg = String.Empty;
-                    DateTime sendMsgTime = DateTime.Now;
-                    byte[] recvBuffer = new byte[userSendMsg.RecvBufferSize];
+        //    Task.Run(() =>
+        //    {
+        //        try
+        //        {
+        //            string chatMsg = String.Empty;
+        //            DateTime sendMsgTime = DateTime.Now;
+        //            byte[] recvBuffer = new byte[1024];
 
-                    int bytesLen = 0;
-                    while ((bytesLen = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
-                    {
-                        if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
-                        {
-                            break;
-                        }
-
-
-                        //UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
-                        UserMessage msg = new UserMessage(userSendMsg.UserID, userSendMsg.UserName, userSendMsg.UserID, userSendMsg.UserName,
-                            DateTime.Now, SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
-
-                        if (userSendMsg.recvEvent != null)
-                        {
-                            userSendMsg.recvEvent(this, msg);
-                        }
+        //            int bytesLen = 0;
+        //            while ((bytesLen = userSendMsg.ClientConnectSocket.Receive(recvBuffer, userSendMsg.RecvBufferSize, 0)) > 0)
+        //            {
+        //                if (userSendMsg.CancelRecvMsgSource.IsCancellationRequested)
+        //                {
+        //                    break;
+        //                }
 
 
-                        if(userRecvMsg.ClientConnectSocket != null)
-                        {
-                            //在线：发送
-                            this.SendMsgClient(userRecvMsg, msg);
-                        }
+        //                //UserMessage msg = DAL.UserMessageService.UserMessageDeserilize(recvBuffer);
+        //                UserMessage msg = new UserMessage(userSendMsg.UserID, userSendMsg.UserName, userSendMsg.UserID, userSendMsg.UserName,
+        //                    DateTime.Now, SerializeHelper.ConvertToString(recvBuffer, 0, bytesLen, Encoding.Default));
 
-                        # region msg写入db
-                            //signIN时创建记录sendMsg的表、recvMsg的表
-                        #endregion
 
-                    }
-                }
-                catch (Exception ex)
-                {
-                }
-            }, userSendMsg.CancelRecvMsgToken);
 
-        }
+        //                if (userSendMsg.recvEvent != null)
+        //                {
+        //                    userSendMsg.recvEvent(this, msg);
+        //                }
+
+
+        //                if(userRecvMsg.ClientConnectSocket != null)
+        //                {
+        //                    //在线：发送
+        //                    this.SendDataClient(userRecvMsg, msg);
+        //                }
+
+        //                # region msg写入db
+        //                    //signIN时创建记录sendMsg的表、recvMsg的表
+        //                #endregion
+
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //        }
+        //    }, userSendMsg.CancelRecvMsgToken);
+
+        //}
 
         
 

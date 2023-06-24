@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Client.UIL.Model
 {
     [Serializable]
-    public abstract class UserInfo: EventArgs
+    public abstract class UserInfo: MessageModel
     {
         private int userID;      //用户ID
         public int UserID { get => userID; set => userID = value; }

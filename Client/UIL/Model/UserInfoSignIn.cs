@@ -32,34 +32,33 @@ namespace Client.UIL.Model
         #endregion
 
         #region 缓冲区
-        //private byte[] recvBuffer = new byte[1024];
-        //public byte[] RecvBuffer { get => RecvBuffer; set => RecvBuffer = value; }
+        public List<byte> recvBuffer = new List<byte>();  //动态接收缓冲区
+        public List<byte> sendBuffer = new List<byte>();  //动态发送缓冲区
+        #endregion
 
-        private List<byte> recvBuffer;  //动态接收缓冲区
-        public List<byte> RecvBuffer { get => recvBuffer; set => recvBuffer = value; }
-    
-
-        private int recvBufferSize = 1024; //服务器作为接收方
-        public int RecvBufferSize { get => recvBufferSize; set => recvBufferSize = value; }
-        
-        private int sendBufferSize = 1024; //服务器作为发送方
-        public int SendBufferSize { get => sendBufferSize; set => sendBufferSize = value; }
-
+        #region 收发事件
+        public EventHandler<byte[]> recvEvent = null;  //接收数据事件
+        public EventHandler<byte[]> sendEvent = null;  //发送数据事件
         #endregion
 
         #region 用户收发消息线程中断控制
-        public EventHandler<UserMessage> recvEvent = null;  //接收消息事件
-        public EventHandler<UserMessage> sendEvent = null;  //发送消息事件
+        private CancellationTokenSource cancelRecvSource;
+        public CancellationTokenSource CancelRecvSource { get => cancelRecvSource; set => cancelRecvSource = value; }
 
-        private CancellationTokenSource cancelRecvMsgSource;
-        public CancellationTokenSource CancelRecvMsgSource { get => cancelRecvMsgSource; set => cancelRecvMsgSource = value; }
+        private CancellationToken cancelRecvToken;   //接收取消
+        public CancellationToken CancelRecvToken { get => cancelRecvToken; set => cancelRecvToken = value; }
 
-        private CancellationToken cancelRecvMsgToken;   //recvmsg取消
-        public CancellationToken CancelRecvMsgToken { get => cancelRecvMsgToken; set => cancelRecvMsgToken = value; }
+        private CancellationTokenSource cancelSendSource;
+        public CancellationTokenSource CancelSendSource { get => cancelSendSource; set => cancelSendSource = value; }
+
+        private CancellationToken cancelSendToken;   //接收取消
+        public CancellationToken CancelSendToken { get => cancelSendToken; set => cancelSendToken = value; }
         #endregion
 
 
         public UserInfoSignIn() { }
 
+        public UserInfoSignIn(int userId, string userName, string userPwd, DateTime signUpTime) : base(userId, userName, userPwd, signUpTime)
+        { }
     }
 }

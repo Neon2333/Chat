@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Client.UIL.Model
 {
     [Serializable]
-    public class UserMessage:MMessage
+    public class UserMessage: MessageModel
     {
-        //private string chatMsg;     //消息内容
-        //public string ChatMsg { get => chatMsg; set => chatMsg = value; }
-        
-        //private DateTime sendTime;  //发送时间
-        //public DateTime SendTime { get => sendTime; set => sendTime = value; }
+        private int messageID; 
+        public int MessageID { get => messageID; set => messageID = value; }
+
+        private string chatMsg;     //聊天消息
+        public string ChatMsg { get => chatMsg; set => chatMsg = value; }
 
         private int userIDSend;     //发送消息的user ID
         public int UserIDSend { get => userIDSend; set => userIDSend = value; }
@@ -27,14 +27,20 @@ namespace Client.UIL.Model
         private string userNameRecv;
         public string UserNameRecv { get => userNameRecv; set => userNameRecv = value; }
 
+        private DateTime sendTime;  //消息发送时间
+        public DateTime SendTime { get => sendTime; set => sendTime = value; }
+
+
         public UserMessage() { }
 
-        public UserMessage(int userIDSend, string userNameSend, int userIDRecv, string userNameRecv, DateTime sendTime, string msg):base(msg, sendTime)
+        public UserMessage(string chatMsg, int userIDSend, string userNameSend, int userIDRecv, string userNameRecv, DateTime sendTime)
         {
+            this.chatMsg = chatMsg;
             this.userIDSend = userIDSend;
             this.userNameSend = userNameSend;
             this.userIDRecv = userIDRecv;
             this.UserNameRecv = userNameRecv;
+            this.sendTime = sendTime;
         }
 
     }

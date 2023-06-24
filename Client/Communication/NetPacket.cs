@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Client.Communication
+{
+    //解决TCP客户端沾包、缺包
+    //暂时包头不添加校验CRC
+
+    public class NetPacket
+    {
+        private byte[] databodyLengthBytes = new byte[4];   //4字节记录int
+
+        private byte[] dataTypeBytes = new byte[50];        //记录数据类型
+
+        /// <summary>
+        /// 封包：将data加上4byte记录数据体长度和记录数据类型的包头
+        /// </summary>
+        /// <param name="PackageModelBytes"></param>
+        /// <param name=""></param>
+        /// <returns>封包后的字节数据</returns>
+        public byte[] Package(List<byte> packageModelBytes, Type dataType)
+        {
+            int databodyLength = packageModelBytes.Count;
+            databodyLengthBytes = SerializeHelper.IntToBytes(databodyLength);
+            dataTypeBytes = SerializeHelper.StringToBytes(dataType.FullName);
+
+            byte[] res = databodyLengthBytes.Concat(dataTypeBytes).Concat(packageModelBytes).ToArray();   //把包头加在数据体前
+            return res;
+        }
+
+        /// <summary>
+        /// 拆包
+        /// 目前不知道效率如何？
+        /// </summary>
+        /// <param name="PackageModelBytes"></param>
+        /// <param name="onepacket"></param>
+        /// <returns>拆出一个包的数据</returns>
+        public bool UnPackage(ref List<byte> PackageModelBytes, out List<byte> onepacket, out Type dataType)
+        {
+            if (PackageModelBytes.Count <= 54)
+            {
+                onepacket = null;
+                dataType = null;
+                return true;
+            }
+            else 
+            {
+                int bodyLen = SerializeHelper.BytesToInt(PackageModelBytes.GetRange(0, 4).ToArray(), 0);
+                if ((PackageModelBytes.Count - 54) < bodyLen)
+                {
+                    onepacket = null;
+                    dataType = null;
+                    return true;
+                }
+                else
+                {
+                    onepacket = PackageModelBytes.GetRange(54, bodyLen);
+                    string dataTypeStr = SerializeHelper.BytesToString(PackageModelBytes.GetRange(4, 50).ToArray());
+                    dataType = Assembly.Load("Server").GetType("Server." + dataTypeStr);
+                    PackageModelBytes.RemoveRange(0, 54 + bodyLen);
+                    return true;
+                }
+            }
+        }
+
+    }
+}

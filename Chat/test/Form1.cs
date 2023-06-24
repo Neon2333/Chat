@@ -23,7 +23,7 @@ namespace Server.test
             userInfo.UserPwd = "231";
             userInfo.SignUpTime = DateTime.Now;
 
-            byte[] bytes = Communication.SerializeHelper.SerializeToXml(userInfo);
+            byte[] bytes = Communication.SerializeHelper.SerializeObjToXmlBytes(userInfo);
 
             
         }

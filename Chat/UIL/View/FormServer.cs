@@ -81,6 +81,12 @@ namespace Server.UIL.View
             }
         }
 
+        //将publiser传入的msg进行显示
+        private void _onSendEvent(object sender, byte[] data)
+        {
+            this.textBox_status.BeginInvoke(new Action(() => this.textBox_status.Text = "send success.."));
+        }
+
         private void button_send_Click(object sender, EventArgs e)
         {
             try
@@ -90,13 +96,14 @@ namespace Server.UIL.View
                     foreach (var client in ss.ConnectedClients)
                     {
                         //服务器ID设为-1
-                        UserMessage msg = new UserMessage(-1, "server", client.UserID, client.UserName, DateTime.Now, this.textBox_send.Text);
-                        Task.Run(() => ss.SendMsgClient(client, msg));
+                        UserMessage msg = new UserMessage(this.textBox_send.Text, - 1, "server", client.UserID, client.UserName, DateTime.Now);
+                        byte[] data = SerializeHelper.SerializeObjToXmlBytes(msg);
+                        Task.Run(() => ss.SendDataClient(client, data));
+                        client.sendEvent += _onSendEvent;
                     }   
 
                 }
 
-                this.textBox_status.Text = "send success..";
             }
             catch(Exception ex)
             {
@@ -105,10 +112,11 @@ namespace Server.UIL.View
         }
 
         //将publiser传入的msg进行显示
-        private void showRecvMsg(object sender, UserMessage msg)
+        private void _onRecvEvent(object sender, byte[] data)
         {
             //this.textBox_receive.Text = msg.Msg;
-            this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{msg.SendTime} ,{msg.UserNameSend}: {msg.ChatMsg}" + "\r\n")));
+            UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
+            this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
         }
 
         private void button_receive_Click(object sender, EventArgs e)   
@@ -121,9 +129,9 @@ namespace Server.UIL.View
             {
                 foreach (var client in ss.ConnectedClients)
                 {
-                    Task.Run(()=>ss.ReceiveMsg(client));
+                    Task.Run(()=>ss.RecvData(client));
                     
-                    client.recvEvent += showRecvMsg;
+                    client.recvEvent += _onRecvEvent;
                 }
 
             }

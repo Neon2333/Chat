@@ -17,7 +17,8 @@ namespace Client.Communication
         private static int svrPort = 8888;     //服务器端口
         public static int SvrPort { get => svrPort; set => svrPort = value; }
 
-        private static Socket connectSvr;
+        private static Socket connectSvrSocket;
+        public static Socket ConnectSvrSocket { get => connectSvrSocket; set => connectSvrSocket = value; }
 
         public bool ConnectSvr()
         {
@@ -27,8 +28,14 @@ namespace Client.Communication
                 IPEndPoint ipe = new IPEndPoint(ip, svrPort);//把ip和端口转化为IPEndpoint实例
 
                 ///创建socket并连接到服务器
-                connectSvr = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//创建Socket
-                connectSvr.Connect(ipe);
+                ConnectSvrSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//创建Socket
+                /*
+                 *如果这三次发送非常紧密时间非常短，会被优化算法优化成一个数据包发送出去，
+                 *这属于客户端粘包，可以关闭Nagle算法，那么调用几次send就会发送几次包
+                 */
+                //关闭Nagle算法，解决客户端沾包
+                ConnectSvrSocket.SetSocketOption(SocketOptionLevel.Tcp, SocketOptionName.NoDelay, true);
+                ConnectSvrSocket.Connect(ipe);
                 return true;
             }
             catch(Exception ex)
@@ -37,23 +44,42 @@ namespace Client.Communication
             }
         }
 
-        public int SendMsg(string sendMsg)
+        public int SendData(UserInfoSignIn userRecvMsg, string sendMsg)
         {
             byte[] bs = Encoding.ASCII.GetBytes(sendMsg);//把字符串编码为字节
-            return connectSvr.Send(bs, bs.Length, 0);//发送信息
+            return ConnectSvrSocket.Send(bs, bs.Length, 0);//发送信息
         }
 
-        public string RecvMsg()
+        public void RecvData(UserInfoSignIn userRecvData)
         {
-            ///接受从服务器返回的信息
-            string recvStr = "";
-            byte[] recvBytes = new byte[1024];
-            byte[] bytes = new byte[1024];
-            int count = connectSvr.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
-            Unpackage.SetUnPackage(new List<byte>(recvBytes), 37, out bytes);
-            UserMessage msg = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(bytes);
+            try
+            {
+                //全部接收到缓冲区后，再异步处理
 
-            return msg.ChatMsg;
+                byte[] recvBufferTemp = new byte[1024];
+                int bytesRecv = 0;
+
+                //接收缓冲区中数据全部放到RecvBuffer中
+                while ((bytesRecv = userRecvData.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
+                {
+                    userRecvData.recvBuffer.AddRange(recvBufferTemp.ToList<byte>());
+                }
+
+                //拆包
+                NetPacket netPacket = new NetPacket();
+                List<byte> onePacket = new List<byte>();
+                while (netPacket.UnPackage(ref userRecvData.recvBuffer, out onePacket))
+                {
+                    //UserMessage msg = Communication.SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(onePacket.ToArray());
+                    if (userRecvData.recvEvent != null)
+                    {
+                        userRecvData.recvEvent(this, onePacket.ToArray());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
         }
 
 

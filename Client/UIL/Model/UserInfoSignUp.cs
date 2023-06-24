@@ -9,5 +9,8 @@ namespace Client.UIL.Model
     public class UserInfoSignUp: UserInfo
     {
         public UserInfoSignUp() { }
+
+        public UserInfoSignUp(int userId, string userName, string userPwd, DateTime signUpTime) :base(userId, userName, userPwd, signUpTime)
+        { }
     }
 }

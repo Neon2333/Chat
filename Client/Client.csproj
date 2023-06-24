@@ -60,9 +60,8 @@
     <Compile Include="BLL\ClientSginIn.cs" />
     <Compile Include="BLL\ClientSignUp.cs" />
     <Compile Include="Communication\ClientSocket.cs" />
-    <Compile Include="Communication\Package.cs" />
+    <Compile Include="Communication\NetPacket.cs" />
     <Compile Include="Communication\SerializeHelper.cs" />
-    <Compile Include="Communication\Unpackage.cs" />
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="Encrypt\MD5Encrypt.cs" />
     <Compile Include="Encrypt\StrEncryptDecrypt.cs" />
@@ -96,13 +95,14 @@
     <Compile Include="UIL\FrmSignUp.Designer.cs">
       <DependentUpon>FrmSignUp.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIL\Model\MMessage.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIL\Model\MessageModel.cs" />
+    <Compile Include="UIL\Model\PackageModel.cs" />
     <Compile Include="UIL\Model\UserInfo.cs" />
     <Compile Include="UIL\Model\UserInfoSignIn.cs" />
     <Compile Include="UIL\Model\UserInfoSignUp.cs" />
     <Compile Include="UIL\Model\UserMessage.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
