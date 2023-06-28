@@ -78,14 +78,12 @@ namespace Server.Communication
                 {
                     sme.WaitOne();  //计数器-1
 
-                    //注册的
                     user.ClientConnectSocket = svrListenSocket.Accept();    //Accept()建立连接
-                    user.ConnectTime = DateTime.Now;
                     user.ClientIP = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address; 
                     user.ClientPort = (user.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
                     user.ConnectTime = DateTime.Now;
-                    user.CancelRecvSource = new CancellationTokenSource();
                     user.CancelRecvToken = user.CancelRecvSource.Token;
+                    user.CancelSendToken = user.CancelSendSource.Token;
                     ConnectedClients.Add(user);
 
                     if (user.connectedEvent != null)
@@ -153,26 +151,28 @@ namespace Server.Communication
             {
                 //全部接收到缓冲区后，再异步处理
 
-                byte[] recvBufferTemp = new byte[1024];
+                byte[] recvBufferTemp = new byte[65535];    //系统buffer.size=65535
                 int bytesRecv = 0;
 
                 //接收缓冲区中数据全部放到RecvBuffer中
-                while ((bytesRecv = userSendData.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
+                while ((bytesRecv = userSendData.ClientConnectSocket.Receive(recvBufferTemp)) > 0)
                 {
-                    userSendData.recvBuffer.AddRange(recvBufferTemp.ToList<byte>());
-                }
+                    userSendData.recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
 
-                //拆包
-                NetPacket packet = new NetPacket();
-                List<byte> onePacket = new List<byte>();
-                while (packet.UnPackage(ref userSendData.recvBuffer, out onePacket))
-                {
-                    //UserMessage msg = Communication.SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(onePacket.ToArray());
-                    if (userSendData.recvEvent != null)
+                    //拆包
+                    NetPacket packet = new NetPacket();
+                    PackageModel onePacket;
+                    while (packet.UnPackage(ref userSendData.recvBuffer, out onePacket))
                     {
-                        userSendData.recvEvent(this, onePacket.ToArray());
+                        //UserMessage msg = Communication.SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(onePacket.ToArray());
+                        if (userSendData.recvEvent != null)
+                        {
+                            userSendData.recvEvent(this, onePacket);
+                        }
                     }
                 }
+
+               
             }
             catch (Exception ex)
             {
@@ -185,19 +185,18 @@ namespace Server.Communication
         /// <param name="data"></param>
         /// <returns></returns>
         //public bool SendMsgClient(UserInfoSignIn userRecvMsg, UserMessage msg)
-        public int SendDataClient(UserInfoSignIn userRecvData, byte[] data)
+        public int SendDataClient(UserInfoSignIn userRecvData, PackageModel package)
         {
             NetPacket packet = new NetPacket();
-            byte[] sendness = packet.Package(new List<byte>(data), "UserInfoSignIn");
+            byte[] sendness = packet.Package(package);
 
             if (userRecvData.sendEvent != null)
             {
-                userRecvData.sendEvent(this, sendness);
+                userRecvData.sendEvent(this, package);
             }
             
             return userRecvData.ClientConnectSocket.Send(sendness);
             //sendEvent(bytes);
-            
         }
 
         /// <summary>
@@ -278,7 +277,7 @@ namespace Server.Communication
         {
             try
             {
-                user.CancelRecvMsgSource.Cancel();
+                user.CancelRecvSource.Cancel();
                 return true;
             }
             catch (Exception ex)
@@ -310,7 +309,7 @@ namespace Server.Communication
         {
             try
             {
-                user.CancelRecvMsgSource.Cancel();  //先终止线程，再断开连接
+                user.CancelRecvSource.Cancel();  //先终止线程，再断开连接
                 user.ClientConnectSocket.Shutdown(SocketShutdown.Both);
                 user.DisconnectTime = DateTime.Now;
             }

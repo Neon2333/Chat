@@ -57,10 +57,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BLL\ClientSginIn.cs" />
-    <Compile Include="BLL\ClientSignUp.cs" />
+    <Compile Include="BLL\ClientUserSignIn.cs" />
+    <Compile Include="BLL\ClientUserSignUp.cs" />
+    <Compile Include="BLL\ProcessRecvPackage.cs" />
     <Compile Include="Communication\ClientSocket.cs" />
+    <Compile Include="Communication\Code.cs" />
     <Compile Include="Communication\NetPacket.cs" />
+    <Compile Include="Communication\PackageType.cs" />
     <Compile Include="Communication\SerializeHelper.cs" />
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="Encrypt\MD5Encrypt.cs" />

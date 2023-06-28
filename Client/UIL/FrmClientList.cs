@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.UIL.Model;
+using Client.BLL;
 
 namespace Client.UIL
 {
@@ -22,18 +23,20 @@ namespace Client.UIL
         public FrmClientList()
         {
             InitializeComponent();
-
-            ClientSocket clientSocket = new ClientSocket();
-            UserInfoSignIn uifs = new UserInfoSignIn();
-            Task.Run(() => clientSocket.RecvData(uifs));
-
-            uifs.recvEvent += showChatMsg;
         }
 
-        private void showChatMsg(object sender, byte[] data)
+        //后面将所有事件加以整理
+        public void initEvent()
         {
-            UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
-            textEdit_recv.BeginInvoke(new Action(() => textEdit_recv.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
+            ProcessRecvPackage processRecvPackage = new ProcessRecvPackage();
+            processRecvPackage.recvUserMessageEvent += showUserMessage;
         }
+
+        public void showUserMessage(object sender, UserMessage userMessage)
+        {
+            textEdit_recv.BeginInvoke(new Action(() => textEdit_recv.Text += ($"{userMessage.SendTime} ,{userMessage.UserNameSend}: {userMessage.ChatMsg}" + "\r\n")));
+        }
+
+
     }
 }

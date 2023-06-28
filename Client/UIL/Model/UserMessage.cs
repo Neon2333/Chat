@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Client.UIL.Model
 {
-    [Serializable]
     public class UserMessage: MessageModel
     {
         private int messageID; 

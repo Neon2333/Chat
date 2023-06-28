@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Client.UIL.Model
 {
-    [Serializable]
     public abstract class UserInfo: MessageModel
     {
         private int userID;      //用户ID
@@ -18,17 +17,13 @@ namespace Client.UIL.Model
         private string userPwd;  //用户密码
         public string UserPwd { get => userPwd; set => userPwd = value; }
 
-        private DateTime signUpTime;    //注册时间
-        public DateTime SignUpTime { get => signUpTime; set => signUpTime = value; }
-
         public UserInfo() { }
 
-        public UserInfo(int userId, string userName, string userPwd, DateTime signUpTime) 
+        public UserInfo(int userId, string userName, string userPwd) 
         {
             this.userID = userId;
             this.userName = userName;
             this.userPwd = userPwd;
-            this.signUpTime = signUpTime;
         }
     }
 }

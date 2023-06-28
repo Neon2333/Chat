@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Server.Communication;
 using Server.UIL.Model;
+using Server.DAL.MySQLService;
 
 namespace Server.UIL.View
 {
@@ -64,7 +65,7 @@ namespace Server.UIL.View
                 {
                     textBox_status.Text = "connected..";
                     this.textBox_status.ForeColor = System.Drawing.Color.Green;
-                }   
+                }
 
                 //if (ss.ConnectedClients.Count > 0)
                 //{
@@ -73,6 +74,7 @@ namespace Server.UIL.View
                 //        client.connectedEvent += showConnectedClients;
                 //    }
                 //}
+
             }
             catch (Exception ex)
             {
@@ -82,7 +84,7 @@ namespace Server.UIL.View
         }
 
         //将publiser传入的msg进行显示
-        private void _onSendEvent(object sender, byte[] data)
+        private void _onSendEvent(object sender, PackageModel packageModel)
         {
             this.textBox_status.BeginInvoke(new Action(() => this.textBox_status.Text = "send success.."));
         }
@@ -96,10 +98,10 @@ namespace Server.UIL.View
                     foreach (var client in ss.ConnectedClients)
                     {
                         //服务器ID设为-1
-                        UserMessage msg = new UserMessage(this.textBox_send.Text, - 1, "server", client.UserID, client.UserName, DateTime.Now);
-                        byte[] data = SerializeHelper.SerializeObjToXmlBytes(msg);
-                        Task.Run(() => ss.SendDataClient(client, data));
-                        client.sendEvent += _onSendEvent;
+                        //UserMessage msg = new UserMessage(this.textBox_send.Text, - 1, "server", client.UserID, client.UserName, DateTime.Now);
+                        //PackageModel package = new PackageModel(null, "UserMessage", msg, "001", true, DateTime.Now);
+                        //Task.Run(() => ss.SendDataClient(client, package));
+                        //client.sendEvent += _onSendEvent;
                     }   
 
                 }
@@ -112,30 +114,49 @@ namespace Server.UIL.View
         }
 
         //将publiser传入的msg进行显示
-        private void _onRecvEvent(object sender, byte[] data)
+        private void _onRecvEvent(object sender, PackageModel package)
         {
-            //this.textBox_receive.Text = msg.Msg;
-            UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
-            this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
+            //if (package.DataType == "UserMessage")
+            //{
+            //    UserMessage userMessage = package.Data as UserMessage;
+            //    this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{userMessage.SendTime} ,{userMessage.UserNameSend}: {userMessage.ChatMsg}" + "\r\n")));
+            //}
+
+            UserInfoSignUp userSignUp = new UserInfoSignUp();
+            if (package.PackageType == PackageType.PackageTypeDef.RequestType_C)
+            {
+                Type dataType = Type.GetType("Server." + package.DataType);
+
+                if (package.Data is UserInfoSignUp)
+                {
+                    userSignUp = package.Data as UserInfoSignUp;
+                    DateTime sendTime = package.SendTime;
+
+                }
+                userSignUp.SignUpTime = DateTime.Now;
+
+                UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
+                int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
+
+            }
+
         }
 
         private void button_receive_Click(object sender, EventArgs e)   
         {
             //ss.ReceiveMsg(this.textBox_receive, this.textBox_status);     //textbox传入函数，通过委托跨线程访问
 
-            
+
             //客户端将委托绑定事件，通过类Message封装接收的消息，EventHandler从publisher传入observer
             if (ss.ConnectedClients.Count > 0)
             {
                 foreach (var client in ss.ConnectedClients)
                 {
-                    Task.Run(()=>ss.RecvData(client));
-                    
+                    Task.Run(() => ss.RecvData(client), client.CancelRecvToken);
                     client.recvEvent += _onRecvEvent;
                 }
-
             }
-            
+
         }
 
         private void button_stopRecv_Click(object sender, EventArgs e)

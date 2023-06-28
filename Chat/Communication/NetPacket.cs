@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Server.UIL.Model;
 
 namespace Server.Communication
 {
@@ -23,13 +24,12 @@ namespace Server.Communication
         /// <param name="PackageModelBytes"></param>
         /// <param name=""></param>
         /// <returns>封包后的字节数据</returns>
-        public byte[] Package(List<byte> packageModelBytes, Type dataType)
+        public byte[] Package(PackageModel package)
         {
-            int databodyLength = packageModelBytes.Count;
+            byte[] packageModelBytes = SerializeHelper.SerializeObjToXmlBytes(package);
+            int databodyLength = packageModelBytes.Length;
             databodyLengthBytes = SerializeHelper.IntToBytes(databodyLength);
-            dataTypeBytes = SerializeHelper.StringToBytes(dataType.FullName);
-
-            byte[] res = databodyLengthBytes.Concat(dataTypeBytes).Concat(packageModelBytes).ToArray();   //把包头加在数据体前
+            byte[] res = databodyLengthBytes.Concat(packageModelBytes).ToArray();   //把包头加在数据体前
             return res;
         }
 
@@ -37,32 +37,28 @@ namespace Server.Communication
         /// 拆包
         /// 目前不知道效率如何？
         /// </summary>
-        /// <param name="PackageModelBytes"></param>
+        /// <param name="PackageModelBytes">动态缓冲区List<byte></param>
         /// <param name="onepacket"></param>
         /// <returns>拆出一个包的数据</returns>
-        public bool UnPackage(ref List<byte> PackageModelBytes, out List<byte> onepacket, out Type dataType)
+        public bool UnPackage(ref List<byte> PackageModelBytes, out PackageModel onePackage)
         {
-            if (PackageModelBytes.Count <= 54)
+            if (PackageModelBytes.Count <= 4)
             {
-                onepacket = null;
-                dataType = null;
+                onePackage = null;
                 return true;
             }
             else 
             {
                 int bodyLen = SerializeHelper.BytesToInt(PackageModelBytes.GetRange(0, 4).ToArray(), 0);
-                if ((PackageModelBytes.Count - 54) < bodyLen)
+                if ((PackageModelBytes.Count - 4) < bodyLen)
                 {
-                    onepacket = null;
-                    dataType = null;
+                    onePackage = null;
                     return true;
                 }
                 else
                 {
-                    onepacket = PackageModelBytes.GetRange(54, bodyLen);
-                    string dataTypeStr = SerializeHelper.BytesToString(PackageModelBytes.GetRange(4, 50).ToArray());
-                    dataType = Assembly.Load("Server").GetType("Server." + dataTypeStr);
-                    PackageModelBytes.RemoveRange(0, 54 + bodyLen);
+                    onePackage = SerializeHelper.DeserializeObjWithXmlBytes<PackageModel>(PackageModelBytes.GetRange(54, bodyLen).ToArray());
+                    PackageModelBytes.RemoveRange(0, 4 + bodyLen);
                     return true;
                 }
             }

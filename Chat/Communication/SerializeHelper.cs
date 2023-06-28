@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
+
+
 namespace Server.Communication
 {
+    
     internal class SerializeHelper
     {
         #region int和byte[]互转

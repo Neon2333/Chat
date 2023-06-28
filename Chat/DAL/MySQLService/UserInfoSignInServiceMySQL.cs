@@ -33,7 +33,6 @@ namespace Server.DAL.MySQLService
                 parameter1.Value = uisi.UserID;
                 parameter2.Value = uisi.UserName;
                 parameter3.Value = uisi.UserPwd;
-                parameter4.Value = uisi.SignUpTime;
                 parameter5.Value = uisi.ClientIP;
                 parameter6.Value = uisi.ClientPort;
                 parameter7.Value = uisi.ConnectTime;

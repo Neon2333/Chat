@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client.BLL;
 using Client.Communication;
 using Client.UIL.Model;
 
@@ -18,21 +19,21 @@ namespace Client.test
         {
             InitializeComponent();
 
-            Communication.ClientSocket clientSocket = new Communication.ClientSocket();
+            //Communication.ClientSocket clientSocket = new Communication.ClientSocket();
 
-            clientSocket.ConnectSvr();
+            //clientSocket.ConnectSvr();
 
-            UserInfoSignIn uifs = new UserInfoSignIn();
-            uifs.ClientConnectSocket = ClientSocket.ConnectSvrSocket;
-            Task.Run(() => clientSocket.RecvData(uifs));
+            //UserInfoSignIn uifs = new UserInfoSignIn();
+            //uifs.ClientConnectSocket = ClientSocket.ConnectSvrSocket;
+            //Task.Run(() => clientSocket.RecvData(uifs));
 
-            uifs.recvEvent += showChatMsg;
+            //uifs.recvEvent += showChatMsg;
 
-            void showChatMsg(object sender, byte[] data)
-            {
-                UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
-                textBox1.BeginInvoke(new Action(() => textBox1.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
-            }
+            //void showChatMsg(object sender, PackageModel package)
+            //{
+            //    UserMessage um = SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(data);
+            //    textBox1.BeginInvoke(new Action(() => textBox1.Text += ($"{um.SendTime} ,{um.UserNameSend}: {um.ChatMsg}" + "\r\n")));
+            //}
 
             //UserInfoSignUp uisu = new UserInfoSignUp();
             //uisu.UserID = 1;
@@ -48,6 +49,17 @@ namespace Client.test
 
             //UserInfoSignUp _uisu = Communication.SerializeHelper.DeserializeObjFromXmlfile<UserInfoSignUp>(@"C:\Users\Administrator\Desktop\uisu.xml");
 
+            ProcessRecvPackage proPack = new ProcessRecvPackage();
+
+            ProcessRecvPackage processRecvPackage = new ProcessRecvPackage();
+            processRecvPackage.recvUserMessageEvent += showUserMessage;
+
+        }
+
+
+        public void showUserMessage(object sender, UserMessage userMessage)
+        {
+            textBox1.BeginInvoke(new Action(() => textBox1.Text += ($"{userMessage.SendTime} ,{userMessage.UserNameSend}: {userMessage.ChatMsg}" + "\r\n")));
         }
     }
 }

@@ -16,7 +16,8 @@ namespace Client.UIL
 {
     public partial class FrmLogin : DevExpress.XtraEditors.XtraForm
     {
-        ClientSocket cc;
+        ClientUserSignIn clientUserSignIn;
+        //public ClientSocket socketUserSignIn = new ClientSocket();
 
         private bool login = false;
         public bool Login { get => login; set => login = value; }
@@ -25,24 +26,29 @@ namespace Client.UIL
         public FrmLogin()
         {
             InitializeComponent();
+            clientUserSignIn = new ClientUserSignIn();
         }
 
         private void FrmLogin_Load(object sender, EventArgs e)
         {
-            cc = new ClientSocket();
-
-            if (!cc.ConnectSvr())
+            if (!ClientUserSignIn.clientSocket.ConnectSvr())
             {
                 ShowSocketError();
                 return;
             }
+
         }
 
         private void simpleButton_signIn_Click(object sender, EventArgs e)
         {
+            ClientUserSignIn.UsrName = textEdit_usrNameLogin.Text.Trim();
+            ClientUserSignIn.UsrPwd = textEdit_pwdLogin.Text.Trim();
+
             if (login)
             {
                 this.Close();
+                FrmClientList frmClientList = new FrmClientList();
+                frmClientList.Show();
             }
 
 
@@ -52,8 +58,8 @@ namespace Client.UIL
         private void labelControl_signUp_Click(object sender, EventArgs e)
         {
             FrmSignUp frmSignUp = new FrmSignUp();
-            frmSignUp.eventApplyUsrName += frmSignUp.GetUserName;
-            frmSignUp.eventApplyPwd += frmSignUp.GetUerPwd;
+            //frmSignUp.eventApplyUsrNameSignUp += frmSignUp.GetUserName;
+            //frmSignUp.eventApplyPwdSignUp += frmSignUp.GetUerPwd;
             frmSignUp.ShowDialog();
         }
 
@@ -61,13 +67,8 @@ namespace Client.UIL
         private void labelControl_config_Click(object sender, EventArgs e)
         {
             FrmConfig frmConfig = new FrmConfig();
-            frmConfig.eventApplySvrIP += frmConfig.GetSvrIP;
-            frmConfig.eventApplySvrPort += frmConfig.GetSvrPort;
             frmConfig.ShowDialog();
         }
-
-
-        
 
         private void ShowSocketError()
         {

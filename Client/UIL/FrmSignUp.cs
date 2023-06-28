@@ -14,8 +14,9 @@ namespace Client.UIL
 {
     public partial class FrmSignUp : DevExpress.XtraEditors.XtraForm
     {
-        public EventHandler<string> eventApplyUsrName;
-        public EventHandler<string> eventApplyPwd;
+        //public EventHandler<string> eventApplyUsrNameSignUp;  //注册，应用用户名
+        //public EventHandler<string> eventApplyPwdSignUp;      //注册，应用密码
+        //public EventHandler<bool> eventSignUp;    //注册事件
 
         public FrmSignUp()
         {
@@ -27,8 +28,17 @@ namespace Client.UIL
             if (textEdit_pwdSignUp.Text.Equals(textEdit_confirmPwdSignUp.Text))
             {
                 ClearPwdError();
-                eventApplyUsrName(sender, textEdit_usrNameSignUp.Text);
-                eventApplyPwd(sender, textEdit_pwdSignUp.Text);
+
+                //注册
+                if (ClientUserSignUp.SignUp(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim()))
+                {
+                    //MessageBox.Show("注册成功！");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("注册失败！");
+                }
             }
             else
             {
@@ -39,19 +49,20 @@ namespace Client.UIL
 
         }
 
+
+        //public void GetUserName(object sender, string usrName)
+        //{
+        //    ClientSignUp.UsrName = usrName;
+        //}
+
+        //public void GetUerPwd(object sender, string usrPwd)
+        //{
+        //    ClientSignUp.UsrPwd = usrPwd;
+        //}
+
         private void simpleButton_cancel_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        public void GetUserName(object sender, string usrName)
-        {
-            ClientSignUp.UsrName = usrName;
-        }
-
-        public void GetUerPwd(object sender, string usrPwd)
-        {
-            ClientSignUp.UsrPwd = usrPwd;
         }
 
         private void ShowPwdError()

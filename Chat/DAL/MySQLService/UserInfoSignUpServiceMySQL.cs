@@ -27,7 +27,8 @@ namespace Server.DAL.MySQLService
                 parameter1.Value = uisu.UserID;
                 parameter2.Value = uisu.UserName;
                 parameter3.Value = uisu.UserPwd;
-                parameter4.Value = uisu.SignUpTime;
+                parameter4.Value = DateTime.Now;
+                //parameter4.Value = uisu.SignUpTime;
 
                 return MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
                     parameter1, parameter2, parameter3, parameter4);
@@ -52,7 +53,8 @@ namespace Server.DAL.MySQLService
                     parameter1.Value = uisu.UserID;
                     parameter2.Value = uisu.UserName;
                     parameter3.Value = uisu.UserPwd;
-                    parameter4.Value = uisu.SignUpTime;
+                    //parameter4.Value = uisu.SignUpTime;
+                    parameter4.Value = DateTime.Now;
 
                     affectRows += MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
                         parameter1, parameter2, parameter3, parameter4);

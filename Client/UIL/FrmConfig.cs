@@ -14,10 +14,6 @@ namespace Client.UIL
 {
     public partial class FrmConfig : DevExpress.XtraEditors.XtraForm
     {
-        public EventHandler<string> eventApplySvrIP;
-        public EventHandler<int> eventApplySvrPort;
-
-
         public FrmConfig()
         {
             InitializeComponent();
@@ -27,8 +23,9 @@ namespace Client.UIL
 
         private void simpleButton_apply_Click(object sender, EventArgs e)
         {
-            eventApplySvrIP(sender, textEdit_svrIP.Text.Trim());
-            eventApplySvrPort(sender, Convert.ToInt32(textEdit_svrPort.Text.Trim()));
+            ClientSocket.SvrIP = textEdit_svrIP.Text.Trim();
+            ClientSocket.SvrPort = Convert.ToInt32(textEdit_svrPort.Text.Trim());
+
             this.Close();
         }
 
@@ -37,14 +34,5 @@ namespace Client.UIL
             this.Close();
         }
 
-        public void GetSvrIP(object sender, string ip)
-        {
-            ClientSocket.SvrIP = ip;
-        }
-
-        public void GetSvrPort(object sender, int port)
-        {
-            ClientSocket.SvrPort = port;
-        }
     }
 }
