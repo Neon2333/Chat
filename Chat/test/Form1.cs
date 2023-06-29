@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Server.Communication;
 using Server.DAL.MySQLService;
-using Server.UIL.Model;
+using Server.UIL;
+using ChatModel;
+
 
 namespace Server.test
 {
@@ -57,7 +59,7 @@ namespace Server.test
         public void _onRecvEvent(object sender, PackageModel package)
         {
             UserInfoSignUp userSignUp = new UserInfoSignUp();
-            if (package.PackageType==PackageType.PackageTypeDef.RequestType_C)
+            if (package.PackageType==PackageModel.PackageTypeDef.RequestType_C)
             {
                 Type dataType = Type.GetType("Server." + package.DataType);
 

@@ -12,9 +12,10 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Security.Cryptography;
-using Server.UIL.Model;
+using Server.UIL;
 using MySql.Data.MySqlClient.Authentication;
 using System.Reflection;
+using ChatModel;
 
 namespace Server.Communication
 {

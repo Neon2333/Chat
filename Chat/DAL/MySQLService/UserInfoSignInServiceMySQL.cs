@@ -1,5 +1,4 @@
-﻿using Server.UIL.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Server.DAL.MySQLHelper;
 using MySql.Data.MySqlClient;
+using Server.UIL;
+using ChatModel;
+
 
 namespace Server.DAL.MySQLService
 {
@@ -19,27 +21,24 @@ namespace Server.DAL.MySQLService
         {
             using (MySqlConnection conn = MySQLHelper.MySqlHelper.GetConnection(connStr))
             {
-                string cmdText = $"INSERT INTO userinfosignin (usrID,usrName,usrPwd,signUpTime,clientIP,clientPort,connectTime,disConnectTime) " +
-                $"Values (@_userId,@_userName,@_userPwd,@_signupTime,@_clientIP,@_clientPort,@_connectTime,@_disConncetTime);";
+                string cmdText = $"INSERT INTO userinfosignin (usrName,usrPwd,clientIP,clientPort,connectTime,disConnectTime) " +
+                $"Values (@_userName,@_userPwd,@_clientIP,@_clientPort,@_connectTime,@_disConncetTime);";
 
-                MySqlParameter parameter1 = new MySqlParameter("@_userId", MySqlDbType.Int32, 10);
-                MySqlParameter parameter2 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter3 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter4 = new MySqlParameter("@_signupTime", MySqlDbType.DateTime, 10);
-                MySqlParameter parameter5 = new MySqlParameter("@_clientIP", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter6 = new MySqlParameter("@_clientPort", MySqlDbType.Int32, 10);
-                MySqlParameter parameter7 = new MySqlParameter("@_connectTime", MySqlDbType.DateTime, 10);
-                MySqlParameter parameter8 = new MySqlParameter("@_disConncetTime", MySqlDbType.DateTime, 10);
-                parameter1.Value = uisi.UserID;
-                parameter2.Value = uisi.UserName;
-                parameter3.Value = uisi.UserPwd;
-                parameter5.Value = uisi.ClientIP;
-                parameter6.Value = uisi.ClientPort;
-                parameter7.Value = uisi.ConnectTime;
-                parameter8.Value = uisi.DisconnectTime;
+                MySqlParameter parameter1 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter2 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter3 = new MySqlParameter("@_clientIP", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter4 = new MySqlParameter("@_clientPort", MySqlDbType.Int32, 10);
+                MySqlParameter parameter5 = new MySqlParameter("@_connectTime", MySqlDbType.DateTime, 10);
+                MySqlParameter parameter6 = new MySqlParameter("@_disConncetTime", MySqlDbType.DateTime, 10);
+                parameter1.Value = uisi.UserName;
+                parameter2.Value = uisi.UserPwd;
+                parameter3.Value = uisi.ClientIP;
+                parameter4.Value = uisi.ClientPort;
+                parameter5.Value = uisi.ConnectTime;
+                parameter6.Value = uisi.DisconnectTime;
 
                 return MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
-                    parameter1, parameter2, parameter3, parameter4, parameter5, parameter6, parameter7, parameter8);
+                    parameter1, parameter2, parameter3, parameter4, parameter5, parameter6);
             }
         }
 

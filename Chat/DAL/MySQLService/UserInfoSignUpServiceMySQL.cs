@@ -1,11 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
-using Server.UIL.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.UIL;
+using ChatModel;
 
 namespace Server.DAL.MySQLService
 {
@@ -17,21 +18,20 @@ namespace Server.DAL.MySQLService
         {
             using (MySqlConnection conn = MySQLHelper.MySqlHelper.GetConnection(connStr))
             {
-                string cmdText = $"INSERT INTO userinfosignup (usrID,usrName,usrPwd,signUpTime,clientIP,clientPort,connectTime,disConnectTime) " +
-                $"Values (@_userId,@_userName,@_userPwd,@_signupTime);";
+                string cmdText = $"INSERT INTO userinfosignup (usrName,usrPwd,signUpTime) " +
+                $"Values (@_userName,@_userPwd,@_signupTime);";
 
-                MySqlParameter parameter1 = new MySqlParameter("@_userId", MySqlDbType.Int32, 10);
-                MySqlParameter parameter2 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter3 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter4 = new MySqlParameter("@_signupTime", MySqlDbType.DateTime, 10);
-                parameter1.Value = uisu.UserID;
-                parameter2.Value = uisu.UserName;
-                parameter3.Value = uisu.UserPwd;
-                parameter4.Value = DateTime.Now;
+                //MySqlParameter parameter1 = new MySqlParameter("@_userId", MySqlDbType.Int32, 10);
+                MySqlParameter parameter1 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter2 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter3 = new MySqlParameter("@_signupTime", MySqlDbType.DateTime, 10);
+                parameter1.Value = uisu.UserName;
+                parameter2.Value = uisu.UserPwd;
+                parameter3.Value = DateTime.Now;
                 //parameter4.Value = uisu.SignUpTime;
 
                 return MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
-                    parameter1, parameter2, parameter3, parameter4);
+                    parameter1, parameter2, parameter3);
             }
         }
 
@@ -40,24 +40,24 @@ namespace Server.DAL.MySQLService
             int affectRows = 0;
             using (MySqlConnection conn = MySQLHelper.MySqlHelper.GetConnection(connStr))
             {
-                string cmdText = $"INSERT INTO userinfosignup (usrID,usrName,usrPwd,signUpTime,clientIP,clientPort,connectTime,disConnectTime) " +
-               $"Values (@_userId,@_userName,@_userPwd,@_signupTime);";
+                string cmdText = $"INSERT INTO userinfosignup (usrName,usrPwd,signUpTime) " +
+               $"Values (@_userName,@_userPwd,@_signupTime);";
 
-                MySqlParameter parameter1 = new MySqlParameter("@_userId", MySqlDbType.Int32, 10);
-                MySqlParameter parameter2 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter3 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter4 = new MySqlParameter("@_signupTime", MySqlDbType.DateTime, 10);
+                //MySqlParameter parameter1 = new MySqlParameter("@_userId", MySqlDbType.Int32, 10);
+                MySqlParameter parameter1 = new MySqlParameter("@_userName", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter2 = new MySqlParameter("@_userPwd", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter3 = new MySqlParameter("@_signupTime", MySqlDbType.DateTime, 10);
 
                 foreach (var uisu in uisus)
                 {
-                    parameter1.Value = uisu.UserID;
-                    parameter2.Value = uisu.UserName;
-                    parameter3.Value = uisu.UserPwd;
+                    //parameter1.Value = uisu.UserID;
+                    parameter1.Value = uisu.UserName;
+                    parameter2.Value = uisu.UserPwd;
                     //parameter4.Value = uisu.SignUpTime;
-                    parameter4.Value = DateTime.Now;
+                    parameter3.Value = DateTime.Now;
 
                     affectRows += MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
-                        parameter1, parameter2, parameter3, parameter4);
+                        parameter1, parameter2, parameter3);
                 }
             }
             return affectRows;

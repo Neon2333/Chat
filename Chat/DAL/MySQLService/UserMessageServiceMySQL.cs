@@ -1,11 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
-using Server.UIL.Model;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Server.UIL;
+using ChatModel;
 
 namespace Server.DAL.MySQLService
 {
@@ -18,26 +19,24 @@ namespace Server.DAL.MySQLService
         {
             using (MySqlConnection conn = MySQLHelper.MySqlHelper.GetConnection(connStr))
             {
-                string cmdText = "INSERT INTO usermessage (messageID,chatMsg,sendTime,usrIDSend,usrNameSend,usrIDRecv,usrNameRecv) " +
-                    "VALUES (@_messageID,@_chatMsg,@_sendTime,@_userIDSend,@_userNameSend,@_userIDRecv,@_userNameRecv);";
+                string cmdText = "INSERT INTO usermessage (chatMsg,sendTime,usrIDSend,usrNameSend,usrIDRecv,usrNameRecv) " +
+                    "VALUES (@_chatMsg,@_sendTime,@_userIDSend,@_userNameSend,@_userIDRecv,@_userNameRecv);";
 
-                MySqlParameter parameter1 = new MySqlParameter("@_messageID", MySqlDbType.Int32, 10);
-                MySqlParameter parameter2 = new MySqlParameter("@_chatMsg", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter3 = new MySqlParameter("@_sendTime", MySqlDbType.DateTime, 10);
-                MySqlParameter parameter4 = new MySqlParameter("@_userIDSend", MySqlDbType.Int32, 10);
-                MySqlParameter parameter5 = new MySqlParameter("@_userNameSend", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter6 = new MySqlParameter("@_userIDRecv", MySqlDbType.Int32, 10);
-                MySqlParameter parameter7 = new MySqlParameter("@_userNameRecv", MySqlDbType.DateTime, 10);
+                MySqlParameter parameter1 = new MySqlParameter("@_chatMsg", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter2 = new MySqlParameter("@_sendTime", MySqlDbType.DateTime, 10);
+                MySqlParameter parameter3 = new MySqlParameter("@_userIDSend", MySqlDbType.Int32, 10);
+                MySqlParameter parameter4 = new MySqlParameter("@_userNameSend", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter5 = new MySqlParameter("@_userIDRecv", MySqlDbType.Int32, 10);
+                MySqlParameter parameter6 = new MySqlParameter("@_userNameRecv", MySqlDbType.DateTime, 10);
                 parameter1.Value = um.MessageID;
                 parameter2.Value = um.ChatMsg;
                 parameter3.Value = um.SendTime;
                 parameter4.Value = um.UserIDSend;
                 parameter5.Value = um.UserNameSend;
                 parameter6.Value = um.UserIDRecv;
-                parameter7.Value = um.UserNameRecv;
 
                 return MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
-                    parameter1, parameter2, parameter3, parameter4, parameter5, parameter6, parameter7);
+                    parameter1, parameter2, parameter3, parameter4, parameter5, parameter6);
             }
 
         }
@@ -47,16 +46,15 @@ namespace Server.DAL.MySQLService
             int affectRows = 0;
             using (MySqlConnection conn = MySQLHelper.MySqlHelper.GetConnection(connStr))
             {
-                string cmdText = "INSERT INTO usermessage (messageID,chatMsg,sendTime,usrIDSend,usrNameSend,usrIDRecv,usrNameRecv) " +
-                    "VALUES (@_messageID,@_chatMsg,@_sendTime,@_userIDSend,@_userNameSend,@_userIDRecv,@_userNameRecv);";
+                string cmdText = "INSERT INTO usermessage (chatMsg,sendTime,usrIDSend,usrNameSend,usrIDRecv,usrNameRecv) " +
+                    "VALUES (@_chatMsg,@_sendTime,@_userIDSend,@_userNameSend,@_userIDRecv,@_userNameRecv);";
 
-                MySqlParameter parameter1 = new MySqlParameter("@_messageID", MySqlDbType.Int32, 10);
-                MySqlParameter parameter2 = new MySqlParameter("@_chatMsg", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter3 = new MySqlParameter("@_sendTime", MySqlDbType.DateTime, 10);
-                MySqlParameter parameter4 = new MySqlParameter("@_userIDSend", MySqlDbType.Int32, 10);
-                MySqlParameter parameter5 = new MySqlParameter("@_userNameSend", MySqlDbType.VarChar, 10);
-                MySqlParameter parameter6 = new MySqlParameter("@_userIDRecv", MySqlDbType.Int32, 10);
-                MySqlParameter parameter7 = new MySqlParameter("@_userNameRecv", MySqlDbType.DateTime, 10);
+                MySqlParameter parameter1 = new MySqlParameter("@_chatMsg", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter2 = new MySqlParameter("@_sendTime", MySqlDbType.DateTime, 10);
+                MySqlParameter parameter3 = new MySqlParameter("@_userIDSend", MySqlDbType.Int32, 10);
+                MySqlParameter parameter4 = new MySqlParameter("@_userNameSend", MySqlDbType.VarChar, 10);
+                MySqlParameter parameter5 = new MySqlParameter("@_userIDRecv", MySqlDbType.Int32, 10);
+                MySqlParameter parameter6 = new MySqlParameter("@_userNameRecv", MySqlDbType.DateTime, 10);
 
 
                 foreach (var um in ums)
@@ -67,10 +65,9 @@ namespace Server.DAL.MySQLService
                     parameter4.Value = um.UserIDSend;
                     parameter5.Value = um.UserNameSend;
                     parameter6.Value = um.UserIDRecv;
-                    parameter7.Value = um.UserNameRecv;
 
                     affectRows += MySQLHelper.MySqlHelper.ExecuteNonQuery(conn, CommandType.Text, cmdText,
-                        parameter1, parameter2, parameter3, parameter4, parameter5, parameter6, parameter7);
+                        parameter1, parameter2, parameter3, parameter4, parameter5, parameter6);
                 }
             }
             return affectRows;
