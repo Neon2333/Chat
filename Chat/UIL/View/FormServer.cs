@@ -11,8 +11,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Server.Communication;
-using Server.UIL.Model;
+using Server.UIL;
 using Server.DAL.MySQLService;
+using ChatModel;
+
 
 namespace Server.UIL.View
 {
@@ -123,7 +125,7 @@ namespace Server.UIL.View
             //}
 
             UserInfoSignUp userSignUp = new UserInfoSignUp();
-            if (package.PackageType == PackageType.PackageTypeDef.RequestType_C)
+            if (package.PackageType == PackageModel.PackageTypeDef.RequestType_C)
             {
                 Type dataType = Type.GetType("Server." + package.DataType);
 

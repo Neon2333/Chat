@@ -86,12 +86,6 @@
     <Compile Include="test\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="UIL\Model\MessageModel.cs" />
-    <Compile Include="UIL\Model\PackageModel.cs" />
-    <Compile Include="UIL\Model\UserInfo.cs" />
-    <Compile Include="UIL\Model\UserInfoSignIn.cs" />
-    <Compile Include="UIL\Model\UserInfoSignUp.cs" />
-    <Compile Include="UIL\Model\UserMessage.cs" />
     <Compile Include="UIL\View\FormServer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +128,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UIL\Model\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="DevLog.md" />
   </ItemGroup>

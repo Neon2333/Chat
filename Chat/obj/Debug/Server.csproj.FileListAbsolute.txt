@@ -87,3 +87,4 @@ E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.CopyComplete
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.exe
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.pdb
 E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\ChatModel.dll
+E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.AssemblyReference.cache
