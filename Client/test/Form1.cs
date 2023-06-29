@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.BLL;
 using Client.Communication;
-using Client.UIL.Model;
+using Client.UIL;
+using ChatModel;
+
 
 namespace Client.test
 {

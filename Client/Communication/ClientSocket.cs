@@ -6,7 +6,8 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Client.UIL.Model;
+using Client.UIL;
+using ChatModel;
 
 namespace Client.Communication
 {
@@ -61,7 +62,7 @@ namespace Client.Communication
             try
             {
                 NetPacket netPacket = new NetPacket();
-                byte[] sendBytes = netPacket.Package(package);
+                byte[] sendBytes = netPacket.PackageBinary(package);
                 int sendByteNums = connectSvrSocket.Send(sendBytes, sendBytes.Length, 0);//发送信息
                 return sendByteNums == sendBytes.Length;
             }
@@ -100,7 +101,7 @@ namespace Client.Communication
                 //拆包
                 NetPacket netPacket = new NetPacket();
                 PackageModel onePackage;
-                while (netPacket.UnPackage(ref userRecvData.recvBuffer, out onePackage))
+                while (netPacket.UnPackageBinary(ref userRecvData.recvBuffer, out onePackage))
                 {
                     if (userRecvData.recvEvent != null)
                     {

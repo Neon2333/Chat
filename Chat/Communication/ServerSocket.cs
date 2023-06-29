@@ -162,7 +162,7 @@ namespace Server.Communication
                     //拆包
                     NetPacket packet = new NetPacket();
                     PackageModel onePacket;
-                    while (packet.UnPackage(ref userSendData.recvBuffer, out onePacket))
+                    while (packet.UnPackageBinary(ref userSendData.recvBuffer, out onePacket))
                     {
                         //UserMessage msg = Communication.SerializeHelper.DeserializeObjWithXmlBytes<UserMessage>(onePacket.ToArray());
                         if (userSendData.recvEvent != null)
@@ -188,7 +188,7 @@ namespace Server.Communication
         public int SendDataClient(UserInfoSignIn userRecvData, PackageModel package)
         {
             NetPacket packet = new NetPacket();
-            byte[] sendness = packet.Package(package);
+            byte[] sendness = packet.PackageBinary(package);
 
             if (userRecvData.sendEvent != null)
             {

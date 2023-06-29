@@ -8,10 +8,11 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Client</RootNamespace>
     <AssemblyName>Client</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ChatModel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dll\ChatModel.dll</HintPath>
+    </Reference>
     <Reference Include="DevExpress.Data.Desktop.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Data.v20.1, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Printing.v20.1.Core, Version=20.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
@@ -65,6 +70,7 @@
     <Compile Include="Communication\NetPacket.cs" />
     <Compile Include="Communication\PackageType.cs" />
     <Compile Include="Communication\SerializeHelper.cs" />
+    <Compile Include="Communication\UBinder.cs" />
     <Compile Include="DAL\dbConStr.cs" />
     <Compile Include="Encrypt\MD5Encrypt.cs" />
     <Compile Include="Encrypt\StrEncryptDecrypt.cs" />
@@ -100,12 +106,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIL\Model\MessageModel.cs" />
-    <Compile Include="UIL\Model\PackageModel.cs" />
-    <Compile Include="UIL\Model\UserInfo.cs" />
-    <Compile Include="UIL\Model\UserInfoSignIn.cs" />
-    <Compile Include="UIL\Model\UserInfoSignUp.cs" />
-    <Compile Include="UIL\Model\UserMessage.cs" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -115,6 +115,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="test\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -144,6 +145,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="UIL\Model\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

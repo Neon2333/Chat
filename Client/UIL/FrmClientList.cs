@@ -10,8 +10,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Client.UIL.Model;
+using Client.UIL;
 using Client.BLL;
+using ChatModel;
+
 
 namespace Client.UIL
 {

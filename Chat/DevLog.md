@@ -46,3 +46,7 @@ https://blog.csdn.net/w001162/article/details/1563497?spm=1035.2023.3001.6557&ut
 2.textEdit为什么设置AutoHeight=false，还是不能多行显示？textbox设置Multiline=true就行。
 3.完成SerializeHelper.cs，增加obj->xmlstr,xmlstr->obj，obj->xmlfile,xmlfile->obj方法。
 但是xml标头是utf-16编码。。。。问题未解决。
+
+6/29
+1.因为xml反序列化将PackageModel.data生成了xmlnode，暂时不知道如何生成Model类。所以改为二进制
+序列化。但二进制序列化有一个Model类在Client/Server程序集中命名空间不同的问题。

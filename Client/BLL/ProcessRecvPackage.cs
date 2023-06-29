@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Client.UIL;
-using Client.UIL.Model;
 using Client.Communication;
 using System.Reflection;
+using ChatModel;
 
 namespace Client.BLL
 {

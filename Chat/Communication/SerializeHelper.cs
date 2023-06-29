@@ -226,11 +226,14 @@ namespace Server.Communication
             MemoryStream stream = new MemoryStream();
             stream.Write(data, 0, data.Length);
             stream.Position = 0;
-            BinaryFormatter bf = new BinaryFormatter();
+
+            BinaryFormatter bf = new BinaryFormatter()
+            {
+                Binder = new UBinder()
+            };
             object obj = bf.Deserialize(stream);
 
             stream.Close();
-
             return obj;
         }
 

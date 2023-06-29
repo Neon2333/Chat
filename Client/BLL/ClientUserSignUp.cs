@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Client.UIL.Model;
+using Client.UIL;
+using ChatModel;
 using Client.Communication;
 
 namespace Client.BLL
@@ -19,7 +20,7 @@ namespace Client.BLL
             UserInfoSignUp.UserPwd = usrPwd;
 
             PackageModel packageModelSignUp = new PackageModel();
-            packageModelSignUp.PackageType = PackageType.PackageTypeDef.RequestType_C;
+            packageModelSignUp.PackageType = PackageModel.PackageTypeDef.RequestType_C;
             packageModelSignUp.Msg = String.Empty;
             packageModelSignUp.Data = UserInfoSignUp;
             packageModelSignUp.DataType = UserInfoSignUp.GetType().Name;
