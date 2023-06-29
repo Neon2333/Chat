@@ -48,7 +48,7 @@ namespace Client.Communication
             if (PackageModelBytes.Count <= 4)
             {
                 onePackage = null;
-                return true;
+                return false;
             }
             else 
             {
@@ -56,7 +56,7 @@ namespace Client.Communication
                 if ((PackageModelBytes.Count - 4) < bodyLen)
                 {
                     onePackage = null;
-                    return true;
+                    return false;
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace Client.Communication
             if (PackageModelBytes.Count <= 4)
             {
                 onePackage = null;
-                return true;
+                return false;
             }
             else
             {
@@ -91,7 +91,7 @@ namespace Client.Communication
                 if ((PackageModelBytes.Count - 4) < bodyLen)
                 {
                     onePackage = null;
-                    return true;
+                    return false;
                 }
                 else
                 {
