@@ -31,12 +31,7 @@ namespace Client.UIL
 
         private void FrmLogin_Load(object sender, EventArgs e)
         {
-            if (!ClientUserSignIn.clientSocket.ConnectSvr())
-            {
-                ShowSocketError();
-                return;
-            }
-
+            ShowSocketError(ClientUserSignIn.clientSocket.ConnectSvr());
         }
 
         private void simpleButton_signIn_Click(object sender, EventArgs e)
@@ -68,25 +63,30 @@ namespace Client.UIL
         {
             FrmConfig frmConfig = new FrmConfig();
             frmConfig.ShowDialog();
+            ShowSocketError(ClientUserSignIn.clientSocket.ConnectSvr());
         }
 
-        private void ShowSocketError()
+        /// <summary>
+        /// 显示网络是否连接
+        /// </summary>
+        /// <param name="ifConnect"></param>
+        private void ShowSocketError(bool ifConnect)
         {
-            textEdit_socketError.BackColor = Color.LightYellow;
-            textEdit_socketError.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Default;
-            textEdit_socketError.Text = "网络连接错误，请检查网络连接..";
+            if (ifConnect)
+            {
+                textEdit_socketError.BackColor = Color.FromArgb(240, 240, 240);
+                textEdit_socketError.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+                textEdit_socketError.Text = "";
+                return;
+            }
+            else
+            {
+                textEdit_socketError.BackColor = Color.LightYellow;
+                textEdit_socketError.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Default;
+                textEdit_socketError.Text = "网络连接错误，请检查网络连接..";
+                return;
+            }
         }
-
-        private void ClearSocketError()
-        {
-            textEdit_socketError.BackColor = Color.FromArgb(240, 240, 240);
-            textEdit_socketError.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            textEdit_socketError.Text = "";
-        }
-
-        
-
-
 
     }
 }

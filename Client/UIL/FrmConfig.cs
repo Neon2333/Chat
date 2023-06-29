@@ -25,7 +25,6 @@ namespace Client.UIL
         {
             ClientSocket.SvrIP = textEdit_svrIP.Text.Trim();
             ClientSocket.SvrPort = Convert.ToInt32(textEdit_svrPort.Text.Trim());
-
             this.Close();
         }
 

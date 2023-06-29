@@ -119,3 +119,4 @@ E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.CopyComplete
 E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.exe
 E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.pdb
 E:\WorkSpace\Demo\C#_Chat\Client\bin\Debug\ChatModel.dll
+E:\WorkSpace\Demo\C#_Chat\Client\obj\Debug\Client.csproj.AssemblyReference.cache
