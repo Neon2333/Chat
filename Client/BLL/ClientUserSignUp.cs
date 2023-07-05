@@ -15,10 +15,13 @@ namespace Client.BLL
 
         public static bool SignUp(string usrName, string usrPwd)
         {
+            #region 发送注册数据包
+            //创建实体类
             UserInfoSignUp = new UserInfoSignUp();
             UserInfoSignUp.UserName = usrName;
-            UserInfoSignUp.UserPwd = usrPwd;
+            UserInfoSignUp.UserPwd = Encrypt.MD5Encrypt.EncryptMD5(usrPwd); //pwd加密
 
+            //打包实体类
             PackageModel packageModelSignUp = new PackageModel();
             packageModelSignUp.PackageType = PackageModel.PackageTypeDef.RequestType_C;
             packageModelSignUp.Msg = String.Empty;
@@ -35,7 +38,9 @@ namespace Client.BLL
 
             //Task<bool> sendTask = Task.Run(() => clientSocket.SendData(packageModelSignUp));
             //return sendTask.Result;
-            return ClientUserSignIn.clientSocket.SendData(packageModelSignUp);
+
+            bool flagSendSignUp = ClientUserSignIn.clientSocket.SendData(packageModelSignUp);
+            #endregion
         }
 
     }
