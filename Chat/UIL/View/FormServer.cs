@@ -115,18 +115,11 @@ namespace Server.UIL.View
             }
         }
 
-        //将publiser传入的msg进行显示
         private void _onRecvEvent(object sender, PackageModel package)
         {
-            //if (package.DataType == "UserMessage")
-            //{
-            //    UserMessage userMessage = package.Data as UserMessage;
-            //    this.textBox_receive.BeginInvoke(new Action(() => this.textBox_receive.Text += ($"{userMessage.SendTime} ,{userMessage.UserNameSend}: {userMessage.ChatMsg}" + "\r\n")));
-            //}
-
-            UserInfoSignUp userSignUp = new UserInfoSignUp();
-            if (package.PackageType == PackageModel.PackageTypeDef.RequestType_C)
+            if (package.PackageType == PackageModel.PackageTypeDef.RequestType_SignUp)
             {
+                UserInfoSignUp userSignUp = new UserInfoSignUp();
                 Type dataType = Type.GetType("Server." + package.DataType);
 
                 if (package.Data is UserInfoSignUp)
@@ -139,7 +132,6 @@ namespace Server.UIL.View
 
                 UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
                 int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
-
             }
 
         }

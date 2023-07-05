@@ -13,9 +13,9 @@ namespace Client.BLL
     {
         public static UserInfoSignUp UserInfoSignUp;
 
-        public static bool SignUp(string usrName, string usrPwd)
+        #region 发送注册数据包             
+        public static bool SignUpSend(string usrName, string usrPwd)
         {
-            #region 发送注册数据包
             //创建实体类
             UserInfoSignUp = new UserInfoSignUp();
             UserInfoSignUp.UserName = usrName;
@@ -39,9 +39,13 @@ namespace Client.BLL
             //Task<bool> sendTask = Task.Run(() => clientSocket.SendData(packageModelSignUp));
             //return sendTask.Result;
 
-            bool flagSendSignUp = ClientUserSignIn.clientSocket.SendData(packageModelSignUp);
-            #endregion
-        }
+            return ClientUserSignIn.clientSocket.SendData(packageModelSignUp);
 
+        }
+        #endregion
+
+        #region 接收注册response
+
+        #endregion
     }
 }

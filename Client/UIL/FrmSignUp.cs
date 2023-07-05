@@ -30,7 +30,7 @@ namespace Client.UIL
                 ClearPwdError();
 
                 //注册
-                if (ClientUserSignUp.SignUp(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim()))
+                if (ClientUserSignUp.SignUpSend(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim()))
                 {
                     //MessageBox.Show("注册成功！");
                     this.Close();
