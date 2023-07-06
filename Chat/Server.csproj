@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\clientGetUsersSignIn.cs" />
+    <Compile Include="BLL\SvrDefaultUserInfoSignIn.cs" />
     <Compile Include="BLL\SvrUserSignIn.cs" />
     <Compile Include="BLL\SvrUserSignUp.cs" />
     <Compile Include="Communication\Code.cs" />

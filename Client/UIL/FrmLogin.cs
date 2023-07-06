@@ -17,8 +17,6 @@ namespace Client.UIL
     public partial class FrmLogin : DevExpress.XtraEditors.XtraForm
     {
         ClientUserSignIn clientUserSignIn;
-        //public ClientSocket socketUserSignIn = new ClientSocket();
-
         private bool login = false;
         public bool Login { get => login; set => login = value; }
 

@@ -51,7 +51,8 @@ namespace Client.UIL
             // 
             // labelControl_usrNameLogin
             // 
-            this.labelControl_usrNameLogin.Location = new System.Drawing.Point(56, 58);
+            this.labelControl_usrNameLogin.Location = new System.Drawing.Point(88, 90);
+            this.labelControl_usrNameLogin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.labelControl_usrNameLogin.Name = "labelControl_usrNameLogin";
             this.labelControl_usrNameLogin.Size = new System.Drawing.Size(45, 18);
             this.labelControl_usrNameLogin.TabIndex = 0;
@@ -59,22 +60,25 @@ namespace Client.UIL
             // 
             // textEdit_usrNameLogin
             // 
-            this.textEdit_usrNameLogin.Location = new System.Drawing.Point(145, 55);
+            this.textEdit_usrNameLogin.Location = new System.Drawing.Point(226, 86);
+            this.textEdit_usrNameLogin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textEdit_usrNameLogin.Name = "textEdit_usrNameLogin";
-            this.textEdit_usrNameLogin.Size = new System.Drawing.Size(246, 24);
+            this.textEdit_usrNameLogin.Size = new System.Drawing.Size(385, 24);
             this.textEdit_usrNameLogin.TabIndex = 0;
             // 
             // textEdit_pwdLogin
             // 
-            this.textEdit_pwdLogin.Location = new System.Drawing.Point(145, 125);
+            this.textEdit_pwdLogin.Location = new System.Drawing.Point(226, 195);
+            this.textEdit_pwdLogin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textEdit_pwdLogin.Name = "textEdit_pwdLogin";
             this.textEdit_pwdLogin.Properties.PasswordChar = '*';
-            this.textEdit_pwdLogin.Size = new System.Drawing.Size(246, 24);
+            this.textEdit_pwdLogin.Size = new System.Drawing.Size(385, 24);
             this.textEdit_pwdLogin.TabIndex = 1;
             // 
             // labelControl_pwdLogin
             // 
-            this.labelControl_pwdLogin.Location = new System.Drawing.Point(56, 128);
+            this.labelControl_pwdLogin.Location = new System.Drawing.Point(88, 200);
+            this.labelControl_pwdLogin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.labelControl_pwdLogin.Name = "labelControl_pwdLogin";
             this.labelControl_pwdLogin.Size = new System.Drawing.Size(30, 18);
             this.labelControl_pwdLogin.TabIndex = 2;
@@ -82,24 +86,27 @@ namespace Client.UIL
             // 
             // simpleButton_signIn
             // 
-            this.simpleButton_signIn.Location = new System.Drawing.Point(145, 220);
+            this.simpleButton_signIn.Location = new System.Drawing.Point(226, 344);
+            this.simpleButton_signIn.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.simpleButton_signIn.Name = "simpleButton_signIn";
-            this.simpleButton_signIn.Size = new System.Drawing.Size(246, 50);
+            this.simpleButton_signIn.Size = new System.Drawing.Size(385, 78);
             this.simpleButton_signIn.TabIndex = 4;
             this.simpleButton_signIn.Text = "登录";
             this.simpleButton_signIn.Click += new System.EventHandler(this.simpleButton_signIn_Click);
             // 
             // checkEdit_savePwd
             // 
-            this.checkEdit_savePwd.Location = new System.Drawing.Point(297, 167);
+            this.checkEdit_savePwd.Location = new System.Drawing.Point(464, 261);
+            this.checkEdit_savePwd.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.checkEdit_savePwd.Name = "checkEdit_savePwd";
             this.checkEdit_savePwd.Properties.Caption = "记住密码";
-            this.checkEdit_savePwd.Size = new System.Drawing.Size(94, 24);
+            this.checkEdit_savePwd.Size = new System.Drawing.Size(148, 24);
             this.checkEdit_savePwd.TabIndex = 3;
             // 
             // labelControl_config
             // 
-            this.labelControl_config.Location = new System.Drawing.Point(435, 315);
+            this.labelControl_config.Location = new System.Drawing.Point(680, 492);
+            this.labelControl_config.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.labelControl_config.Name = "labelControl_config";
             this.labelControl_config.Size = new System.Drawing.Size(60, 18);
             this.labelControl_config.TabIndex = 6;
@@ -108,7 +115,8 @@ namespace Client.UIL
             // 
             // labelControl_signUp
             // 
-            this.labelControl_signUp.Location = new System.Drawing.Point(12, 315);
+            this.labelControl_signUp.Location = new System.Drawing.Point(19, 492);
+            this.labelControl_signUp.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.labelControl_signUp.Name = "labelControl_signUp";
             this.labelControl_signUp.Size = new System.Drawing.Size(60, 18);
             this.labelControl_signUp.TabIndex = 5;
@@ -117,21 +125,23 @@ namespace Client.UIL
             // 
             // checkEdit_autoLogin
             // 
-            this.checkEdit_autoLogin.Location = new System.Drawing.Point(145, 167);
+            this.checkEdit_autoLogin.Location = new System.Drawing.Point(226, 261);
+            this.checkEdit_autoLogin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.checkEdit_autoLogin.Name = "checkEdit_autoLogin";
             this.checkEdit_autoLogin.Properties.Caption = "自动登录";
-            this.checkEdit_autoLogin.Size = new System.Drawing.Size(94, 24);
+            this.checkEdit_autoLogin.Size = new System.Drawing.Size(148, 24);
             this.checkEdit_autoLogin.TabIndex = 2;
             // 
             // textEdit_socketError
             // 
-            this.textEdit_socketError.Location = new System.Drawing.Point(90, 300);
+            this.textEdit_socketError.Location = new System.Drawing.Point(140, 469);
+            this.textEdit_socketError.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.textEdit_socketError.Name = "textEdit_socketError";
             this.textEdit_socketError.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.textEdit_socketError.Properties.Appearance.Options.UseBackColor = true;
             this.textEdit_socketError.Properties.AutoHeight = false;
             this.textEdit_socketError.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            this.textEdit_socketError.Size = new System.Drawing.Size(326, 33);
+            this.textEdit_socketError.Size = new System.Drawing.Size(510, 51);
             this.textEdit_socketError.TabIndex = 7;
             // 
             // FrmLogin
@@ -139,7 +149,7 @@ namespace Client.UIL
             this.AcceptButton = this.simpleButton_signIn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(507, 334);
+            this.ClientSize = new System.Drawing.Size(832, 543);
             this.Controls.Add(this.textEdit_socketError);
             this.Controls.Add(this.checkEdit_autoLogin);
             this.Controls.Add(this.labelControl_signUp);

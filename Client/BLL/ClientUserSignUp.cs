@@ -12,6 +12,11 @@ namespace Client.BLL
     class ClientUserSignUp
     {
         public static UserInfoSignUp UserInfoSignUp;
+        public static UserInfoSignIn defaultUserInfoSignIn;
+
+        public ClientUserSignUp()
+        {
+        }
 
         #region 发送注册数据包             
         public static bool SignUpSend(string usrName, string usrPwd)
@@ -23,7 +28,7 @@ namespace Client.BLL
 
             //打包实体类
             PackageModel packageModelSignUp = new PackageModel();
-            packageModelSignUp.PackageType = PackageModel.PackageTypeDef.RequestType_C;
+            packageModelSignUp.PackageType = PackageModel.PackageTypeDef.RequestType_SignUp;
             packageModelSignUp.Msg = String.Empty;
             packageModelSignUp.Data = UserInfoSignUp;
             packageModelSignUp.DataType = UserInfoSignUp.GetType().Name;
@@ -45,7 +50,10 @@ namespace Client.BLL
         #endregion
 
         #region 接收注册response
-
+        public static bool SignUpRecv(UserInfoSignIn defaultUser)
+        {
+            return true;
+        }
         #endregion
     }
 }

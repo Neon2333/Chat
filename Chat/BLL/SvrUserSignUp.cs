@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ChatModel;
+using Server.Communication;
+using Server.DAL.MySQLService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +11,13 @@ namespace Server.BLL
 {
     internal class SvrUserSignUp
     {
+        #region dele
         //private static Dictionary<int, byte[]> usersRecvBuffer = new Dictionary<int, byte[]>();    //(ID,buff)
         //public Dictionary<int, byte[]> UsersRecvBuffer { get => usersRecvBuffer; set => usersRecvBuffer = value; }
-        
+
         //private static Dictionary<int, byte[]> usersSendBuffer = new Dictionary<int, byte[]>();
         //public Dictionary<int, byte[]> UsersSendBuffer { get => usersSendBuffer; set => usersSendBuffer = value; }
-        
+
 
         ///// <summary>
         ///// 用户注册
@@ -49,7 +53,7 @@ namespace Server.BLL
         //    {
         //        return false;
         //    }
-            
+
         //}
 
         ///// <summary>
@@ -81,5 +85,43 @@ namespace Server.BLL
 
         //    return true;
         //}
+        #endregion
+
+        public SvrUserSignUp()
+        {
+        }
+
+        public bool DoSignUp(PackageModel package)
+        {
+            UserInfoSignUp userSignUp = new UserInfoSignUp();
+            Type dataType = Type.GetType("Server." + package.DataType);
+
+            if (package.Data is UserInfoSignUp)
+            {
+                userSignUp = package.Data as UserInfoSignUp;
+                DateTime sendTime = package.SendTime;
+
+            }
+            userSignUp.SignUpTime = DateTime.Now;
+
+            UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
+            int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
+
+            if(operCounts != 1)
+            {
+                return false;
+            }
+            else
+            {
+                PackageModel packageRespSignUp = new PackageModel();
+                packageRespSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
+                packageRespSignUp.Success = true;
+
+                return true;
+            }
+        }
+
+
+
     }
 }

@@ -14,14 +14,14 @@ using Server.Communication;
 using Server.UIL;
 using Server.DAL.MySQLService;
 using ChatModel;
-
+using Server.BLL;
 
 namespace Server.UIL.View
 {
     public partial class FormServer : Form
     {
         public static bool flagRecvMsg = false;
-        ServerSocket ss;
+        public static ServerSocket ss;
 
         public FormServer()
         {
@@ -119,20 +119,10 @@ namespace Server.UIL.View
         {
             if (package.PackageType == PackageModel.PackageTypeDef.RequestType_SignUp)
             {
-                UserInfoSignUp userSignUp = new UserInfoSignUp();
-                Type dataType = Type.GetType("Server." + package.DataType);
-
-                if (package.Data is UserInfoSignUp)
-                {
-                    userSignUp = package.Data as UserInfoSignUp;
-                    DateTime sendTime = package.SendTime;
-
-                }
-                userSignUp.SignUpTime = DateTime.Now;
-
-                UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
-                int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
+                SvrUserSignUp svrUserSignUp = new SvrUserSignUp();
+                svrUserSignUp.DoSignUp(package);
             }
+
 
         }
 

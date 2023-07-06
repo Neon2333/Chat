@@ -32,7 +32,7 @@ namespace Client.UIL
                 //注册
                 if (ClientUserSignUp.SignUpSend(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim()))
                 {
-                    //MessageBox.Show("注册成功！");
+                    MessageBox.Show("注册成功！");
                     this.Close();
                 }
                 else
