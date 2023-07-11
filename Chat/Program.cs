@@ -20,6 +20,8 @@ namespace Server
             Application.Run(new UIL.View.FormServer());
             //Application.Run(new test.Form1());
 
+
+
         }
     }
 }

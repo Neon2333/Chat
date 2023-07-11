@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,30 +15,27 @@ namespace Client.UIL
 {
     public partial class FrmSignUp : DevExpress.XtraEditors.XtraForm
     {
-        //public EventHandler<string> eventApplyUsrNameSignUp;  //注册，应用用户名
-        //public EventHandler<string> eventApplyPwdSignUp;      //注册，应用密码
-        //public EventHandler<bool> eventSignUp;    //注册事件
-
         public FrmSignUp()
         {
             InitializeComponent();
         }
 
+        ClientUserSignUp clientUserSignUp = new ClientUserSignUp();
         private void simpleButton_apply_Click(object sender, EventArgs e)
         {
             if (textEdit_pwdSignUp.Text.Equals(textEdit_confirmPwdSignUp.Text))
             {
                 ClearPwdError();
-
-                //注册
-                if (ClientUserSignUp.SignUpSend(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim()))
+                if (clientUserSignUp.DoSignUp(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim(), Timeout.Infinite) && clientUserSignUp.IsSuccessSignUpResponse)
                 {
                     MessageBox.Show("注册成功！");
                     this.Close();
                 }
                 else
                 {
+                    clientUserSignUp.defaultUserInfoSignIn.CancelSendSource.Cancel();
                     MessageBox.Show("注册失败！");
+                    this.Close();
                 }
             }
             else
@@ -46,22 +44,11 @@ namespace Client.UIL
                 textEdit_pwdSignUp.Text = "";
                 textEdit_confirmPwdSignUp.Text = "";
             }
-
         }
-
-
-        //public void GetUserName(object sender, string usrName)
-        //{
-        //    ClientSignUp.UsrName = usrName;
-        //}
-
-        //public void GetUerPwd(object sender, string usrPwd)
-        //{
-        //    ClientSignUp.UsrPwd = usrPwd;
-        //}
 
         private void simpleButton_cancel_Click(object sender, EventArgs e)
         {
+            clientUserSignUp.defaultUserInfoSignIn.CancelSendSource.Cancel();
             this.Close();
         }
 

@@ -57,14 +57,25 @@ namespace Client.Communication
         /// <typeparam name="T"></typeparam>
         /// <param name="package"></param>
         /// <returns></returns>
-        public bool SendData(PackageModel package)
+        public bool SendData(UserInfoSignIn userSend, PackageModel package)
         {
             try
             {
                 NetPacket netPacket = new NetPacket();
                 byte[] sendBytes = netPacket.PackageBinary(package);
                 int sendByteNums = connectSvrSocket.Send(sendBytes, sendBytes.Length, 0);//发送信息
-                return sendByteNums == sendBytes.Length;
+                if(sendByteNums == sendBytes.Length)
+                {
+                    if(userSend.sendEvent != null)
+                    {
+                        userSend.sendEvent(this, package);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch(Exception ex)
             {
@@ -84,30 +95,32 @@ namespace Client.Communication
         /// 接收网络包
         /// </summary>
         /// <param name="userRecvData"></param>
-        public void RecvData(UserInfoSignIn userRecvData)
+        public void RecvData(UserInfoSignIn userRecv)
         {
             try
             {
                 //全部接收到缓冲区后，再异步处理
-                byte[] recvBufferTemp = new byte[1024];
+                byte[] recvBufferTemp = new byte[65535]; 
                 int bytesRecv = 0;
 
                 //接收缓冲区中数据全部放到RecvBuffer中
-                while ((bytesRecv = userRecvData.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
+                while ((bytesRecv = userRecv.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
                 {
-                    userRecvData.recvBuffer.AddRange(recvBufferTemp.ToList<byte>());
-                }
-
-                //拆包
-                NetPacket netPacket = new NetPacket();
-                PackageModel onePackage;
-                while (netPacket.UnPackageBinary(ref userRecvData.recvBuffer, out onePackage))
-                {
-                    if (userRecvData.recvEvent != null)
+                    userRecv.recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
+                    
+                    //拆包
+                    NetPacket netPacket = new NetPacket();
+                    PackageModel onePackage;
+                    while (netPacket.UnPackageBinary(ref userRecv.recvBuffer, out onePackage))
                     {
-                        userRecvData.recvEvent(this, onePackage);
+                        if (userRecv.recvEvent != null)
+                        {
+                            userRecv.recvEvent(this, onePackage);
+                        }
                     }
                 }
+
+
             }
             catch (Exception ex)
             {

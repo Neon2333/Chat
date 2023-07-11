@@ -27,6 +27,11 @@ namespace Client.UIL
             clientUserSignIn = new ClientUserSignIn();
         }
 
+        public void init()
+        {
+
+        }
+
         private void FrmLogin_Load(object sender, EventArgs e)
         {
             ShowSocketError(ClientUserSignIn.clientSocket.ConnectSvr());

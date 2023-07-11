@@ -91,21 +91,23 @@ namespace Server.BLL
         {
         }
 
-        public bool DoSignUp(PackageModel package)
+        public bool DoSignUp(ServerSocket ss, UserInfoSignIn defaultUser, PackageModel packageRequestSignUp)
         {
             UserInfoSignUp userSignUp = new UserInfoSignUp();
-            Type dataType = Type.GetType("Server." + package.DataType);
 
-            if (package.Data is UserInfoSignUp)
+            if (packageRequestSignUp.Data is UserInfoSignUp)
             {
-                userSignUp = package.Data as UserInfoSignUp;
-                DateTime sendTime = package.SendTime;
+                userSignUp = packageRequestSignUp.Data as UserInfoSignUp;
+                DateTime sendTime = packageRequestSignUp.SendTime;
 
             }
             userSignUp.SignUpTime = DateTime.Now;
 
             UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
-            int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
+
+            Task<int> taskInsertMysqlSignUp = Task<int>.Run(()=> userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp));
+            int operCounts = taskInsertMysqlSignUp.Result;
+            //int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
 
             if(operCounts != 1)
             {
@@ -113,11 +115,13 @@ namespace Server.BLL
             }
             else
             {
-                PackageModel packageRespSignUp = new PackageModel();
-                packageRespSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
-                packageRespSignUp.Success = true;
+                PackageModel packageResponseSignUp = new PackageModel();
+                packageResponseSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
+                packageResponseSignUp.Success = true;
 
-                return true;
+                return ss.SendDataClient(defaultUser, packageResponseSignUp);
+
+
             }
         }
 

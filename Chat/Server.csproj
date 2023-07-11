@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BLL\clientGetUsersSignIn.cs" />
+    <Compile Include="BLL\StartUp.cs" />
     <Compile Include="BLL\SvrDefaultUserInfoSignIn.cs" />
     <Compile Include="BLL\SvrUserSignIn.cs" />
     <Compile Include="BLL\SvrUserSignUp.cs" />
@@ -115,6 +116,7 @@
     </Compile>
     <None Include="DAL\MySQLHelper\.gitkeep" />
     <None Include="DAL\SqliteHelper\.gitkeep" />
+    <None Include="Log4net\.gitkeepo" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

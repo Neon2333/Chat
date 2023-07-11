@@ -32,7 +32,10 @@ namespace Server.UIL.View
 
         private void init()
         {
-            this.textBox_port.Text = "8888";
+            //this.textBox_port.Text = "8888";
+
+            StartUp startUp = new StartUp();
+            startUp.Start();
         }
 
         private void showConnectedClients(object sender, UserInfoSignIn client)
@@ -60,14 +63,14 @@ namespace Server.UIL.View
         {
             try
             {
-                UserInfoSignIn user = new UserInfoSignIn();
-                user.UserName = "wk";
-                user.connectedEvent += showConnectedClients;
-                if (await ss.AcceptClientConnect(user))
-                {
-                    textBox_status.Text = "connected..";
-                    this.textBox_status.ForeColor = System.Drawing.Color.Green;
-                }
+                //UserInfoSignIn user = new UserInfoSignIn();
+                //user.UserName = "wk";
+                //user.connectedEvent += showConnectedClients;
+                //if (await ss.AcceptClientConnect(user))
+                //{
+                //    textBox_status.Text = "connected..";
+                //    this.textBox_status.ForeColor = System.Drawing.Color.Green;
+                //}
 
                 //if (ss.ConnectedClients.Count > 0)
                 //{
@@ -85,7 +88,8 @@ namespace Server.UIL.View
             }
         }
 
-        //将publiser传入的msg进行显示
+
+        //数据发送事件处理
         private void _onSendEvent(object sender, PackageModel packageModel)
         {
             this.textBox_status.BeginInvoke(new Action(() => this.textBox_status.Text = "send success.."));
@@ -111,35 +115,35 @@ namespace Server.UIL.View
             }
             catch(Exception ex)
             {
+                ex.ToString();
+
                 this.textBox_status.Text = "send failed..";
             }
         }
 
-        private void _onRecvEvent(object sender, PackageModel package)
-        {
-            if (package.PackageType == PackageModel.PackageTypeDef.RequestType_SignUp)
-            {
-                SvrUserSignUp svrUserSignUp = new SvrUserSignUp();
-                svrUserSignUp.DoSignUp(package);
-            }
+
+        ////接收数据事件处理
+        //private void _onRecvEvent(object sender, PackageModel package)
+        //{
+        //    if (package.PackageType == PackageModel.PackageTypeDef.RequestType_SignUp)
+        //    {
+        //        SvrUserSignUp svrUserSignUp = new SvrUserSignUp();
+        //        svrUserSignUp.DoSignUp(StartUp.defaultUser, package);
+        //    }
 
 
-        }
+        //}
 
         private void button_receive_Click(object sender, EventArgs e)   
         {
-            //ss.ReceiveMsg(this.textBox_receive, this.textBox_status);     //textbox传入函数，通过委托跨线程访问
-
-
-            //客户端将委托绑定事件，通过类Message封装接收的消息，EventHandler从publisher传入observer
-            if (ss.ConnectedClients.Count > 0)
-            {
-                foreach (var client in ss.ConnectedClients)
-                {
-                    Task.Run(() => ss.RecvData(client), client.CancelRecvToken);
-                    client.recvEvent += _onRecvEvent;
-                }
-            }
+            //if (ss.ConnectedClients.Count > 0)
+            //{
+            //    foreach (var client in ss.ConnectedClients)
+            //    {
+            //        Task.Run(() => ss.RecvData(client), client.CancelRecvToken);
+            //        client.recvEvent += _onRecvEvent;
+            //    }
+            //}
 
         }
 

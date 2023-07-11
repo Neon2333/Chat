@@ -62,6 +62,7 @@ namespace Server.Communication
             }
             catch (Exception ex)
             {
+                ex.ToString();
                 return false;
             }
         }
@@ -85,7 +86,11 @@ namespace Server.Communication
                     user.ConnectTime = DateTime.Now;
                     user.CancelRecvToken = user.CancelRecvSource.Token;
                     user.CancelSendToken = user.CancelSendSource.Token;
-                    ConnectedClients.Add(user);
+                    //default用户不加入用户列表
+                    if (!"Server".Equals(user.UserName))
+                    {
+                        ConnectedClients.Add(user);
+                    }
 
                     if (user.connectedEvent != null)
                     {
@@ -186,17 +191,25 @@ namespace Server.Communication
         /// <param name="data"></param>
         /// <returns></returns>
         //public bool SendMsgClient(UserInfoSignIn userRecvMsg, UserMessage msg)
-        public int SendDataClient(UserInfoSignIn userRecvData, PackageModel package)
+        public bool SendDataClient(UserInfoSignIn userRecvData, PackageModel package)
         {
             NetPacket packet = new NetPacket();
-            byte[] sendness = packet.PackageBinary(package);
+            byte[] sendBytes = packet.PackageBinary(package);
 
-            if (userRecvData.sendEvent != null)
+
+
+            if (userRecvData.ClientConnectSocket.Send(sendBytes) == sendBytes.Length)
             {
-                userRecvData.sendEvent(this, package);
+                if (userRecvData.sendEvent != null)
+                {
+                    userRecvData.sendEvent(this, package);
+                }
+                return true;
             }
-            
-            return userRecvData.ClientConnectSocket.Send(sendness);
+            else
+            {
+                return false;
+            }
             //sendEvent(bytes);
         }
 
@@ -271,8 +284,6 @@ namespace Server.Communication
         //    }, userSendMsg.CancelRecvMsgToken);
 
         //}
-
-        
 
         public bool haltRecvMsg(UserInfoSignIn user)
         {
