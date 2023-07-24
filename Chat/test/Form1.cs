@@ -21,8 +21,8 @@ namespace Server.test
         public Form1()
         {
             InitializeComponent();
-            ServerSocket ss;
-            ss = new ServerSocket(IPAddress.Any, 8888, 10);
+            ClientSocket ss;
+            ss = new ClientSocket(IPAddress.Any, 8888, 10);
 
             UserInfoSignIn user = new UserInfoSignIn();
             user.UserName = "wk";

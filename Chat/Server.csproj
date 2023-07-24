@@ -96,7 +96,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Communication\ServerSocket.cs" />
+    <Compile Include="Communication\ClientSocket.cs" />
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="test\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

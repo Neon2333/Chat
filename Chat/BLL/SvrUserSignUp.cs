@@ -91,7 +91,7 @@ namespace Server.BLL
         {
         }
 
-        public bool DoSignUp(ServerSocket ss, UserInfoSignIn defaultUser, PackageModel packageRequestSignUp)
+        public bool DoSignUp(ClientSocket ss, UserInfoSignIn defaultUser, PackageModel packageRequestSignUp)
         {
             UserInfoSignUp userSignUp = new UserInfoSignUp();
 

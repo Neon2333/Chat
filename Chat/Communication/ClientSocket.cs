@@ -19,7 +19,7 @@ using ChatModel;
 
 namespace Server.Communication
 {
-    public class ServerSocket
+    public class ClientSocket
     {
         private static Socket svrListenSocket; //客户端监听socket
 
@@ -33,7 +33,7 @@ namespace Server.Communication
         private Semaphore sme;  //控制服务器与客户端连接线程数
 
 
-        public ServerSocket(IPAddress bindIP, int bindPort, int listenRequests)
+        public ClientSocket(IPAddress bindIP, int bindPort, int listenRequests)
         {
             this.bindIP = bindIP;
             this.bindPort = bindPort;

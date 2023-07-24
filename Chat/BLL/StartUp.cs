@@ -11,7 +11,7 @@ namespace Server.BLL
 {
     class StartUp
     {
-        public static ServerSocket ss = new ServerSocket(IPAddress.Any, 8888, 10);
+        public static ClientSocket ss = new ClientSocket(IPAddress.Any, 8888, 10);
      
         public UserInfoSignIn defaultUser;
 

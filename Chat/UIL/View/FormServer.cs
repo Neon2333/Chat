@@ -21,7 +21,7 @@ namespace Server.UIL.View
     public partial class FormServer : Form
     {
         public static bool flagRecvMsg = false;
-        public static ServerSocket ss;
+        public static ClientSocket ss;
 
         public FormServer()
         {
@@ -46,7 +46,7 @@ namespace Server.UIL.View
 
         private void button_startListen_Click(object sender, EventArgs e)
         {
-            ss = new ServerSocket(IPAddress.Any, int.Parse(this.textBox_port.Text), 10);
+            ss = new ClientSocket(IPAddress.Any, int.Parse(this.textBox_port.Text), 10);
             string initMsg = String.Empty;
             if(ss.Listen())
             {
