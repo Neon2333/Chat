@@ -127,7 +127,7 @@ namespace Server.Communication
         {
             try
             {
-                //不会卡死线程，当有连接时调用回调
+                //不会卡死线程函数直接返回，当有连接时调用回调AcceptCallback
                 svrListenSocket.BeginAccept(new AsyncCallback(AcceptCallback), svrListenSocket);    //Accept()建立连接
             }
             catch (NullReferenceException)
@@ -152,8 +152,9 @@ namespace Server.Communication
         {
             try
             {
-                Socket svrListen = (Socket)iar.AsyncState;  //获取svrListenSocket
+                Socket svrListen = (Socket)iar.AsyncState;  //获取监听svrListenSocket
 
+                //定义default用户。后面通过根据业务，给参数赋值将default用户转成具体的用户
                 UserInfoSignIn defaultUser = new UserInfoSignIn();
                 defaultUser.ClientConnectSocket = svrListen.EndAccept(iar);    //获取连接socket
                 defaultUser.ClientIP = (defaultUser.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
@@ -161,19 +162,25 @@ namespace Server.Communication
                 defaultUser.ConnectTime = DateTime.Now;
                 defaultUser.CancelRecvToken = defaultUser.CancelRecvSource.Token;
                 defaultUser.CancelSendToken = defaultUser.CancelSendSource.Token;
-
+                defaultUser.UserID = -1;
+                defaultUser.UserName = "default";
+                defaultUser.UserPwd = null;
+                defaultUser.LoginTime = DateTime.Now;
+                //加入用户序列
                 ConnectedClients.Add(defaultUser.ClientIP, defaultUser);
-
-                Console.WriteLine($"connected: {defaultUser.ClientIP}:{defaultUser.ClientPort}");
 
                 if (defaultUser.connectedEvent != null)
                 {
                     defaultUser.connectedEvent(this, defaultUser);
                 }
+                
+                Console.WriteLine($"connected: {defaultUser.ClientIP}:{defaultUser.ClientPort}");
 
+                //开始接收数据
                 ConnectedClients.TryGetValue(defaultUser.ClientIP, out defaultUser);
                 Task.Run(() => RecvData(ref defaultUser), defaultUser.CancelRecvToken);   //开线程负责接收该client连接数据
 
+                //接收下一个连接
                 svrListenSocket.BeginAccept(new AsyncCallback(AcceptCallback), svrListen);    //Accept()建立连接时调用回调
             }
             catch (NullReferenceException)
@@ -349,7 +356,9 @@ namespace Server.Communication
                 {
                     SvrUserSignUp svrUserSignUp = new SvrUserSignUp(ref userRecvData);
                     //开个线程执行DoSignUp
-                    //Task.Run(() => svrUserSignUp.DoSignUp(ref userRecvData, onePacket));
+                    UserInfoSignIn tempUser = new UserInfoSignIn();
+                    Task.Run(() => svrUserSignUp.DoSignUp(ref userRecvData, onePacket));
+
 
                 }
                 else if (onePacket.PackageType == PackageModel.PackageTypeDef.RequestType_SignIn)

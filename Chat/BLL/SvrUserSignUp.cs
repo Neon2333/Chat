@@ -91,11 +91,6 @@ namespace Server.BLL
 
         public SvrUserSignUp(ref UserInfoSignIn user)
         {
-            user.UserID = -1;
-            user.UserName = "default";
-            user.UserPwd = null;
-            user.LoginTime = DateTime.Now;
-
             //user.connectedEvent += _onConnectSvrEvent;
             //user.recvEvent += _onSignUpRecvEvent;
             //user.sendEvent += _onSignUpSendEvent;
