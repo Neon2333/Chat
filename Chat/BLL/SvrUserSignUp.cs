@@ -4,6 +4,7 @@ using Server.DAL.MySQLService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,16 +102,16 @@ namespace Server.BLL
         /// </summary>
         /// <param name="packageRequestSignUp"></param>
         /// <returns></returns>
-        public bool DoSignUp(ref UserInfoSignIn user, PackageModel packageRequestSignUp)
+        public bool DoSignUp(Socket clientConnSocket, PackageModel packageRequestSignUp)
         {
+            ////打包实体类
             UserInfoSignUp userSignUp = new UserInfoSignUp();
-
             if (packageRequestSignUp.Data is UserInfoSignUp)
             {
                 userSignUp = packageRequestSignUp.Data as UserInfoSignUp;
                 DateTime sendTime = packageRequestSignUp.SendTime;
             }
-            userSignUp.SignUpTime = DateTime.Now;
+            userSignUp.SignUpTime = DateTime.Now;   
 
             //写入DB
             UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
@@ -120,25 +121,26 @@ namespace Server.BLL
 
             if (operCounts != 1)
             {
-                return false;
+                //写入DB失败
+                return false;   
             }
             else
             {
-                //若成功写入数据库，将数据echo回客户端
+                //成功写入数据库，将数据echo回客户端
                 PackageModel packageResponseSignUp = new PackageModel();
                 packageResponseSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
                 packageResponseSignUp.Success = true;
 
-                return StartUp.ss.SendDataClient(user, packageResponseSignUp);
+                return StartUp.ss.SendDataClient(clientConnSocket, packageResponseSignUp);
             }
         }
 
-        //注册：服务器接收数据事件处理
+        //服务器接收注册数据事件处理
         private void _onSignUpRecvEvent(object sender, PackageModel package)
         {
         }
 
-        //注册：服务器发送数据事件处理
+        //服务器发送注册数据事件处理
         private void _onSignUpSendEvent(object sender, PackageModel packageModel)
         {
         }

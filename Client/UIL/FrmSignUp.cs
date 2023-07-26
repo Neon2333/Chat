@@ -21,19 +21,22 @@ namespace Client.UIL
         }
 
         ClientUserSignUp clientUserSignUp = new ClientUserSignUp();
-        private void simpleButton_apply_Click(object sender, EventArgs e)
+        private void simpleButton_applySignUp_Click(object sender, EventArgs e)
         {
             if (textEdit_pwdSignUp.Text.Equals(textEdit_confirmPwdSignUp.Text))
             {
                 ClearPwdError();
-                if (clientUserSignUp.DoSignUp(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim(), Timeout.Infinite) && clientUserSignUp.IsSuccessSignUpResponse)
+                if (clientUserSignUp.DoSignUp(textEdit_usrNameSignUp.Text.Trim(), textEdit_pwdSignUp.Text.Trim(), Timeout.Infinite))
                 {
                     MessageBox.Show("注册成功！");
                     this.Close();
                 }
                 else
                 {
-                    clientUserSignUp.defaultUserInfoSignIn.CancelSendSource.Cancel();
+                    //防止超时返回false后，SignUp内的SendTask和RecvTask还在线程中执行
+                    clientUserSignUp.defaultUserSignIn.CancelSendSource.Cancel();
+                    clientUserSignUp.defaultUserSignIn.CancelRecvSource.Cancel();
+
                     MessageBox.Show("注册失败！");
                     this.Close();
                 }
@@ -46,9 +49,11 @@ namespace Client.UIL
             }
         }
 
-        private void simpleButton_cancel_Click(object sender, EventArgs e)
+        private void simpleButton_cancelSignUp_Click(object sender, EventArgs e)
         {
-            clientUserSignUp.defaultUserInfoSignIn.CancelSendSource.Cancel();
+            clientUserSignUp.defaultUserSignIn.CancelSendSource.Cancel();
+            clientUserSignUp.defaultUserSignIn.CancelRecvSource.Cancel();
+
             this.Close();
         }
 

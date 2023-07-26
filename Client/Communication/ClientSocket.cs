@@ -66,6 +66,7 @@ namespace Client.Communication
                 int sendByteNums = connectSvrSocket.Send(sendBytes, sendBytes.Length, 0);//发送信息
                 if(sendByteNums == sendBytes.Length)
                 {
+                    //触发发送事件
                     if(userSend.sendEvent != null)
                     {
                         userSend.sendEvent(this, package);
@@ -108,6 +109,7 @@ namespace Client.Communication
             }
         }
 
+        //接收数据回调
         public void RecvCallback(IAsyncResult iar)
         {
             UserInfoSignIn userRecv = (UserInfoSignIn)iar.AsyncState;   
@@ -119,6 +121,7 @@ namespace Client.Communication
             PackageModel onePackage;
             while (netPacket.UnPackageBinary(ref userRecv.recvBuffer, out onePackage))
             {
+                //触发接收事件
                 if (userRecv.recvEvent != null)
                 {
                     userRecv.recvEvent(this, onePackage);

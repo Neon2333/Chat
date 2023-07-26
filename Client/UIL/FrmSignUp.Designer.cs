@@ -35,8 +35,8 @@ namespace Client.UIL
             this.labelControl_pwdSignUp = new DevExpress.XtraEditors.LabelControl();
             this.textEdit_confirmPwdSignUp = new DevExpress.XtraEditors.TextEdit();
             this.labelControl_confirmPwdSignUp = new DevExpress.XtraEditors.LabelControl();
-            this.simpleButton_apply = new DevExpress.XtraEditors.SimpleButton();
-            this.simpleButton_cancel = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButton_applySignUp = new DevExpress.XtraEditors.SimpleButton();
+            this.simpleButton_cancelSignUp = new DevExpress.XtraEditors.SimpleButton();
             this.textEdit_pwdError = new DevExpress.XtraEditors.TextEdit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_usrNameSignUp.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_pwdSignUp.Properties)).BeginInit();
@@ -47,7 +47,7 @@ namespace Client.UIL
             // labelControl_usrNameSignUp
             // 
             this.labelControl_usrNameSignUp.Location = new System.Drawing.Point(129, 50);
-            this.labelControl_usrNameSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.labelControl_usrNameSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.labelControl_usrNameSignUp.Name = "labelControl_usrNameSignUp";
             this.labelControl_usrNameSignUp.Size = new System.Drawing.Size(45, 18);
             this.labelControl_usrNameSignUp.TabIndex = 0;
@@ -56,7 +56,7 @@ namespace Client.UIL
             // textEdit_usrNameSignUp
             // 
             this.textEdit_usrNameSignUp.Location = new System.Drawing.Point(290, 46);
-            this.textEdit_usrNameSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textEdit_usrNameSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.textEdit_usrNameSignUp.Name = "textEdit_usrNameSignUp";
             this.textEdit_usrNameSignUp.Size = new System.Drawing.Size(289, 24);
             this.textEdit_usrNameSignUp.TabIndex = 1;
@@ -64,7 +64,7 @@ namespace Client.UIL
             // textEdit_pwdSignUp
             // 
             this.textEdit_pwdSignUp.Location = new System.Drawing.Point(290, 111);
-            this.textEdit_pwdSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textEdit_pwdSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.textEdit_pwdSignUp.Name = "textEdit_pwdSignUp";
             this.textEdit_pwdSignUp.Properties.PasswordChar = '*';
             this.textEdit_pwdSignUp.Size = new System.Drawing.Size(289, 24);
@@ -73,7 +73,7 @@ namespace Client.UIL
             // labelControl_pwdSignUp
             // 
             this.labelControl_pwdSignUp.Location = new System.Drawing.Point(129, 115);
-            this.labelControl_pwdSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.labelControl_pwdSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.labelControl_pwdSignUp.Name = "labelControl_pwdSignUp";
             this.labelControl_pwdSignUp.Size = new System.Drawing.Size(30, 18);
             this.labelControl_pwdSignUp.TabIndex = 2;
@@ -82,7 +82,7 @@ namespace Client.UIL
             // textEdit_confirmPwdSignUp
             // 
             this.textEdit_confirmPwdSignUp.Location = new System.Drawing.Point(290, 180);
-            this.textEdit_confirmPwdSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textEdit_confirmPwdSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.textEdit_confirmPwdSignUp.Name = "textEdit_confirmPwdSignUp";
             this.textEdit_confirmPwdSignUp.Properties.PasswordChar = '*';
             this.textEdit_confirmPwdSignUp.Size = new System.Drawing.Size(289, 24);
@@ -91,36 +91,36 @@ namespace Client.UIL
             // labelControl_confirmPwdSignUp
             // 
             this.labelControl_confirmPwdSignUp.Location = new System.Drawing.Point(129, 184);
-            this.labelControl_confirmPwdSignUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.labelControl_confirmPwdSignUp.Margin = new System.Windows.Forms.Padding(4);
             this.labelControl_confirmPwdSignUp.Name = "labelControl_confirmPwdSignUp";
             this.labelControl_confirmPwdSignUp.Size = new System.Drawing.Size(60, 18);
             this.labelControl_confirmPwdSignUp.TabIndex = 4;
             this.labelControl_confirmPwdSignUp.Text = "确认密码";
             // 
-            // simpleButton_apply
+            // simpleButton_applySignUp
             // 
-            this.simpleButton_apply.Location = new System.Drawing.Point(154, 281);
-            this.simpleButton_apply.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.simpleButton_apply.Name = "simpleButton_apply";
-            this.simpleButton_apply.Size = new System.Drawing.Size(181, 72);
-            this.simpleButton_apply.TabIndex = 6;
-            this.simpleButton_apply.Text = "确定(&S)";
-            this.simpleButton_apply.Click += new System.EventHandler(this.simpleButton_apply_Click);
+            this.simpleButton_applySignUp.Location = new System.Drawing.Point(154, 281);
+            this.simpleButton_applySignUp.Margin = new System.Windows.Forms.Padding(4);
+            this.simpleButton_applySignUp.Name = "simpleButton_applySignUp";
+            this.simpleButton_applySignUp.Size = new System.Drawing.Size(181, 72);
+            this.simpleButton_applySignUp.TabIndex = 6;
+            this.simpleButton_applySignUp.Text = "确定(&S)";
+            this.simpleButton_applySignUp.Click += new System.EventHandler(this.simpleButton_applySignUp_Click);
             // 
-            // simpleButton_cancel
+            // simpleButton_cancelSignUp
             // 
-            this.simpleButton_cancel.Location = new System.Drawing.Point(425, 281);
-            this.simpleButton_cancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.simpleButton_cancel.Name = "simpleButton_cancel";
-            this.simpleButton_cancel.Size = new System.Drawing.Size(181, 72);
-            this.simpleButton_cancel.TabIndex = 7;
-            this.simpleButton_cancel.Text = "取消(&X)";
-            this.simpleButton_cancel.Click += new System.EventHandler(this.simpleButton_cancel_Click);
+            this.simpleButton_cancelSignUp.Location = new System.Drawing.Point(425, 281);
+            this.simpleButton_cancelSignUp.Margin = new System.Windows.Forms.Padding(4);
+            this.simpleButton_cancelSignUp.Name = "simpleButton_cancelSignUp";
+            this.simpleButton_cancelSignUp.Size = new System.Drawing.Size(181, 72);
+            this.simpleButton_cancelSignUp.TabIndex = 7;
+            this.simpleButton_cancelSignUp.Text = "取消(&X)";
+            this.simpleButton_cancelSignUp.Click += new System.EventHandler(this.simpleButton_cancelSignUp_Click);
             // 
             // textEdit_pwdError
             // 
             this.textEdit_pwdError.Location = new System.Drawing.Point(129, 394);
-            this.textEdit_pwdError.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textEdit_pwdError.Margin = new System.Windows.Forms.Padding(4);
             this.textEdit_pwdError.Name = "textEdit_pwdError";
             this.textEdit_pwdError.Properties.Appearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.textEdit_pwdError.Properties.Appearance.Options.UseBackColor = true;
@@ -135,8 +135,8 @@ namespace Client.UIL
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(805, 416);
             this.Controls.Add(this.textEdit_pwdError);
-            this.Controls.Add(this.simpleButton_cancel);
-            this.Controls.Add(this.simpleButton_apply);
+            this.Controls.Add(this.simpleButton_cancelSignUp);
+            this.Controls.Add(this.simpleButton_applySignUp);
             this.Controls.Add(this.textEdit_confirmPwdSignUp);
             this.Controls.Add(this.labelControl_confirmPwdSignUp);
             this.Controls.Add(this.textEdit_pwdSignUp);
@@ -163,8 +163,8 @@ namespace Client.UIL
         private DevExpress.XtraEditors.LabelControl labelControl_pwdSignUp;
         private DevExpress.XtraEditors.TextEdit textEdit_confirmPwdSignUp;
         private DevExpress.XtraEditors.LabelControl labelControl_confirmPwdSignUp;
-        private DevExpress.XtraEditors.SimpleButton simpleButton_apply;
-        private DevExpress.XtraEditors.SimpleButton simpleButton_cancel;
+        private DevExpress.XtraEditors.SimpleButton simpleButton_applySignUp;
+        private DevExpress.XtraEditors.SimpleButton simpleButton_cancelSignUp;
         private DevExpress.XtraEditors.TextEdit textEdit_pwdError;
     }
 }
