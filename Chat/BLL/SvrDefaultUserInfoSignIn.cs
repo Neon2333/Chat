@@ -1,5 +1,4 @@
 ﻿using ChatModel;
-using Server.UIL.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;

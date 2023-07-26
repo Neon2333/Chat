@@ -87,11 +87,26 @@ namespace Server.BLL
         //}
         #endregion
 
-        public SvrUserSignUp()
+        public SvrUserSignUp() { }
+
+        public SvrUserSignUp(ref UserInfoSignIn user)
         {
+            user.UserID = -1;
+            user.UserName = "default";
+            user.UserPwd = null;
+            user.LoginTime = DateTime.Now;
+
+            //user.connectedEvent += _onConnectSvrEvent;
+            //user.recvEvent += _onSignUpRecvEvent;
+            //user.sendEvent += _onSignUpSendEvent;
         }
 
-        public bool DoSignUp(ClientSocket ss, UserInfoSignIn defaultUser, PackageModel packageRequestSignUp)
+        /// <summary>
+        /// 根据收到的数据包进行SignUp操作
+        /// </summary>
+        /// <param name="packageRequestSignUp"></param>
+        /// <returns></returns>
+        public bool DoSignUp(ref UserInfoSignIn user, PackageModel packageRequestSignUp)
         {
             UserInfoSignUp userSignUp = new UserInfoSignUp();
 
@@ -99,33 +114,39 @@ namespace Server.BLL
             {
                 userSignUp = packageRequestSignUp.Data as UserInfoSignUp;
                 DateTime sendTime = packageRequestSignUp.SendTime;
-
             }
             userSignUp.SignUpTime = DateTime.Now;
 
+            //写入DB
             UserInfoSignUpServiceMySQL userInfoSignUpServiceMySQL = new UserInfoSignUpServiceMySQL();
+            //Task<int> taskInsertMysqlSignUp = Task<int>.Run(()=> userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp));
+            //int operCounts = taskInsertMysqlSignUp.Result;
+            int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
 
-            Task<int> taskInsertMysqlSignUp = Task<int>.Run(()=> userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp));
-            int operCounts = taskInsertMysqlSignUp.Result;
-            //int operCounts = userInfoSignUpServiceMySQL.InsUserInfoSignUp(userSignUp);
-
-            if(operCounts != 1)
+            if (operCounts != 1)
             {
                 return false;
             }
             else
             {
+                //若成功写入数据库，将数据echo回客户端
                 PackageModel packageResponseSignUp = new PackageModel();
                 packageResponseSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
                 packageResponseSignUp.Success = true;
 
-                return ss.SendDataClient(defaultUser, packageResponseSignUp);
-
-
+                return StartUp.ss.SendDataClient(user, packageResponseSignUp);
             }
         }
 
+        //注册：服务器接收数据事件处理
+        private void _onSignUpRecvEvent(object sender, PackageModel package)
+        {
+        }
 
+        //注册：服务器发送数据事件处理
+        private void _onSignUpSendEvent(object sender, PackageModel packageModel)
+        {
+        }
 
     }
 }

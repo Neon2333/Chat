@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Server.Communication;
 using Server.DAL.MySQLService;
-using Server.UIL;
 using ChatModel;
 
 
@@ -20,31 +19,31 @@ namespace Server.test
     {
         public Form1()
         {
-            InitializeComponent();
-            ClientSocket ss;
-            ss = new ClientSocket(IPAddress.Any, 8888, 10);
+            //InitializeComponent();
+            //ServerSocket ss;
+            //ss = new ServerSocket(IPAddress.Any, 8888, 10);
 
-            UserInfoSignIn user = new UserInfoSignIn();
-            user.UserName = "wk";
+            //UserInfoSignIn user = new UserInfoSignIn();
+            //user.UserName = "wk";
             
-            ss.Listen();
+            //ss.Listen();
             
-            //user.connectedEvent += _onConnectEvent;
+            ////user.connectedEvent += _onConnectEvent;
 
-            if ((ss.AcceptClientConnect(user)).Result)
-            {
+            //if ((ss.AcceptClientConnect(user)).Result)
+            //{
 
-            }
+            //}
 
-            if (ss.ConnectedClients.Count > 0)
-            {
-                foreach (var client in ss.ConnectedClients)
-                {
-                    Task.Run(() => ss.RecvData(client), client.CancelRecvToken);
+            //if (ss.ConnectedClients.Count > 0)
+            //{
+            //    foreach (var client in ss.ConnectedClients)
+            //    {
+            //        Task.Run(() => ss.RecvData(client), client.CancelRecvToken);
 
-                    client.recvEvent += _onRecvEvent;
-                }
-            }
+            //        client.recvEvent += _onRecvEvent;
+            //    }
+            //}
             
 
 

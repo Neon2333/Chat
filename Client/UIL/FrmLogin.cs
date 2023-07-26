@@ -19,7 +19,7 @@ namespace Client.UIL
         ClientUserSignIn clientUserSignIn;
         private bool login = false;
         public bool Login { get => login; set => login = value; }
-
+        public bool ifConnect = false;
 
         public FrmLogin()
         {
@@ -34,7 +34,17 @@ namespace Client.UIL
 
         private void FrmLogin_Load(object sender, EventArgs e)
         {
-            ShowSocketError(ClientUserSignIn.clientSocket.ConnectSvr());
+            Task task = Task.Run(()=> {
+                while (!ifConnect)
+                {
+                   ifConnect = ClientUserSignIn.clientSocket.ConnectSvr();
+                   textEdit_socketError.BeginInvoke(new Action(ShowConnectError));
+                   if (ifConnect)
+                       break;
+                    System.Threading.Thread.Sleep(3000);
+                }
+            });
+            
         }
 
         private void simpleButton_signIn_Click(object sender, EventArgs e)
@@ -66,14 +76,14 @@ namespace Client.UIL
         {
             FrmConfig frmConfig = new FrmConfig();
             frmConfig.ShowDialog();
-            ShowSocketError(ClientUserSignIn.clientSocket.ConnectSvr());
+            //ShowSocketError();
         }
 
         /// <summary>
         /// 显示网络是否连接
         /// </summary>
         /// <param name="ifConnect"></param>
-        private void ShowSocketError(bool ifConnect)
+        private void ShowConnectError()
         {
             if (ifConnect)
             {

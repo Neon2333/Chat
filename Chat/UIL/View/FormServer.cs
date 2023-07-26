@@ -21,12 +21,12 @@ namespace Server.UIL.View
     public partial class FormServer : Form
     {
         public static bool flagRecvMsg = false;
-        public static ClientSocket ss;
+        public static ServerSocket ss;
 
         public FormServer()
         {
             InitializeComponent();
-            
+
             init();
         }
 
@@ -46,9 +46,9 @@ namespace Server.UIL.View
 
         private void button_startListen_Click(object sender, EventArgs e)
         {
-            ss = new ClientSocket(IPAddress.Any, int.Parse(this.textBox_port.Text), 10);
+            ss = new ServerSocket(IPAddress.Any, int.Parse(this.textBox_port.Text), 10);
             string initMsg = String.Empty;
-            if(ss.Listen())
+            if (ss.Listen())
             {
                 this.textBox_status.Text = $"启动监听端口 {this.textBox_port.Text} 成功..";
             }
@@ -108,12 +108,12 @@ namespace Server.UIL.View
                         //PackageModel package = new PackageModel(null, "UserMessage", msg, "001", true, DateTime.Now);
                         //Task.Run(() => ss.SendDataClient(client, package));
                         //client.sendEvent += _onSendEvent;
-                    }   
+                    }
 
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ex.ToString();
 
@@ -134,7 +134,7 @@ namespace Server.UIL.View
 
         //}
 
-        private void button_receive_Click(object sender, EventArgs e)   
+        private void button_receive_Click(object sender, EventArgs e)
         {
             //if (ss.ConnectedClients.Count > 0)
             //{
@@ -186,7 +186,7 @@ namespace Server.UIL.View
             {
             }
         }
-        
+
 
     }
 }

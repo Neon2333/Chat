@@ -78,7 +78,6 @@ E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\es\DevExpress.Pdf.v20.1.Core.resources.
 E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\ja\DevExpress.Pdf.v20.1.Core.resources.dll
 E:\WorkSpace\Demo\C#_Chat\Chat\bin\Debug\ru\DevExpress.Pdf.v20.1.Core.resources.dll
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.test.Form1.resources
-E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.UIL.View.FormServer.resources
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.Properties.Resources.resources
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.csproj.GenerateResource.cache
 E:\WorkSpace\Demo\C#_Chat\Chat\obj\Debug\Server.exe.licenses

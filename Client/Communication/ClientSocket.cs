@@ -95,39 +95,40 @@ namespace Client.Communication
         /// 接收网络包
         /// </summary>
         /// <param name="userRecvData"></param>
+        byte[] recvBufferTemp = new byte[65535];
         public void RecvData(UserInfoSignIn userRecv)
         {
             try
             {
-                //全部接收到缓冲区后，再异步处理
-                byte[] recvBufferTemp = new byte[65535]; 
-                int bytesRecv = 0;
-
                 //接收缓冲区中数据全部放到RecvBuffer中
-                while ((bytesRecv = userRecv.ClientConnectSocket.Receive(recvBufferTemp, 0)) > 0)
-                {
-                    userRecv.recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
-                    
-                    //拆包
-                    NetPacket netPacket = new NetPacket();
-                    PackageModel onePackage;
-                    while (netPacket.UnPackageBinary(ref userRecv.recvBuffer, out onePackage))
-                    {
-                        if (userRecv.recvEvent != null)
-                        {
-                            userRecv.recvEvent(this, onePackage);
-                        }
-                    }
-                }
-
-
+                userRecv.ClientConnectSocket.BeginReceive(recvBufferTemp, 0, recvBufferTemp.Length, SocketFlags.None, new AsyncCallback(RecvCallback), userRecv);
             }
             catch (Exception ex)
             {
             }
         }
 
+        public void RecvCallback(IAsyncResult iar)
+        {
+            UserInfoSignIn userRecv = (UserInfoSignIn)iar.AsyncState;   
+            int bytesRecv = userRecv.ClientConnectSocket.EndReceive(iar);   
+            userRecv.recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
 
+            //拆包
+            NetPacket netPacket = new NetPacket();
+            PackageModel onePackage;
+            while (netPacket.UnPackageBinary(ref userRecv.recvBuffer, out onePackage))
+            {
+                if (userRecv.recvEvent != null)
+                {
+                    userRecv.recvEvent(this, onePackage);
+                }
+            }
+
+            //清空buffer重新接收
+            recvBufferTemp = new byte[65535];
+            userRecv.ClientConnectSocket.BeginReceive(recvBufferTemp, 0, recvBufferTemp.Length, SocketFlags.None, new AsyncCallback(RecvCallback), userRecv);
+        }
 
 
     }
