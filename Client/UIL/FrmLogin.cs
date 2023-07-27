@@ -19,7 +19,8 @@ namespace Client.UIL
         ClientUserSignIn clientUserSignIn;
         private bool login = false;
         public bool Login { get => login; set => login = value; }
-        public bool ifConnect = false;
+        
+        private bool ifConnect = false;  //是否建立连接
 
         public FrmLogin()
         {
@@ -51,7 +52,7 @@ namespace Client.UIL
         {
             ClientUserSignIn.UsrName = textEdit_usrNameLogin.Text.Trim();
             ClientUserSignIn.UsrPwd = textEdit_pwdLogin.Text.Trim();
-
+            login = true;
             if (login)
             {
                 this.Close();

@@ -20,10 +20,10 @@ namespace Client
 
             FrmLogin frmLogin = new FrmLogin();
             Application.Run(frmLogin);
-            if (frmLogin.Login == true)
-            {
-                Application.Run(new FrmClientList());
-            }
+            //if (frmLogin.Login == true)
+            //{
+            //    Application.Run(new FrmClientList());
+            //}
 
             //Application.Run(new test.Form1());
         }

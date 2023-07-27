@@ -131,6 +131,8 @@ namespace Server.BLL
                 packageResponseSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignUp;
                 packageResponseSignUp.Success = true;
 
+                Console.WriteLine($"{userSignUp.UserName} SignUp succeed..");
+
                 return StartUp.ss.SendDataClient(clientConnSocket, packageResponseSignUp);
             }
         }

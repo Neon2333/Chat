@@ -34,8 +34,11 @@ namespace Server.Communication
         private int listenRequests;
 
         //储存连接上的客户端
-        private Dictionary<IPAddress, UserInfoSignIn> connectedClients = new Dictionary<IPAddress, UserInfoSignIn>();
-        public Dictionary<IPAddress, UserInfoSignIn> ConnectedClients { get => connectedClients; set => connectedClients = value; }
+        private Dictionary<IPEndPoint, UserInfoSignIn> connectedClients = new Dictionary<IPEndPoint, UserInfoSignIn>();
+        public Dictionary<IPEndPoint, UserInfoSignIn> ConnectedClients { get => connectedClients; set => connectedClients = value; }
+
+        //private Dictionary<IPAddress, UserInfoSignIn> connectedClients = new Dictionary<IPAddress, UserInfoSignIn>();
+        //public Dictionary<IPAddress, UserInfoSignIn> ConnectedClients { get => connectedClients; set => connectedClients = value; }
 
         //private List<UserInfoSignIn> connectedClients = new List<UserInfoSignIn>();     
         //public List<UserInfoSignIn> ConnectedClients { get => connectedClients; set => connectedClients = value; }
@@ -130,7 +133,7 @@ namespace Server.Communication
         #endregion
 
         /// <summary>
-        /// 非阻塞Accept
+        /// 异步Accept
         /// </summary>
         public void AcceptClientConnect()
         {
@@ -157,6 +160,7 @@ namespace Server.Communication
             }
         }
 
+        //Accept回调
         public void AcceptCallback(IAsyncResult iar)
         {
             try
@@ -164,11 +168,13 @@ namespace Server.Communication
                 //获取监听svrListenSocket
                 Socket svrListen = (Socket)iar.AsyncState;  
 
-                //定义default用户。后面通过根据业务，给参数赋值将default用户转成具体的用户
+                //定义default用户完成初始连接
+                //后面通过根据业务，给参数赋值将default用户转成具体的用户
                 UserInfoSignIn defaultUser = new UserInfoSignIn();
                 defaultUser.ClientConnectSocket = svrListen.EndAccept(iar); //获取连接socket
-                defaultUser.ClientIP = (defaultUser.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Address;
-                defaultUser.ClientPort = (defaultUser.ClientConnectSocket.RemoteEndPoint as IPEndPoint).Port;
+                IPEndPoint clientIPAndPort = defaultUser.ClientConnectSocket.RemoteEndPoint as IPEndPoint;
+                defaultUser.ClientIP = clientIPAndPort.Address;
+                defaultUser.ClientPort = clientIPAndPort.Port;
                 defaultUser.ConnectTime = DateTime.Now;
                 defaultUser.CancelRecvToken = defaultUser.CancelRecvSource.Token;
                 defaultUser.CancelSendToken = defaultUser.CancelSendSource.Token;
@@ -177,7 +183,7 @@ namespace Server.Communication
                 defaultUser.UserPwd = null;
                 defaultUser.LoginTime = DateTime.Now;
 
-                ConnectedClients.Add(defaultUser.ClientIP, defaultUser);    //加入用户序列
+                ConnectedClients.Add(clientIPAndPort, defaultUser);    //加入用户序列
 
                 //触发客户端连接事件
                 if (defaultUser.connectedEvent != null)
@@ -187,9 +193,9 @@ namespace Server.Communication
                 
                 Console.WriteLine($"connected: {defaultUser.ClientIP}:{defaultUser.ClientPort}");
 
-                //子线程接收数据
-                ConnectedClients.TryGetValue(defaultUser.ClientIP, out defaultUser);
 
+                //子线程接收当前该连接数据
+                //ConnectedClients.TryGetValue(clientIPandPort, out defaultUser);
                 Task.Run(() => RecvData(defaultUser.ClientConnectSocket), defaultUser.CancelRecvToken);   
 
                 //预备接收下一个客户端连接
@@ -397,7 +403,10 @@ namespace Server.Communication
         //    }
         //}
         #endregion
-        //非阻塞Receive
+
+        /// <summary>
+        /// 异步Receive
+        /// </summary>
         byte[] recvBufferTemp = new byte[65535];    //系统buffer.size=65535
         public void RecvData(Socket clientConnSocket)
         {
@@ -410,36 +419,47 @@ namespace Server.Communication
             }
         }
 
+        //Receive回调
         public void ReceiveCallback(IAsyncResult iar)
         {
             try
             {
                 Socket clientConnSocket = (Socket)iar.AsyncState;   //获取BeginReceive最后一个参数
-                IPAddress clientIP = (clientConnSocket.RemoteEndPoint as IPEndPoint).Address;
+                IPEndPoint clientIPAndPort = clientConnSocket.RemoteEndPoint as IPEndPoint;
 
-
-                int bytesRecv = connectedClients[clientIP].ClientConnectSocket.EndReceive(iar);   //接收字节数
-                connectedClients[clientIP].recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
-                Console.WriteLine($"received: {bytesRecv} bytes");
-
-                //拆包
-                NetPacket packet = new NetPacket();
-                PackageModel onePacket;
-                while (packet.UnPackageBinary(ref connectedClients[clientIP].recvBuffer, out onePacket))
+                int bytesRecv = connectedClients[clientIPAndPort].ClientConnectSocket.EndReceive(iar);   //接收字节数
+                
+                //接收0B时不处理
+                if(bytesRecv > 0)
                 {
-                    ////触发接收数据事件
-                    //if (userRecvData.recvEvent != null)
-                    //{
-                    //    userRecvData.recvEvent(this, onePacket);
-                    //}
+                    Console.WriteLine($"received: {bytesRecv} bytes..");
 
-                    _onRecvData(clientConnSocket, onePacket);
-                    //_onRecvData(ref connectedClients[clientIP], onePacket);
+                    connectedClients[clientIPAndPort].recvBuffer.AddRange(recvBufferTemp.Take<byte>(bytesRecv).ToList<byte>());
+
+                    //拆包
+                    NetPacket packet = new NetPacket();
+                    PackageModel onePacket;
+                    while (packet.UnPackageBinary(ref connectedClients[clientIPAndPort].recvBuffer, out onePacket))
+                    {
+                        ////触发接收数据事件
+                        //if (userRecvData.recvEvent != null)
+                        //{
+                        //    userRecvData.recvEvent(this, onePacket);
+                        //}
+
+                        _onRecvData(clientConnSocket, onePacket);
+                        //_onRecvData(ref connectedClients[clientIP], onePacket);
+                    }
+
+                    //清空buffer重新接收
+                    recvBufferTemp = new byte[65535];
+                    clientConnSocket.BeginReceive(recvBufferTemp, 0, recvBufferTemp.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), clientConnSocket);
+                }
+                else
+                {
+                    Console.WriteLine($"received: 0 bytes..");
                 }
 
-                //清空buffer重新接收
-                recvBufferTemp = new byte[65535];
-                clientConnSocket.BeginReceive(recvBufferTemp, 0, recvBufferTemp.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), userRecvData);
             }
             catch (NullReferenceException)
             {
@@ -476,6 +496,7 @@ namespace Server.Communication
                 {
                     //执行登录SignIn
 
+
                 }
             }
             catch (NullReferenceException)
@@ -509,12 +530,12 @@ namespace Server.Communication
                 NetPacket packet = new NetPacket();
                 byte[] sendBytes = packet.PackageBinary(package);
 
-                IPAddress clientIP = (clientConnSocket.RemoteEndPoint as IPEndPoint).Address;
+                IPEndPoint clientIPAndPort = clientConnSocket.RemoteEndPoint as IPEndPoint;
                 if (clientConnSocket.Send(sendBytes) == sendBytes.Length)
                 {
-                    if (connectedClients[clientIP].sendEvent != null)
+                    if (connectedClients[clientIPAndPort].sendEvent != null)
                     {
-                        connectedClients[clientIP].sendEvent(this, package);
+                        connectedClients[clientIPAndPort].sendEvent(this, package);
                     }
                     return true;
                 }
