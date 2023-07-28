@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.Communication;
 using Client.BLL;
+using System.Threading;
 
 namespace Client.UIL
 {
     public partial class FrmLogin : DevExpress.XtraEditors.XtraForm
     {
-        ClientUserSignIn clientUserSignIn;
+        public static ClientUserSignIn clientUserSignIn;    //登录业务类实例
         private bool login = false;
         public bool Login { get => login; set => login = value; }
         
@@ -41,7 +42,10 @@ namespace Client.UIL
                    ifConnect = ClientUserSignIn.clientSocket.ConnectSvr();
                    textEdit_socketError.BeginInvoke(new Action(ShowConnectError));
                    if (ifConnect)
+                    {
+                        ClientUserSignIn.defaultUserSignIn.ConnectTime = DateTime.Now;  //连接连上的时间
                        break;
+                    }
                     System.Threading.Thread.Sleep(3000);
                 }
             });
@@ -50,15 +54,19 @@ namespace Client.UIL
 
         private void simpleButton_signIn_Click(object sender, EventArgs e)
         {
-            ClientUserSignIn.UsrName = textEdit_usrNameLogin.Text.Trim();
-            ClientUserSignIn.UsrPwd = textEdit_pwdLogin.Text.Trim();
-            login = true;
-            if (login)
+            string usrName = textEdit_usrNameLogin.Text.Trim();
+            string usrPwd = textEdit_pwdLogin.Text.Trim();
+            if(clientUserSignIn.DoSignIn(usrName, usrPwd, Timeout.Infinite))
             {
-                this.Close();
-                FrmClientList frmClientList = new FrmClientList();
-                frmClientList.Show();
+                login = true;
             }
+
+            //if (login)
+            //{
+            //    this.Close();
+            //    //FrmClientList frmClientList = new FrmClientList();
+            //    //frmClientList.Show();
+            //}
 
 
 

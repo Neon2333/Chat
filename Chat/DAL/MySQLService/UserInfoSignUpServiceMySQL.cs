@@ -220,7 +220,7 @@ namespace Server.DAL.MySQLService
             }
         }
 
-        public object ReadUserInfoSignUp(string uisuID, params string[] fields)
+        public object ReadUserInfoSignUp(int uisuID, params string[] fields)
         {
             if (fields.Length > 0)
             {

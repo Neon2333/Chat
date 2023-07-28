@@ -570,9 +570,15 @@ namespace Server.Communication
         /// <param name="userRecvMsg"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public bool SendMsgClients(List<UserInfoSignIn> userRecvMsg, byte[] data)
+        public bool SendMsgClients(List<Socket> clientConnSockets, PackageModel package)
         {
-
+            foreach(var clientConnSocket in clientConnSockets)
+            {
+                if (!SendDataClient(clientConnSocket, package))
+                {
+                    return false;
+                }
+            }
             return true;
         }
 

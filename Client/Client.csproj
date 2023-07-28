@@ -64,7 +64,9 @@
   <ItemGroup>
     <Compile Include="BLL\ClientUserSignIn.cs" />
     <Compile Include="BLL\ClientUserSignUp.cs" />
+    <Compile Include="BLL\PicBinarization.cs" />
     <Compile Include="BLL\ProcessRecvPackage.cs" />
+    <Compile Include="BLL\StartUp.cs" />
     <Compile Include="Communication\ClientSocket.cs" />
     <Compile Include="Communication\Code.cs" />
     <Compile Include="Communication\NetPacket.cs" />

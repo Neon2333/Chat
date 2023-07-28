@@ -210,6 +210,16 @@ namespace Server.DAL.MySQLService
 
         //DataSet有一个WriteXml方法可以直接将数据保存到xml文件：https://www.jb51.net/article/63396.htm
 
+        public object ReadUserInfoSignIn(int uisiID)
+        {
+            string cmdText = string.Empty;
+            cmdText += "SELECT * FROM userinfosignin" + $"WHERE usrID=@_userID;";
+            MySqlParameter parameter1 = new MySqlParameter("@_userID", MySqlDbType.Int32, 10);
+            parameter1.Value = uisiID;
+
+            return MySQLHelper.MySqlHelper.ExecuteScalar(connStr, CommandType.Text, cmdText, parameter1);
+        }
+
         public DataTable ReadUserInfoSignIn(params string[] fields)
         {
             if (fields.Length > 0)
@@ -250,27 +260,7 @@ namespace Server.DAL.MySQLService
             }
         }
 
-        public object ReadUserInfoSignIn(string uisiID, params string[] fields)
-        {
-            if (fields.Length > 0)
-            {
-                string cmdText = string.Empty;
-                foreach (var field in fields)
-                {
-                    cmdText = "SELECT " + field + " ";
-
-                }
-                cmdText += "FROM userinfosignin" + $"WHERE usrID=@_userID;";
-                MySqlParameter parameter1 = new MySqlParameter("@_userID", MySqlDbType.Int32, 10);
-                parameter1.Value = uisiID;
-
-                return MySQLHelper.MySqlHelper.ExecuteScalar(connStr, CommandType.Text, cmdText, parameter1);
-            }
-            else
-            {
-                return null;
-            }
-        }
+        
 
     }
 }

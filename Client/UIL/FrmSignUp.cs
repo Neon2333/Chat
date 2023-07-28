@@ -1,15 +1,15 @@
-﻿using Client.BLL;
-using DevExpress.XtraEditors;
+﻿using DevExpress.XtraEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using Client.BLL;
 
 namespace Client.UIL
 {
@@ -20,7 +20,7 @@ namespace Client.UIL
             InitializeComponent();
         }
 
-        ClientUserSignUp clientUserSignUp = new ClientUserSignUp();
+        ClientUserSignUp clientUserSignUp = new ClientUserSignUp();     //注册业务类实例
         private void simpleButton_applySignUp_Click(object sender, EventArgs e)
         {
             if (textEdit_pwdSignUp.Text.Equals(textEdit_confirmPwdSignUp.Text))
@@ -34,8 +34,8 @@ namespace Client.UIL
                 else
                 {
                     //防止超时返回false后，SignUp内的SendTask和RecvTask还在线程中执行
-                    clientUserSignUp.defaultUserSignIn.CancelSendSource.Cancel();
-                    clientUserSignUp.defaultUserSignIn.CancelRecvSource.Cancel();
+                    ClientUserSignIn.defaultUserSignIn.CancelSendSource.Cancel();
+                    ClientUserSignIn.defaultUserSignIn.CancelRecvSource.Cancel();
 
                     MessageBox.Show("注册失败！");
                     this.Close();
@@ -51,8 +51,8 @@ namespace Client.UIL
 
         private void simpleButton_cancelSignUp_Click(object sender, EventArgs e)
         {
-            clientUserSignUp.defaultUserSignIn.CancelSendSource.Cancel();
-            clientUserSignUp.defaultUserSignIn.CancelRecvSource.Cancel();
+            ClientUserSignIn.defaultUserSignIn.CancelSendSource.Cancel();
+            ClientUserSignIn.defaultUserSignIn.CancelRecvSource.Cancel();
 
             this.Close();
         }

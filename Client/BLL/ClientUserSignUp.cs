@@ -4,29 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Client.UIL;
+using System.Net.Sockets;
 using ChatModel;
 using Client.Communication;
-using System.Net.Sockets;
 
 namespace Client.BLL
 {
+    /// <summary>
+    /// 客户端注册类
+    /// </summary>
     class ClientUserSignUp
     {
-        public UserInfoSignIn defaultUserSignIn;
-        public UserInfoSignUp PackageUserSignUp;
-        public bool IsSuccessSignUpResponse;
+        public UserInfoSignUp PackageUserSignUp;            //打包注册用户信息
+        public static bool IsSuccessSignUpResponse;        //是否收到服务器注册成功response
 
         public ClientUserSignUp()
         {
-            defaultUserSignIn = new UserInfoSignIn();
-            defaultUserSignIn.UserID = -1;
-            defaultUserSignIn.UserName = "default";
-            defaultUserSignIn.UserPwd = null;
-            defaultUserSignIn.LoginTime = DateTime.Now;
-            defaultUserSignIn.ClientConnectSocket = ClientSocket.ConnectSvrSocket;
-            defaultUserSignIn.CancelSendToken = defaultUserSignIn.CancelSendSource.Token;
-            defaultUserSignIn.recvEvent += _onSignUpRecv;
-            defaultUserSignIn.sendEvent += _onSignUpSend;
+            
         }
 
         /// <summary>
@@ -40,26 +34,34 @@ namespace Client.BLL
         {
             try
             {
-                List<Task> doSignUpTasks = new List<Task>();
-                //需要先Send再Recv
+                //List<Task> doSignUpTasks = new List<Task>();
 
+                //需要先Send再Recv
                 bool flagSendTaskCompleted = false;
                 Task<bool> sendTask = Task.Run(() =>
                 {
                     return SignUpSend(usrName, usrPwd);
                 });
 
-                flagSendTaskCompleted = sendTask.Wait(timeoutMill, defaultUserSignIn.CancelSendToken);  //Wait在timeout内完成task返回Task。否则false，但线程还会继续执行
+                flagSendTaskCompleted = sendTask.Wait(timeoutMill, ClientUserSignIn.defaultUserSignIn.CancelSendToken);  //Wait在timeout内完成task返回Task。否则false，但线程还会继续执行
                 if (!flagSendTaskCompleted)
                 {
                     return false;
                 }
 
                 Task recvTask = Task.Run(() => {
-                    SignUpRecv(defaultUserSignIn);
+                    SignUpRecv(ClientUserSignIn.defaultUserSignIn);
                 });
 
-                return recvTask.Wait(timeoutMill, defaultUserSignIn.CancelRecvToken);
+                //return recvTask.Wait(timeoutMill, ClientUserSignIn.defaultUserSignIn.CancelRecvToken) && IsSuccessSignUpResponse;
+                if(recvTask.Wait(timeoutMill, ClientUserSignIn.defaultUserSignIn.CancelRecvToken))
+                {
+                    if (IsSuccessSignUpResponse)
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
             catch(NullReferenceException ex)
             {
@@ -101,12 +103,12 @@ namespace Client.BLL
             packageModelSignUp.Code = String.Empty;
             packageModelSignUp.SendTime = DateTime.Now;
 
-            return ClientUserSignIn.clientSocket.SendData(defaultUserSignIn, packageModelSignUp);
+            return ClientUserSignIn.clientSocket.SendData(ClientUserSignIn.defaultUserSignIn, packageModelSignUp);
 
         }
 
         //注册发送数据事件
-        private void _onSignUpSend(object sender, PackageModel package)
+        public static void _onSignUpSend(object sender, PackageModel package)
         {
         }
 
@@ -120,20 +122,22 @@ namespace Client.BLL
         {
             ClientUserSignIn.clientSocket.RecvData(defaultUser);
         }
-        
+
         //注册接收数据事件
-        private void _onSignUpRecv(object sender, PackageModel package)
+        public static void _onSignUpRecv(object sender, PackageModel package)
         {
             IsSuccessSignUpResponse = false;
 
-            if (package.PackageType == PackageModel.PackageTypeDef.ResponseType_SignUp && package.Success)
+            if (package.Success)
             {
                 IsSuccessSignUpResponse = true;
             }
+
+            //if (package.Success && package.PackageType == PackageModel.PackageTypeDef.ResponseType_SignUp)
+            //{
+            //    IsSuccessSignUpResponse = true;
+            //}
         }
 
-
-
-     
     }
 }

@@ -133,6 +133,7 @@ namespace Client.Communication
             userRecv.ClientConnectSocket.BeginReceive(recvBufferTemp, 0, recvBufferTemp.Length, SocketFlags.None, new AsyncCallback(RecvCallback), userRecv);
         }
 
+        
 
     }
 }

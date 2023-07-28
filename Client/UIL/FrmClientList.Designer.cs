@@ -39,14 +39,14 @@ namespace Client.UIL
             DevExpress.XtraGrid.Views.Tile.TileViewItemElement tileViewItemElement2 = new DevExpress.XtraGrid.Views.Tile.TileViewItemElement();
             this.userPortrait = new DevExpress.XtraGrid.Columns.TileViewColumn();
             this.userName = new DevExpress.XtraGrid.Columns.TileViewColumn();
-            this.gridControl1 = new DevExpress.XtraGrid.GridControl();
-            this.tileView_userList = new DevExpress.XtraGrid.Views.Tile.TileView();
+            this.gridControl_userSignInList = new DevExpress.XtraGrid.GridControl();
+            this.tileView_userSignInList = new DevExpress.XtraGrid.Views.Tile.TileView();
             this.textEdit_recv = new DevExpress.XtraEditors.TextEdit();
             this.simpleButton_close = new DevExpress.XtraEditors.SimpleButton();
             this.simpleButton_send = new DevExpress.XtraEditors.SimpleButton();
             this.textEdit_send = new DevExpress.XtraEditors.TextEdit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tileView_userList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_userSignInList)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tileView_userSignInList)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_recv.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_send.Properties)).BeginInit();
             this.SuspendLayout();
@@ -54,6 +54,7 @@ namespace Client.UIL
             // userPortrait
             // 
             this.userPortrait.Caption = "userPortrait";
+            this.userPortrait.FieldName = "usrName";
             this.userPortrait.MinWidth = 25;
             this.userPortrait.Name = "userPortrait";
             this.userPortrait.Visible = true;
@@ -63,42 +64,43 @@ namespace Client.UIL
             // userName
             // 
             this.userName.Caption = "userName";
+            this.userName.FieldName = "usrPortrait";
             this.userName.MinWidth = 25;
             this.userName.Name = "userName";
             this.userName.Visible = true;
             this.userName.VisibleIndex = 1;
             this.userName.Width = 94;
             // 
-            // gridControl1
+            // gridControl_userSignInList
             // 
-            this.gridControl1.Location = new System.Drawing.Point(8, 8);
-            this.gridControl1.MainView = this.tileView_userList;
-            this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(350, 660);
-            this.gridControl1.TabIndex = 0;
-            this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
-            this.tileView_userList});
+            this.gridControl_userSignInList.Location = new System.Drawing.Point(8, 8);
+            this.gridControl_userSignInList.MainView = this.tileView_userSignInList;
+            this.gridControl_userSignInList.Name = "gridControl_userSignInList";
+            this.gridControl_userSignInList.Size = new System.Drawing.Size(350, 660);
+            this.gridControl_userSignInList.TabIndex = 0;
+            this.gridControl_userSignInList.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
+            this.tileView_userSignInList});
             // 
-            // tileView_userList
+            // tileView_userSignInList
             // 
-            this.tileView_userList.Appearance.ItemNormal.BackColor = System.Drawing.Color.White;
-            this.tileView_userList.Appearance.ItemNormal.Options.UseBackColor = true;
-            this.tileView_userList.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.tileView_userSignInList.Appearance.ItemNormal.BackColor = System.Drawing.Color.White;
+            this.tileView_userSignInList.Appearance.ItemNormal.Options.UseBackColor = true;
+            this.tileView_userSignInList.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.userPortrait,
             this.userName});
-            this.tileView_userList.GridControl = this.gridControl1;
-            this.tileView_userList.Name = "tileView_userList";
-            this.tileView_userList.OptionsTiles.GroupTextPadding = new System.Windows.Forms.Padding(0, -1, -1, -1);
-            this.tileView_userList.OptionsTiles.ItemSize = new System.Drawing.Size(248, 60);
-            this.tileView_userList.OptionsTiles.LayoutMode = DevExpress.XtraGrid.Views.Tile.TileViewLayoutMode.List;
-            this.tileView_userList.OptionsTiles.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tileView_userList.TileColumns.Add(tableColumnDefinition1);
-            this.tileView_userList.TileColumns.Add(tableColumnDefinition2);
-            this.tileView_userList.TileColumns.Add(tableColumnDefinition3);
-            this.tileView_userList.TileRows.Add(tableRowDefinition1);
-            this.tileView_userList.TileRows.Add(tableRowDefinition2);
+            this.tileView_userSignInList.GridControl = this.gridControl_userSignInList;
+            this.tileView_userSignInList.Name = "tileView_userSignInList";
+            this.tileView_userSignInList.OptionsTiles.GroupTextPadding = new System.Windows.Forms.Padding(0, -1, -1, -1);
+            this.tileView_userSignInList.OptionsTiles.ItemSize = new System.Drawing.Size(248, 60);
+            this.tileView_userSignInList.OptionsTiles.LayoutMode = DevExpress.XtraGrid.Views.Tile.TileViewLayoutMode.List;
+            this.tileView_userSignInList.OptionsTiles.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.tileView_userSignInList.TileColumns.Add(tableColumnDefinition1);
+            this.tileView_userSignInList.TileColumns.Add(tableColumnDefinition2);
+            this.tileView_userSignInList.TileColumns.Add(tableColumnDefinition3);
+            this.tileView_userSignInList.TileRows.Add(tableRowDefinition1);
+            this.tileView_userSignInList.TileRows.Add(tableRowDefinition2);
             tableSpan1.RowSpan = 2;
-            this.tileView_userList.TileSpans.Add(tableSpan1);
+            this.tileView_userSignInList.TileSpans.Add(tableSpan1);
             tileViewItemElement1.Column = this.userPortrait;
             tileViewItemElement1.ImageOptions.ImageAlignment = DevExpress.XtraEditors.TileItemContentAlignment.MiddleCenter;
             tileViewItemElement1.ImageOptions.ImageScaleMode = DevExpress.XtraEditors.TileItemImageScaleMode.ZoomInside;
@@ -110,8 +112,8 @@ namespace Client.UIL
             tileViewItemElement2.ImageOptions.ImageScaleMode = DevExpress.XtraEditors.TileItemImageScaleMode.ZoomInside;
             tileViewItemElement2.Text = "userName";
             tileViewItemElement2.TextAlignment = DevExpress.XtraEditors.TileItemContentAlignment.MiddleCenter;
-            this.tileView_userList.TileTemplate.Add(tileViewItemElement1);
-            this.tileView_userList.TileTemplate.Add(tileViewItemElement2);
+            this.tileView_userSignInList.TileTemplate.Add(tileViewItemElement1);
+            this.tileView_userSignInList.TileTemplate.Add(tileViewItemElement2);
             // 
             // textEdit_recv
             // 
@@ -154,11 +156,11 @@ namespace Client.UIL
             this.Controls.Add(this.simpleButton_send);
             this.Controls.Add(this.simpleButton_close);
             this.Controls.Add(this.textEdit_recv);
-            this.Controls.Add(this.gridControl1);
+            this.Controls.Add(this.gridControl_userSignInList);
             this.Name = "FrmClientList";
             this.Text = "Chat";
-            ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tileView_userList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridControl_userSignInList)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tileView_userSignInList)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_recv.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.textEdit_send.Properties)).EndInit();
             this.ResumeLayout(false);
@@ -167,8 +169,8 @@ namespace Client.UIL
 
         #endregion
 
-        private DevExpress.XtraGrid.GridControl gridControl1;
-        private DevExpress.XtraGrid.Views.Tile.TileView tileView_userList;
+        private DevExpress.XtraGrid.GridControl gridControl_userSignInList;
+        private DevExpress.XtraGrid.Views.Tile.TileView tileView_userSignInList;
         private DevExpress.XtraGrid.Columns.TileViewColumn userPortrait;
         private DevExpress.XtraGrid.Columns.TileViewColumn userName;
         private DevExpress.XtraEditors.TextEdit textEdit_recv;
