@@ -42,6 +42,7 @@ namespace Client.BLL
             ClientUserSignIn.defaultUserSignIn.UserID = -1;
             ClientUserSignIn.defaultUserSignIn.UserName = "default";
             ClientUserSignIn.defaultUserSignIn.UserPwd = null;
+            ClientUserSignIn.defaultUserSignIn.ConnectTime = DateTime.Now;  //连接连上的时间
             ClientUserSignIn.defaultUserSignIn.ClientConnectSocket = ClientSocket.ConnectSvrSocket;
             ClientUserSignIn.defaultUserSignIn.CancelSendToken = ClientUserSignIn.defaultUserSignIn.CancelSendSource.Token;
             ClientUserSignIn.defaultUserSignIn.recvEvent += _onRecvEvent;
@@ -129,7 +130,7 @@ namespace Client.BLL
 
             //打包实体类
             PackageModel packageModelSignIn = new PackageModel();
-            packageModelSignIn.PackageType = PackageModel.PackageTypeDef.RequestType_SignUp;
+            packageModelSignIn.PackageType = PackageModel.PackageTypeDef.RequestType_SignIn;
             packageModelSignIn.Msg = String.Empty;
             packageModelSignIn.Data = packageModelSignIn;
             packageModelSignIn.DataType = packageModelSignIn.GetType().FullName;

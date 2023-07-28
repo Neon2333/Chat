@@ -38,7 +38,7 @@ namespace Server.DAL
         //R
         DataTable ReadUserInfoSignUp(params string[] fields);
 
-        object ReadUserInfoSignUp(string uisuID, params string[] fields);
+        object ReadUserInfoSignUp(int uisuID, params string[] fields);
 
     }
 }

@@ -495,7 +495,8 @@ namespace Server.Communication
                 else if (onePacket.PackageType == PackageModel.PackageTypeDef.RequestType_SignIn)
                 {
                     //执行登录SignIn
-
+                    SvrUserSignIn svrUserSignIn = new SvrUserSignIn();
+                    Task.Run(()=> svrUserSignIn.DoSignIn(clientConnSocket, onePacket));
 
                 }
             }

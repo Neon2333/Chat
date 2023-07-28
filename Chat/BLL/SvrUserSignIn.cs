@@ -48,7 +48,8 @@ namespace Server.BLL
                     packageResponseSignUp.PackageType = PackageModel.PackageTypeDef.ResponseType_SignIn;
                     packageResponseSignUp.Success = true;
 
-                    StartUp.ss.SendDataClient(clientConnSocket, packageResponseSignUp);
+                    if (!StartUp.ss.SendDataClient(clientConnSocket, packageResponseSignUp))
+                        return false;
                     Console.WriteLine($"{packageUserSignIn.UserName} SignIn succeed..");
 
 
@@ -68,9 +69,10 @@ namespace Server.BLL
                         Socket clientsConnSocket = (valueEnumerator.Current as UserInfoSignIn).ClientConnectSocket;
                         clientsConnSockets.Add(clientsConnSocket);
                     }
-                    StartUp.ss.SendMsgClients(clientsConnSockets, packageClientListUpdate);
+                    if (!StartUp.ss.SendMsgClients(clientsConnSockets, packageClientListUpdate))
+                        return false;
 
-
+                    return true;
                 }
             }
             catch (NullReferenceException ex)

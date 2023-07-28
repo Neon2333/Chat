@@ -39,7 +39,7 @@ namespace Server.DAL
 
         DataTable ReadUserInfoSignIn(int limit, params string[] fields);
 
-        object ReadUserInfoSignIn(string uisiID, params string[] fields);
+        object ReadUserInfoSignIn(int uisiID);
 
 
 

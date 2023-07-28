@@ -26,7 +26,6 @@ namespace Client.UIL
         public FrmLogin()
         {
             InitializeComponent();
-            clientUserSignIn = new ClientUserSignIn();
         }
 
         public void init()
@@ -43,7 +42,7 @@ namespace Client.UIL
                    textEdit_socketError.BeginInvoke(new Action(ShowConnectError));
                    if (ifConnect)
                     {
-                        ClientUserSignIn.defaultUserSignIn.ConnectTime = DateTime.Now;  //连接连上的时间
+                        clientUserSignIn = new ClientUserSignIn();
                        break;
                     }
                     System.Threading.Thread.Sleep(3000);
@@ -59,6 +58,7 @@ namespace Client.UIL
             if(clientUserSignIn.DoSignIn(usrName, usrPwd, Timeout.Infinite))
             {
                 login = true;
+                MessageBox.Show("登录成功..");
             }
 
             //if (login)
